@@ -3,15 +3,15 @@ import { supabase } from './supabase';
 
 // ─── DRILL DEFINITIONS ────────────────────────────────────────────────────────
 const DRILLS = [
-  { id:1,  name:"International Short Game",          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Total proximity in feet" },
-  { id:2,  name:"Par 72 Short Game",                 type:"score",      unit:"",     dir:"lower",  perfect:64,  worst:84,  notes:"Lower than par = better" },
+  { id:1,  name:"International Short Game",          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Total proximity in feet, 12 shots" },
+  { id:2,  name:"Par 72 Short Game",                 type:"score",      unit:"",     dir:"lower",  perfect:64,  worst:84,  notes:"Scorecard needed for instructions" },
   { id:3,  name:"100ft Putting (18 putts)",           type:"score",      unit:"",     dir:"lower",  perfect:18,  worst:9,   notes:"Count putts holed only" },
   { id:4,  name:"250ft Putting Challenge",            type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:50,  notes:"Total feet holed" },
   { id:5,  name:"Par 21 Short Game Challenge",        type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"Level 1 pass = 50pts, +5 per level" },
-  { id:6,  name:"20min Chipping Hole Out",            type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"10+ = elite" },
+  { id:6,  name:"20min Chipping Hole Out",            type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs" },
   { id:7,  name:"4-10ft Putting Challenge",           type:"level",      unit:"ft",   dir:"higher", perfect:10,  worst:3,   notes:"Last distance holed" },
   { id:8,  name:"Hell Drill Putting",                 type:"completion", unit:"",     dir:null,     perfect:null,worst:null,notes:"Skipped from index" },
-  { id:9,  name:"Proximity Challenge Putting",        type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Avg proximity in feet" },
+  { id:9,  name:"Proximity Challenge Putting",        type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Total proximity, 5 putts" },
   { id:10, name:"12 Putt Completion Drill",           type:"score",      unit:"",     dir:"lower",  perfect:1,   worst:5,   notes:"Attempts to complete" },
   { id:11, name:"No 3 Putts (9 holes)",               type:"score",      unit:"",     dir:"lower",  perfect:0,   worst:2,   notes:"Count of 3-putts" },
   { id:12, name:"5-15ft Putting Comp",                type:"score",      unit:"putts",dir:"lower",  perfect:2,   worst:12,  notes:"Putts to hole 25ft" },
@@ -35,8 +35,14 @@ const DRILLS = [
   { id:30, name:"Putting Gate Drill",                 type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:20,  notes:"Putts to get 10 through gate" },
   { id:31, name:"Putting Gate Drill (R-L)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Putts through gate into hole" },
   { id:32, name:"Putting Gate Drill (L-R)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Putts through gate into hole" },
-];
-// ─── PERFORMANCE INDEX ────────────────────────────────────────────────────────
+  { id:33, name:"Putting Tour Challenge 3-10ft",      type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:14,  notes:"Putts to hole all 8" },
+  { id:34, name:"Putting Challenge 10-15ft",          type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:30,  notes:"Putts to hole all 6" },
+  { id:35, name:"Putting Challenge 3-15ft",           type:"score",      unit:"putts",dir:"lower",  perfect:13,  worst:37,  notes:"Putts to hole all 13" },
+  { id:36, name:"Putting Challenge 3-7ft",            type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:10,  notes:"Putts to hole all 5" },
+  { id:37, name:"Putting Challenge 6-10ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:15,  notes:"Putts to hole all 5" },
+  { id:38, name:"Putting Challenge 8-12ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:20,  notes:"Putts to hole all 5" },
+  { id:39, name:"Putting Challenge 3-8ft",            type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:10,  notes:"Putts to hole all 6" },
+];// ─── PERFORMANCE INDEX ────────────────────────────────────────────────────────
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
