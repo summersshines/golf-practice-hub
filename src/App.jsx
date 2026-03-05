@@ -1,48 +1,48 @@
 import { useState, useEffect } from "react";
 import { supabase } from './supabase';
 
-// ─── DRILL DEFINITIONS ────────────────────────────────────────────────────────
 const DRILLS = [
-  { id:1,  name:"International Short Game",          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Total proximity in feet, 12 shots" },
-  { id:2,  name:"Par 72 Short Game",                 type:"score",      unit:"",     dir:"lower",  perfect:64,  worst:84,  notes:"Scorecard needed for instructions" },
-  { id:3,  name:"100ft Putting (18 putts)",           type:"score",      unit:"",     dir:"lower",  perfect:18,  worst:9,   notes:"Count putts holed only" },
-  { id:4,  name:"250ft Putting Challenge",            type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:50,  notes:"Total feet holed" },
-  { id:5,  name:"Par 21 Short Game Challenge",        type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"Level 1 pass = 50pts, +5 per level" },
-  { id:6,  name:"20min Chipping Hole Out",            type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs" },
-  { id:7,  name:"4-10ft Putting Challenge",           type:"level",      unit:"ft",   dir:"higher", perfect:10,  worst:3,   notes:"Last distance holed" },
-  { id:8,  name:"Hell Drill Putting",                 type:"completion", unit:"",     dir:null,     perfect:null,worst:null,notes:"Skipped from index" },
-  { id:9,  name:"Proximity Challenge Putting",        type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Total proximity, 5 putts" },
-  { id:10, name:"12 Putt Completion Drill",           type:"score",      unit:"",     dir:"lower",  perfect:1,   worst:5,   notes:"Attempts to complete" },
-  { id:11, name:"No 3 Putts (9 holes)",               type:"score",      unit:"",     dir:"lower",  perfect:0,   worst:2,   notes:"Count of 3-putts" },
-  { id:12, name:"5-15ft Putting Comp",                type:"score",      unit:"putts",dir:"lower",  perfect:2,   worst:12,  notes:"Putts to hole 25ft" },
-  { id:13, name:"Chipping Comp",                      type:"score",      unit:"holes",dir:"lower",  perfect:2,   worst:10,  notes:"Holes needed to reach 6 points" },
-  { id:14, name:"Chipping 10 Ball Basket",            type:"score",      unit:"shots",dir:"lower",  perfect:10,  worst:30,  notes:"Shots to get 10 in basket" },
-  { id:15, name:"Chipping 10 Ball Basket - Hole Out", type:"score",      unit:"shots",dir:"lower",  perfect:10,  worst:50,  notes:"Shots to get 10 in basket" },
-  { id:16, name:"Project 1 Putt Level 1",             type:"score",      unit:"",     dir:"lower",  perfect:16,  worst:30,  notes:"24 = pass mark" },
-  { id:17, name:"Short Game/Pitching 10-100m",        type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:250, notes:"Total proximity, 10 shots" },
-  { id:18, name:"Dave Pelz Short Game Challenge",     type:"points",     unit:"pts",  dir:"higher", perfect:155, worst:0,   notes:"Points based on proximity" },
-  { id:19, name:"10 Shot Variety Challenge",          type:"distance",   unit:"m",    dir:"lower",  perfect:25,  worst:125, notes:"Total proximity, 10 shots" },
-  { id:20, name:"48 Putt Challenge (PK)",             type:"score",      unit:"",     dir:"higher", perfect:48,  worst:0,   notes:"36 = excellent" },
-  { id:21, name:"13 Tees Putting",                    type:"score",      unit:"",     dir:"higher", perfect:13,  worst:0,   notes:"Hole 10/12 to reach 13th" },
-  { id:22, name:"5-15ft Hole Out Challenge",          type:"score",      unit:"",     dir:"higher", perfect:18,  worst:0,   notes:"18 = all holed" },
-  { id:23, name:"Putting Star Ladder (Pro)",          type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:40,  notes:"Fewest putts to complete" },
-  { id:24, name:"12ft Eliminator Putting",            type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:36,  notes:"Fewest putts to eliminate all" },
-  { id:25, name:"4ft Eliminator Putting",             type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:16,  notes:"Fewest putts to eliminate all" },
-  { id:26, name:"8ft Eliminator Putting",             type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:24,  notes:"Fewest putts to eliminate all" },
-  { id:27, name:"Pitching 30-70m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Total feet proximity" },
-  { id:28, name:"Pitching 80-120m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:200, notes:"Total feet proximity" },
-  { id:29, name:"Putting Luke Donald 4-8ft",          type:"score",      unit:"/20",  dir:"higher", perfect:20,  worst:0,   notes:"15 = tour average" },
-  { id:30, name:"Putting Gate Drill",                 type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:20,  notes:"Putts to get 10 through gate" },
-  { id:31, name:"Putting Gate Drill (R-L)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Putts through gate into hole" },
-  { id:32, name:"Putting Gate Drill (L-R)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Putts through gate into hole" },
-  { id:33, name:"Putting Tour Challenge 3-10ft",      type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:14,  notes:"Putts to hole all 8" },
-  { id:34, name:"Putting Challenge 10-15ft",          type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:30,  notes:"Putts to hole all 6" },
-  { id:35, name:"Putting Challenge 3-15ft",           type:"score",      unit:"putts",dir:"lower",  perfect:13,  worst:37,  notes:"Putts to hole all 13" },
-  { id:36, name:"Putting Challenge 3-7ft",            type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:10,  notes:"Putts to hole all 5" },
-  { id:37, name:"Putting Challenge 6-10ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:15,  notes:"Putts to hole all 5" },
-  { id:38, name:"Putting Challenge 8-12ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:20,  notes:"Putts to hole all 5" },
-  { id:39, name:"Putting Challenge 3-8ft",            type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:10,  notes:"Putts to hole all 6" },
-];// ─── PERFORMANCE INDEX ────────────────────────────────────────────────────────
+  { id:1,  name:"International Short Game",          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Record proximity in feet for each shot. Lower is better." },
+  { id:2,  name:"Par 72 Short Game",                 type:"score",      unit:"",     dir:"lower",  perfect:64,  worst:84,  notes:"Scorecard needed for full instructions and scoring metrics. Record total proximity in feet. Lower is better." },
+  { id:3,  name:"100ft Putting (18 putts)",           type:"score",      unit:"",     dir:"lower",  perfect:18,  worst:9,   notes:"Set up 9x3ft putts around the hole, then 4x6ft, 3x9ft, 1x10ft and 1x12ft changing slope and break on each putt. You only count the putts you hole — it is either in or miss. Higher score = more putts holed." },
+  { id:4,  name:"250ft Putting Challenge",            type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:50,  notes:"Set up putts from 5, 10, 15 and 20ft at 5 different holes changing slope and break on each one. Record total feet holed. 100 is average, 130 is excellent, 250 is near impossible." },
+  { id:5,  name:"Par 21 Short Game Challenge",        type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and each level adds one more shot in the 25-50m zone. Just completing Level 1 is a good achievement. Score is the level reached." },
+  { id:6,  name:"20min Chipping Hole Out",            type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Work around the green hitting different shots for 20 minutes, trying not to hit the same shot multiple times. Count the total number of hole outs. 10+ is elite." },
+  { id:7,  name:"4-10ft Putting Challenge",           type:"level",      unit:"ft",   dir:"higher", perfect:10,  worst:3,   notes:"Start with 8 tees around the hole at 4ft. If you hole the putt move the tee back to 5ft. If you miss, remove the tee. Keep working around the hole until all tees are removed. Your score is the last distance you successfully putted from." },
+  { id:8,  name:"Hell Drill Putting",                 type:"completion", unit:"",     dir:null,     perfect:null,worst:null,notes:"Multiple levels of difficulty. Pass or fail based on completing the drill. Ask your coach for the specific level instructions." },
+  { id:9,  name:"Proximity Challenge Putting",        type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Hit putts from 30, 40, 50, 60 and 70ft. Total up the distance from the hole after each putt for your score. Lower is better — closer to the hole = better score." },
+  { id:10, name:"12 Putt Completion Drill",           type:"score",      unit:"",     dir:"lower",  perfect:1,   worst:5,   notes:"Putts to be played: 4x3ft around the hole, 20ft uphill into 2ft circle, 20ft downhill into 2ft circle, 3x6ft from around the hole, 2-putt from 40ft, then hole an 8ft putt to finish. Score is the number of attempts needed to complete. Lower is better." },
+  { id:11, name:"No 3 Putts (9 holes)",               type:"score",      unit:"",     dir:"lower",  perfect:0,   worst:2,   notes:"Play 9 holes and count the number of 3-putts. 0 = no 3-putts (perfect), 1 = one 3-putt, 2 = two 3-putts. Lower is better." },
+  { id:12, name:"5-15ft Putting Comp",                type:"score",      unit:"putts",dir:"lower",  perfect:2,   worst:12,  notes:"Count the number of putts taken to hole a putt from 25ft. If you leave a putt short, your distance score reverts back to 0 and you start again, but keep counting total putts hit. Lower is better." },
+  { id:13, name:"Chipping Comp",                      type:"score",      unit:"holes",dir:"lower",  perfect:2,   worst:10,  notes:"First to 6 points wins. Scoring: holed = 3pts, 0-3ft = 2pts, 3-6ft = 1pt. Record the number of holes needed to reach 6 points. Lower is better." },
+  { id:14, name:"Chipping 10 Ball Basket",            type:"score",      unit:"shots",dir:"lower",  perfect:10,  worst:30,  notes:"Total number of shots needed to get 10 balls inside the target range (either 3ft or 6ft circles). Lower is better." },
+  { id:15, name:"Chipping 10 Ball Basket - Hole Out", type:"score",      unit:"shots",dir:"lower",  perfect:10,  worst:50,  notes:"Total number of shots needed to hole out 10 balls into the basket. Lower is better." },
+  { id:16, name:"Project 1 Putt Level 1",             type:"score",      unit:"",     dir:"lower",  perfect:16,  worst:30,  notes:"Complete the Project 1 Putt Level 1 challenge. 24 is the pass mark — anything at or below that score is above average. Lower is better." },
+  { id:17, name:"Short Game/Pitching 10-100m",        type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:250, notes:"Hit shots from 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100m. Record total proximity in feet added up after all 10 shots. Lower is better." },
+  { id:18, name:"Dave Pelz Short Game Challenge",     type:"points",     unit:"pts",  dir:"higher", perfect:155, worst:0,   notes:"Various scoring based on proximity to hole. Typically: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt. Scoring may vary depending on shot type. Higher is better." },
+  { id:19, name:"10 Shot Variety Challenge",          type:"distance",   unit:"m",    dir:"lower",  perfect:25,  worst:125, notes:"Hit 3 chip & run shots from 8m, 16m, 24m. 2 bunker shots from 10m and 20m. 3 shots with any wedge from 8m, 23m, 36m. 2 flop/lob shots from 11m and 16m. Total up proximity to hole for all 10 shots. Lower is better." },
+  { id:20, name:"48 Putt Challenge (PK)",             type:"score",      unit:"",     dir:"higher", perfect:48,  worst:0,   notes:"Complete the 48 putt challenge and count successful putts. 36 is an excellent score, 48 is perfect. Higher is better." },
+  { id:21, name:"13 Tees Putting",                    type:"score",      unit:"",     dir:"higher", perfect:13,  worst:0,   notes:"You need to hole 10/12 putts to reach the 13th tee. The game is complete when you hole the putt from the 13th tee. Score is the number of tees reached. Higher is better." },
+  { id:22, name:"5-15ft Hole Out Challenge",          type:"score",      unit:"",     dir:"higher", perfect:18,  worst:0,   notes:"Attempt to hole putts from 5-15ft. Score is the number of putts holed out of 18. Higher is better — 18 = all holed." },
+  { id:23, name:"Putting Star Ladder (Pro)",          type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:40,  notes:"Work ladder style through the activity. If you hole the putt you move up to the next distance, if you miss you move back. The game is complete when you hole the 10ft putt. Score is total putts taken. Lower is better." },
+  { id:24, name:"12ft Eliminator Putting",            type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:36,  notes:"Set up 8 putts around the hole at 12ft. Hole the putt to eliminate that position. Keep going until all 8 are eliminated. Maximum 36 putts. Score is total putts taken. Lower is better." },
+  { id:25, name:"4ft Eliminator Putting",             type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:16,  notes:"Set up 8 putts around the hole at 4ft. Hole the putt to eliminate that position. Keep going until all 8 are eliminated. Maximum 16 putts. Score is total putts taken. Lower is better." },
+  { id:26, name:"8ft Eliminator Putting",             type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:24,  notes:"Set up 8 putts around the hole at 8ft. Hole the putt to eliminate that position. Keep going until all 8 are eliminated. Maximum 24 putts. Score is total putts taken. Lower is better." },
+  { id:27, name:"Pitching 30-70m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Hit pitching shots from 30-70m. Add up the total proximity in feet for all shots. Lower is better — closer to the hole = better score." },
+  { id:28, name:"Pitching 80-120m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:200, notes:"Hit pitching shots from 80-120m. Add up the total proximity in feet for all shots. Lower is better — closer to the hole = better score." },
+  { id:29, name:"Putting Luke Donald 4-8ft",          type:"score",      unit:"/20",  dir:"higher", perfect:20,  worst:0,   notes:"Hit putts from 4, 5, 6, 7 and 8ft. Add up total number of putts holed out of 20. 15 is tour average, 20 is perfect. Higher is better." },
+  { id:30, name:"Putting Gate Drill",                 type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:20,  notes:"Set up a start gate and attempt to roll 10 putts through without hitting any barriers. Count total putts taken. Lower is better." },
+  { id:31, name:"Putting Gate Drill (R-L)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Roll putts right-to-left through the start gate and into the hole without hitting any barriers. Count total putts taken. Lower is better." },
+  { id:32, name:"Putting Gate Drill (L-R)",           type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Roll putts left-to-right through the start gate and into the hole without hitting any barriers. Count total putts taken. Lower is better." },
+  { id:33, name:"Putting Tour Challenge 3-10ft",      type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:14,  notes:"Hit putts from 3, 4, 5, 6, 7, 8, 9 and 10ft in a spiral or from random locations. Count how many putts it takes to hole all 8. Lower is better." },
+  { id:34, name:"Putting Challenge 10-15ft",          type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:30,  notes:"Hit putts from 10, 11, 12, 13, 14 and 15ft in a spiral or from random locations. Count how many putts it takes to hole all 6. Lower is better." },
+  { id:35, name:"Putting Challenge 3-15ft",           type:"score",      unit:"putts",dir:"lower",  perfect:13,  worst:37,  notes:"Hit putts from 3-15ft changing slope and break on each putt in a spiral pattern. Count how many putts it takes to hole all 13. Lower is better." },
+  { id:36, name:"Putting Challenge 3-7ft",            type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:10,  notes:"Hit putts from 3, 4, 5, 6 and 7ft changing line and break on each putt. Count how many putts it takes to hole all 5. Lower is better." },
+  { id:37, name:"Putting Challenge 6-10ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:15,  notes:"Hit putts from 6, 7, 8, 9 and 10ft in a spiral or random pattern changing slope and break. Count how many putts it takes to hole all 5. Lower is better." },
+  { id:38, name:"Putting Challenge 8-12ft",           type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:20,  notes:"Hit putts from 8, 9, 10, 11 and 12ft changing slope and break on each putt. Count how many putts it takes to hole all 5. Lower is better." },
+  { id:39, name:"Putting Challenge 3-8ft",            type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:10,  notes:"Hit putts from 3, 4, 5, 6, 7 and 8ft changing break and slope on each putt. Count how many putts it takes to hole all 6. Lower is better." },
+];
+
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -70,9 +70,6 @@ function ratingColor(idx) {
   if (idx >= 50) return { bg: "bg-yellow-100", text: "text-yellow-700", label: "Yellow", dot: "bg-yellow-500" };
   return { bg: "bg-red-100", text: "text-red-700", label: "Red", dot: "bg-red-500" };
 }
-
-// ─── SUPABASE HELPERS ─────────────────────────────────────────────────────────
-
 
 const DB = {
   async getSessions(player) {
@@ -118,7 +115,6 @@ const DB = {
   }
 };
 
-// ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [tab, setTab] = useState("log");
   const [player, setPlayer] = useState(null);
@@ -131,6 +127,7 @@ export default function App() {
   const [filterDrill, setFilterDrill] = useState("");
   const [lbDrill, setLbDrill] = useState(DRILLS[0].id);
   const [loading, setLoading] = useState(false);
+  const [guideSearch, setGuideSearch] = useState("");
 
   function today() { return new Date().toISOString().split("T")[0]; }
 
@@ -228,11 +225,11 @@ export default function App() {
         </div>
       </div>
 
-      <div className="bg-white border-b shadow-sm">
+      <div className="bg-white border-b shadow-sm overflow-x-auto">
         <div className="max-w-5xl mx-auto flex">
-          {[["log","📋 Session Log"],["stats","📊 My Stats"],["leaderboard","🏆 Leaderboard"]].map(([k,l]) => (
+          {[["log","📋 Session Log"],["stats","📊 My Stats"],["leaderboard","🏆 Leaderboard"],["guide","📖 Drill Guide"]].map(([k,l]) => (
             <button key={k} onClick={() => setTab(k)}
-              className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${tab===k ? "border-green-600 text-green-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+              className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${tab===k ? "border-green-600 text-green-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
               {l}
             </button>
           ))}
@@ -310,6 +307,14 @@ export default function App() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2" />
                   </div>
                 </div>
+                {form.drillId && (() => {
+                  const d = DRILLS.find(x => x.id === +form.drillId);
+                  return (
+                    <div className="mt-4 bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800">
+                      <strong>📖 How to play:</strong> {d.notes}
+                    </div>
+                  );
+                })()}
                 <div className="flex gap-3 mt-4">
                   <button onClick={saveSession} className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium">Save</button>
                   <button onClick={() => setShowAdd(false)} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">Cancel</button>
@@ -406,6 +411,49 @@ export default function App() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {!loading && tab === "guide" && (
+          <div>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">📖 Drill Guide</h2>
+            <p className="text-gray-500 text-sm mb-4">How to play and scoring for all 39 drills.</p>
+            <input
+              type="text"
+              placeholder="Search drills..."
+              value={guideSearch}
+              onChange={e => setGuideSearch(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-sm"
+            />
+            <div className="space-y-3">
+              {DRILLS.filter(d => d.name.toLowerCase().includes(guideSearch.toLowerCase())).map(drill => {
+                const perfectLabel = drill.perfect !== null ? `${drill.perfect}${drill.unit ? ` ${drill.unit}` : ""}` : "N/A";
+                const worstLabel = drill.worst !== null ? `${drill.worst}${drill.unit ? ` ${drill.unit}` : ""}` : "N/A";
+                return (
+                  <div key={drill.id} className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-400">
+                    <div className="flex items-start gap-2 flex-wrap mb-1">
+                      <span className="text-xs font-mono text-gray-400">#{drill.id}</span>
+                      <h3 className="font-semibold text-gray-800">{drill.name}</h3>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-3">{drill.notes}</p>
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                        {drill.dir === "lower" ? "↓ Lower is better" : drill.dir === "higher" ? "↑ Higher is better" : "No index rating"}
+                      </span>
+                      <span className="bg-green-100 text-green-700 px-2 py-1 rounded">✅ Perfect: {perfectLabel}</span>
+                      <span className="bg-red-100 text-red-700 px-2 py-1 rounded">❌ Worst: {worstLabel}</span>
+                      {drill.dir !== null && (
+                        <>
+                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded">🟢 Index 80–100</span>
+                          <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">🟡 Index 50–79</span>
+                          <span className="bg-red-100 text-red-700 px-2 py-1 rounded">🔴 Index 0–49</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
