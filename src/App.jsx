@@ -157,7 +157,7 @@ const DB = {
 
 export default function App() {
   const [tab, setTab] = useState("log");
-  const [player, setPlayer] = useState(null);
+  const [player, setPlayer] = useState(() => localStorage.getItem('player') || null);
   const [playerInput, setPlayerInput] = useState("");
   const [sessions, setSessions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -229,7 +229,7 @@ export default function App() {
           onKeyDown={e => e.key === "Enter" && playerInput.trim() && setPlayer(playerInput.trim())}
         />
         <button
-          onClick={() => playerInput.trim() && setPlayer(playerInput.trim())}
+          onClick={() => { if (playerInput.trim()) { localStorage.setItem('player', playerInput.trim()); setPlayer(playerInput.trim()); }}}
           className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-lg"
         >
           Enter Hub →
@@ -259,7 +259,7 @@ export default function App() {
             <h1 className="text-xl font-bold">⛳ Anthony Summers Short Game Practice Hub</h1>
             <p className="text-green-300 text-sm">Welcome, <strong>{player}</strong></p>
           </div>
-          <button onClick={() => setPlayer(null)} className="text-green-300 text-sm hover:text-white underline">
+          <button onClick={() => { localStorage.removeItem('player'); setPlayer(null); }} className="text-green-300 text-sm hover:text-white underline">
             Switch Player
           </button>
         </div>
