@@ -1,5 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from './supabase';
+
+// ─── DRILL CATEGORIES ────────────────────────────────────────────────────────
+// Putting = 33–78 | Chipping = 4–7, 29, 79 | Pitching = 8, 11, 26, 30–32
+// Bunker = 16, 17 (bunker-only 3-shot), 19, 80 | Mixed = everything else
+const DRILL_CATEGORY = {
+  1:"Mixed", 2:"Mixed", 3:"Mixed", 4:"Chipping", 5:"Chipping", 6:"Chipping",
+  7:"Chipping", 8:"Pitching", 9:"Mixed", 10:"Mixed", 11:"Pitching",
+  12:"Mixed", 13:"Mixed", 14:"Mixed", 15:"Chipping", 16:"Bunker",
+  17:"Mixed", 18:"Chipping", 19:"Bunker", 20:"Mixed", 21:"Mixed",
+  22:"Mixed", 23:"Mixed", 24:"Chipping", 25:"Mixed", 26:"Pitching",
+  27:"Mixed", 28:"Mixed", 29:"Chipping", 30:"Pitching", 31:"Pitching",
+  32:"Pitching", 33:"Putting", 34:"Putting", 35:"Putting", 36:"Putting",
+  37:"Putting", 38:"Putting", 39:"Putting", 40:"Putting", 41:"Putting",
+  42:"Putting", 43:"Putting", 44:"Putting", 45:"Putting", 46:"Putting",
+  47:"Putting", 48:"Putting", 49:"Putting", 50:"Putting", 51:"Putting",
+  52:"Putting", 53:"Putting", 54:"Putting", 55:"Putting", 56:"Putting",
+  57:"Putting", 58:"Putting", 59:"Putting", 60:"Putting", 61:"Putting",
+  62:"Putting", 63:"Putting", 64:"Putting", 65:"Putting", 66:"Putting",
+  67:"Putting", 68:"Putting", 69:"Putting", 70:"Putting", 71:"Putting",
+  72:"Putting", 73:"Putting", 74:"Putting", 75:"Putting", 76:"Putting",
+  77:"Putting", 78:"Putting", 79:"Chipping", 80:"Bunker",
+};
+const CATEGORIES = ["All", "Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
+const CAT_COLOR = {
+  Putting:"bg-blue-100 text-blue-700", Chipping:"bg-green-100 text-green-700",
+  Pitching:"bg-purple-100 text-purple-700", Bunker:"bg-yellow-100 text-yellow-700",
+  Mixed:"bg-gray-100 text-gray-600",
+};
 
 const DRILLS = [
   { id:1,  name:"International Short Game",               type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Record proximity in feet for each shot. Lower is better." },
@@ -83,6 +111,8 @@ const DRILLS = [
   { id:79, name:"Junior Chipping Skills 9 Hole Challenge", type:"score",      unit:"pts",  dir:"higher", perfect:24,  worst:0,   notes:"Play 9 holes around the chipping green: 1) Fringe <10m, 2) Fringe 10-20m, 3) Chip & run 10m, 4) Chip & run 10-20m, 5) Pitch 20m, 6) Pitch 30m, 7) Lob 10m, 8) Bunker 10m, 9) Bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts. Total up your points. Higher is better." },
   { id:80, name:"Bunker 6 Lie Challenge",                  type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 6 shots from the bunker from: 1) Flat lie, 2) Ball above feet, 3) Ball below feet, 4) Upslope, 5) Downslope, 6) Plugged lie. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts. Total up your score for all 6 shots. Higher is better." },
 ];
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -96,43 +126,32 @@ function calcIndex(drill, score) {
   const range = Math.abs(perfect - worst);
   if (range === 0) return 50;
   let raw;
-  if (drill.dir === "lower") {
-    raw = ((worst - s) / (worst - perfect)) * 100;
-  } else {
-    raw = ((s - worst) / (perfect - worst)) * 100;
-  }
+  if (drill.dir === "lower") raw = ((worst - s) / (worst - perfect)) * 100;
+  else raw = ((s - worst) / (perfect - worst)) * 100;
   return Math.max(0, Math.min(100, raw));
 }
 
 function ratingColor(idx) {
-  if (idx === null) return { bg: "bg-gray-100", text: "text-gray-500", label: "N/A", dot: "bg-gray-400" };
-  if (idx >= 80) return { bg: "bg-green-100", text: "text-green-700", label: "Green", dot: "bg-green-500" };
-  if (idx >= 50) return { bg: "bg-yellow-100", text: "text-yellow-700", label: "Yellow", dot: "bg-yellow-500" };
-  return { bg: "bg-red-100", text: "text-red-700", label: "Red", dot: "bg-red-500" };
+  if (idx === null) return { bg:"bg-gray-100", text:"text-gray-500", label:"N/A", dot:"bg-gray-400" };
+  if (idx >= 80) return { bg:"bg-green-100", text:"text-green-700", label:"Green", dot:"bg-green-500" };
+  if (idx >= 50) return { bg:"bg-yellow-100", text:"text-yellow-700", label:"Yellow", dot:"bg-yellow-500" };
+  return { bg:"bg-red-100", text:"text-red-700", label:"Red", dot:"bg-red-500" };
 }
 
+function today() { return new Date().toISOString().split("T")[0]; }
+
+// ─── SUPABASE ─────────────────────────────────────────────────────────────────
 const DB = {
   async getSessions(player) {
-    const { data, error } = await supabase
-      .from('sessions')
-      .select('*')
-      .eq('player', player)
-      .order('date', { ascending: false });
+    const { data, error } = await supabase.from('sessions').select('*').eq('player', player).order('date', { ascending: false });
     if (error) { console.error(error); return []; }
     return data;
   },
   async addSession(session) {
     const { error } = await supabase.from('sessions').insert([{
-      id: session.id,
-      player: session.player,
-      drill_id: session.drillId,
-      drill_name: session.drillName,
-      score: session.score,
-      unit: session.unit,
-      dir: session.dir,
-      index_score: session.index,
-      notes: session.notes,
-      date: session.date,
+      id: session.id, player: session.player, drill_id: session.drillId,
+      drill_name: session.drillName, score: session.score, unit: session.unit,
+      dir: session.dir, index_score: session.index, notes: session.notes, date: session.date,
     }]);
     if (error) console.error(error);
   },
@@ -141,10 +160,7 @@ const DB = {
     if (error) console.error(error);
   },
   async getLeaderboard(drillId) {
-    const { data, error } = await supabase
-      .from('leaderboard')
-      .select('*')
-      .eq('drill_id', drillId);
+    const { data, error } = await supabase.from('leaderboard').select('*').eq('drill_id', drillId);
     if (error) { console.error(error); return []; }
     return data;
   },
@@ -152,24 +168,283 @@ const DB = {
     const { data, error } = await supabase.from('pi_ranking').select('*');
     if (error) { console.error(error); return []; }
     return data;
-  }
+  },
+  async getAllLeaderboardEntries() {
+    const { data, error } = await supabase.from('leaderboard').select('*');
+    if (error) { console.error(error); return []; }
+    return data;
+  },
 };
 
+// ─── MINI SVG LINE CHART ──────────────────────────────────────────────────────
+function MiniLineChart({ points, color = "#16a34a" }) {
+  if (!points || points.length < 2) return null;
+  const W = 160, H = 40, pad = 4;
+  const vals = points.map(p => p.y);
+  const minV = Math.min(...vals), maxV = Math.max(...vals);
+  const rangeV = maxV - minV || 1;
+  const xs = points.map((_, i) => pad + (i / (points.length - 1)) * (W - pad * 2));
+  const ys = points.map(p => H - pad - ((p.y - minV) / rangeV) * (H - pad * 2));
+  const d = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
+  return (
+    <svg width={W} height={H} className="overflow-visible">
+      <polyline points={xs.map((x,i)=>`${x},${ys[i]}`).join(" ")} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+      {points.map((p, i) => (
+        <circle key={i} cx={xs[i]} cy={ys[i]} r="3" fill={color} />
+      ))}
+    </svg>
+  );
+}
+
+// ─── OVERALL INDEX TREND CHART ────────────────────────────────────────────────
+function OverallTrendChart({ sessions }) {
+  // Group sessions by week, compute avg index
+  const withIdx = sessions.filter(s => s.index !== null).slice().sort((a,b) => a.date.localeCompare(b.date));
+  if (withIdx.length < 2) return (
+    <div className="text-center text-gray-400 py-6 text-sm">Log at least 2 scored sessions to see your trend chart.</div>
+  );
+
+  // Build rolling data points — use each session chronologically
+  const pts = withIdx.map(s => ({ date: s.date, y: s.index }));
+
+  const W = 600, H = 160, padL = 36, padR = 12, padT = 12, padB = 28;
+  const iW = W - padL - padR, iH = H - padT - padB;
+  const minY = 0, maxY = 100;
+  const xs = pts.map((_, i) => padL + (i / Math.max(pts.length - 1, 1)) * iW);
+  const ys = pts.map(p => padT + iH - ((p.y - minY) / (maxY - minY)) * iH);
+
+  // Colour each segment based on value
+  const gridLines = [0, 25, 50, 75, 100];
+
+  return (
+    <div className="overflow-x-auto">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-2xl" style={{minWidth:300}}>
+        {/* Grid lines */}
+        {gridLines.map(v => {
+          const y = padT + iH - ((v - minY) / (maxY - minY)) * iH;
+          const col = v >= 80 ? "#dcfce7" : v >= 50 ? "#fef9c3" : "#fee2e2";
+          return (
+            <g key={v}>
+              {v > 0 && <rect x={padL} y={y} width={iW} height={iH - (padT + iH - ((Math.min(v+25,100)-minY)/(maxY-minY))*iH - y)} fill={col} opacity="0.35"/>}
+              <line x1={padL} x2={W-padR} y1={y} y2={y} stroke="#e5e7eb" strokeWidth="1"/>
+              <text x={padL-4} y={y+4} textAnchor="end" fontSize="9" fill="#9ca3af">{v}</text>
+            </g>
+          );
+        })}
+        {/* Zone labels */}
+        <text x={padL+4} y={padT+8} fontSize="8" fill="#16a34a" opacity="0.7">Green Zone</text>
+        <text x={padL+4} y={padT + iH*0.35} fontSize="8" fill="#ca8a04" opacity="0.7">Yellow Zone</text>
+        <text x={padL+4} y={padT + iH*0.75} fontSize="8" fill="#dc2626" opacity="0.7">Red Zone</text>
+        {/* Line */}
+        <polyline
+          points={xs.map((x,i)=>`${x},${ys[i]}`).join(" ")}
+          fill="none" stroke="#16a34a" strokeWidth="2.5"
+          strokeLinejoin="round" strokeLinecap="round"
+        />
+        {/* Dots */}
+        {pts.map((p, i) => {
+          const r = ratingColor(p.y);
+          const dotCol = p.y >= 80 ? "#16a34a" : p.y >= 50 ? "#ca8a04" : "#dc2626";
+          return (
+            <g key={i}>
+              <circle cx={xs[i]} cy={ys[i]} r="4" fill={dotCol} stroke="white" strokeWidth="1.5"/>
+            </g>
+          );
+        })}
+        {/* X-axis date labels — show first, middle, last */}
+        {[0, Math.floor((pts.length-1)/2), pts.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(i => (
+          <text key={i} x={xs[i]} y={H-4} textAnchor="middle" fontSize="8" fill="#9ca3af">
+            {new Date(pts[i].date).toLocaleDateString("en-AU",{day:"numeric",month:"short"})}
+          </text>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+// ─── PERSONAL BESTS PANEL ─────────────────────────────────────────────────────
+function PersonalBestsPanel({ sessions }) {
+  const bests = [];
+  DRILLS.forEach(drill => {
+    const ds = sessions.filter(s => s.drillId === drill.id && s.dir !== null);
+    if (!ds.length) return;
+    const best = drill.dir === "lower"
+      ? ds.reduce((a,b) => a.score < b.score ? a : b)
+      : ds.reduce((a,b) => a.score > b.score ? a : b);
+    const idx = calcIndex(drill, best.score);
+    bests.push({ drill, session: best, idx });
+  });
+
+  if (!bests.length) return <p className="text-sm text-gray-400">No scored sessions yet.</p>;
+
+  // Sort by index descending — best performances first
+  bests.sort((a,b) => (b.idx ?? -1) - (a.idx ?? -1));
+
+  return (
+    <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
+      {bests.map(({ drill, session, idx }) => {
+        const r = ratingColor(idx);
+        const cat = DRILL_CATEGORY[drill.id];
+        return (
+          <div key={drill.id} className="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2 text-sm">
+            <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${CAT_COLOR[cat]}`}>{cat}</span>
+            <span className="flex-1 text-gray-700 truncate">{drill.name}</span>
+            <span className="font-bold text-green-700 shrink-0">{session.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
+            {idx !== null && (
+              <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>{Math.round(idx)}</span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── CATEGORY STATS PANEL ─────────────────────────────────────────────────────
+function CategoryStatsPanel({ sessions }) {
+  const cats = ["Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+      {cats.map(cat => {
+        const catSessions = sessions.filter(s => DRILL_CATEGORY[s.drillId] === cat);
+        const withIdx = catSessions.filter(s => s.index !== null);
+        const avgIdx = withIdx.length ? Math.round(withIdx.reduce((a,b)=>a+b.index,0)/withIdx.length) : null;
+        const r = ratingColor(avgIdx);
+        // Mini trend points
+        const trendPts = withIdx.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(s=>({y:s.index}));
+        return (
+          <div key={cat} className="bg-white rounded-xl shadow-sm p-3 flex flex-col gap-1">
+            <div className={`text-xs font-semibold px-2 py-0.5 rounded w-fit ${CAT_COLOR[cat]}`}>{cat}</div>
+            <div className="text-2xl font-bold text-green-700">{avgIdx ?? "—"}</div>
+            <div className="text-xs text-gray-400">Avg Index</div>
+            <div className="text-xs text-gray-500">{catSessions.length} session{catSessions.length !== 1 ? "s" : ""}</div>
+            {trendPts.length >= 2 && (
+              <div className="mt-1">
+                <MiniLineChart points={trendPts} color={avgIdx >= 80 ? "#16a34a" : avgIdx >= 50 ? "#ca8a04" : "#dc2626"} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── MILESTONE BADGES ─────────────────────────────────────────────────────────
+function MilestoneBadges({ sessions }) {
+  const milestones = [];
+  const total = sessions.length;
+  const withIdx = sessions.filter(s => s.index !== null);
+  const greens = withIdx.filter(s => s.index >= 80).length;
+  const drillsPlayed = new Set(sessions.map(s => s.drillId)).size;
+  const best = withIdx.length ? Math.max(...withIdx.map(s=>s.index)) : 0;
+  const streak = (() => {
+    // Count consecutive days with sessions (most recent first)
+    const days = [...new Set(sessions.map(s=>s.date))].sort((a,b)=>b.localeCompare(a));
+    if (!days.length) return 0;
+    let count = 1;
+    for (let i=1; i<days.length; i++) {
+      const prev = new Date(days[i-1]), curr = new Date(days[i]);
+      const diff = (prev - curr) / 86400000;
+      if (diff === 1) count++; else break;
+    }
+    return count;
+  })();
+
+  const all = [
+    { icon:"🎯", label:"First Session",    earned: total >= 1,   desc:"Logged your first session" },
+    { icon:"📅", label:"10 Sessions",      earned: total >= 10,  desc:"Logged 10 sessions" },
+    { icon:"💪", label:"50 Sessions",      earned: total >= 50,  desc:"Logged 50 sessions" },
+    { icon:"🏆", label:"100 Sessions",     earned: total >= 100, desc:"Logged 100 sessions" },
+    { icon:"🟢", label:"First Green",      earned: greens >= 1,  desc:"Scored a Green Index (80+)" },
+    { icon:"🌟", label:"5 Greens",         earned: greens >= 5,  desc:"Scored 5 Green Index results" },
+    { icon:"⭐", label:"20 Greens",        earned: greens >= 20, desc:"Scored 20 Green Index results" },
+    { icon:"🔥", label:"Perfect 100",      earned: best >= 99,   desc:"Achieved a perfect 100 Index" },
+    { icon:"🎲", label:"10 Drills",        earned: drillsPlayed >= 10, desc:"Tried 10 different drills" },
+    { icon:"🎪", label:"25 Drills",        earned: drillsPlayed >= 25, desc:"Tried 25 different drills" },
+    { icon:"📆", label:"3-Day Streak",     earned: streak >= 3,  desc:"Practiced 3 days in a row" },
+    { icon:"🗓️", label:"7-Day Streak",     earned: streak >= 7,  desc:"Practiced 7 days in a row" },
+  ];
+
+  const earned = all.filter(m=>m.earned);
+  const locked = all.filter(m=>!m.earned);
+
+  return (
+    <div>
+      {earned.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {earned.map(m => (
+            <div key={m.label} title={m.desc} className="flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-full px-3 py-1 text-sm font-medium text-green-800">
+              <span>{m.icon}</span><span>{m.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {locked.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {locked.map(m => (
+            <div key={m.label} title={m.desc} className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-full px-3 py-1 text-sm text-gray-400">
+              <span className="grayscale opacity-50">{m.icon}</span><span>{m.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── PLAYER DRILL BREAKDOWN (for leaderboard expand) ─────────────────────────
+function PlayerDrillBreakdown({ playerName, allEntries, lbCategory }) {
+  const entries = allEntries.filter(e => e.player === playerName);
+  const catEntries = lbCategory === "All"
+    ? entries
+    : entries.filter(e => DRILL_CATEGORY[e.drill_id] === lbCategory);
+
+  if (!catEntries.length) return <p className="text-xs text-gray-400 px-4 pb-3">No entries in this category.</p>;
+
+  const sorted = [...catEntries].sort((a,b) => (b.index_score ?? 0) - (a.index_score ?? 0));
+  return (
+    <div className="px-4 pb-3 pt-1 bg-green-50 border-t border-green-100">
+      <p className="text-xs font-semibold text-green-800 mb-2">Drill Breakdown — {lbCategory === "All" ? "All Categories" : lbCategory}</p>
+      <div className="space-y-1">
+        {sorted.map((e, i) => {
+          const drill = DRILLS.find(d => d.id === e.drill_id);
+          const r = ratingColor(e.index_score);
+          const cat = DRILL_CATEGORY[e.drill_id];
+          return (
+            <div key={i} className="flex items-center gap-2 text-xs">
+              <span className={`px-1.5 py-0.5 rounded text-xs font-medium shrink-0 ${CAT_COLOR[cat]}`}>{cat}</span>
+              <span className="flex-1 text-gray-700 truncate">{e.drill_name}</span>
+              <span className="font-semibold text-gray-700 shrink-0">{e.score}{drill?.unit ? ` ${drill.unit}` : ""}</span>
+              {e.index_score !== null && (
+                <span className={`px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>{Math.round(e.index_score)}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [tab, setTab] = useState("log");
   const [player, setPlayer] = useState(() => localStorage.getItem('player') || null);
   const [playerInput, setPlayerInput] = useState("");
   const [sessions, setSessions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [allLbEntries, setAllLbEntries] = useState([]);
   const [piRanking, setPiRanking] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ drillId: "", score: "", notes: "", date: today() });
+  const [form, setForm] = useState({ drillId:"", score:"", notes:"", date:today() });
   const [filterDrill, setFilterDrill] = useState("");
   const [lbDrill, setLbDrill] = useState(DRILLS[0].id);
+  const [lbCategory, setLbCategory] = useState("All");
+  const [expandedPlayer, setExpandedPlayer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [guideSearch, setGuideSearch] = useState("");
-
-  function today() { return new Date().toISOString().split("T")[0]; }
+  const [statsSection, setStatsSection] = useState("overview"); // "overview" | "drills" | "bests"
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -178,9 +453,8 @@ export default function App() {
     setLoading(true);
     const rows = await DB.getSessions(player);
     setSessions(rows.map(r => ({
-      id: r.id, player: r.player, drillId: r.drill_id,
-      drillName: r.drill_name, score: r.score, unit: r.unit,
-      dir: r.dir, index: r.index_score, notes: r.notes, date: r.date
+      id:r.id, player:r.player, drillId:r.drill_id, drillName:r.drill_name,
+      score:r.score, unit:r.unit, dir:r.dir, index:r.index_score, notes:r.notes, date:r.date,
     })));
     setLoading(false);
   }
@@ -190,6 +464,8 @@ export default function App() {
     setLeaderboard(entries);
     const ranking = await DB.getPIRanking();
     setPiRanking(ranking);
+    const all = await DB.getAllLeaderboardEntries();
+    setAllLbEntries(all);
   }
 
   async function saveSession() {
@@ -197,16 +473,15 @@ export default function App() {
     const drill = DRILLS.find(d => d.id === +form.drillId);
     const idx = calcIndex(drill, form.score);
     const session = {
-      id: Date.now(), player, drillId: +form.drillId,
-      drillName: drill.name, score: parseFloat(form.score),
-      unit: drill.unit, dir: drill.dir,
-      index: idx !== null ? Math.round(idx) : null,
-      notes: form.notes, date: form.date,
+      id:Date.now(), player, drillId:+form.drillId, drillName:drill.name,
+      score:parseFloat(form.score), unit:drill.unit, dir:drill.dir,
+      index:idx !== null ? Math.round(idx) : null,
+      notes:form.notes, date:form.date,
     };
     await DB.addSession(session);
     setSessions([session, ...sessions]);
     setShowAdd(false);
-    setForm({ drillId: "", score: "", notes: "", date: today() });
+    setForm({ drillId:"", score:"", notes:"", date:today() });
   }
 
   async function deleteSession(s) {
@@ -214,6 +489,7 @@ export default function App() {
     setSessions(sessions.filter(x => x.id !== s.id));
   }
 
+  // ── Login screen ────────────────────────────────────────────────────────────
   if (!player) return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
@@ -231,9 +507,7 @@ export default function App() {
         <button
           onClick={() => { if (playerInput.trim()) { localStorage.setItem('player', playerInput.trim()); setPlayer(playerInput.trim()); }}}
           className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-lg"
-        >
-          Enter Hub →
-        </button>
+        >Enter Hub →</button>
       </div>
     </div>
   );
@@ -243,16 +517,30 @@ export default function App() {
   function playerStats() {
     if (!sessions.length) return null;
     const withIndex = sessions.filter(s => s.index !== null);
-    const avgIdx = withIndex.length ? Math.round(withIndex.reduce((a, b) => a + b.index, 0) / withIndex.length) : null;
-    const best = withIndex.length ? Math.max(...withIndex.map(s => s.index)) : null;
-    const thisMonth = sessions.filter(s => s.date.startsWith(new Date().toISOString().slice(0, 7)));
-    return { total: sessions.length, avgIdx, best, thisMonth: thisMonth.length };
+    const avgIdx = withIndex.length ? Math.round(withIndex.reduce((a,b)=>a+b.index,0)/withIndex.length) : null;
+    const best = withIndex.length ? Math.max(...withIndex.map(s=>s.index)) : null;
+    const thisMonth = sessions.filter(s => s.date.startsWith(new Date().toISOString().slice(0,7)));
+    return { total:sessions.length, avgIdx, best, thisMonth:thisMonth.length };
   }
 
   const stats = playerStats();
 
+  // Leaderboard: filter drills by category for the drill dropdown
+  const lbDrillsForCategory = lbCategory === "All"
+    ? DRILLS
+    : DRILLS.filter(d => DRILL_CATEGORY[d.id] === lbCategory);
+
+  // When category changes, reset to first drill in that category
+  function handleLbCategoryChange(cat) {
+    setLbCategory(cat);
+    setExpandedPlayer(null);
+    const first = cat === "All" ? DRILLS[0] : DRILLS.find(d => DRILL_CATEGORY[d.id] === cat);
+    if (first) setLbDrill(first.id);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <div className="bg-green-800 text-white px-4 py-4 shadow-md">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
           <div>
@@ -265,11 +553,12 @@ export default function App() {
         </div>
       </div>
 
+      {/* Nav tabs */}
       <div className="bg-white border-b shadow-sm overflow-x-auto">
         <div className="max-w-5xl mx-auto flex">
           {[["log","📋 Session Log"],["stats","📊 My Stats"],["leaderboard","🏆 Leaderboard"],["guide","📖 Drill Guide"]].map(([k,l]) => (
             <button key={k} onClick={() => setTab(k)}
-              className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${tab===k ? "border-green-600 text-green-700" : "border-transparent text-gray-500 hover:text-gray-700"}`}>
+              className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${tab===k?"border-green-600 text-green-700":"border-transparent text-gray-500 hover:text-gray-700"}`}>
               {l}
             </button>
           ))}
@@ -279,6 +568,7 @@ export default function App() {
       <div className="max-w-5xl mx-auto p-4">
         {loading && <p className="text-center text-gray-400 py-8">Loading...</p>}
 
+        {/* ── SESSION LOG ─────────────────────────────────────────────────────── */}
         {!loading && tab === "log" && (
           <div>
             {stats && (
@@ -292,8 +582,7 @@ export default function App() {
               </div>
             )}
             <div className="flex flex-wrap gap-3 mb-4">
-              <button onClick={() => setShowAdd(!showAdd)}
-                className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700">
+              <button onClick={() => setShowAdd(!showAdd)} className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700">
                 + Add Session
               </button>
               <select value={filterDrill} onChange={e => setFilterDrill(e.target.value)}
@@ -308,12 +597,12 @@ export default function App() {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})}
+                    <input type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Drill</label>
-                    <select value={form.drillId} onChange={e => setForm({...form, drillId: e.target.value})}
+                    <select value={form.drillId} onChange={e => setForm({...form, drillId:e.target.value})}
                       className="w-full border border-gray-300 rounded-lg px-3 py-2">
                       <option value="">Select drill...</option>
                       {DRILLS.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
@@ -324,7 +613,7 @@ export default function App() {
                       Score {form.drillId && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     <input type="number" step="0.1" value={form.score}
-                      onChange={e => setForm({...form, score: e.target.value})}
+                      onChange={e => setForm({...form, score:e.target.value})}
                       placeholder="Enter score..."
                       className="w-full border border-gray-300 rounded-lg px-3 py-2" />
                     {form.drillId && form.score !== "" && (() => {
@@ -342,7 +631,7 @@ export default function App() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-                    <input type="text" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
+                    <input type="text" value={form.notes} onChange={e => setForm({...form, notes:e.target.value})}
                       placeholder="Optional notes..."
                       className="w-full border border-gray-300 rounded-lg px-3 py-2" />
                   </div>
@@ -394,85 +683,145 @@ export default function App() {
           </div>
         )}
 
+        {/* ── MY STATS ────────────────────────────────────────────────────────── */}
         {!loading && tab === "stats" && (
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-4">📊 {player}'s Progress</h2>
             {sessions.length === 0 ? (
               <p className="text-center text-gray-400 py-12">No sessions logged yet.</p>
             ) : (
-              <div className="space-y-3">
-                {DRILLS.map(drill => {
-                  const ds = sessions.filter(s => s.drillId === drill.id);
-                  if (!ds.length) return null;
-                  const withIdx = ds.filter(s => s.index !== null);
-                  const avgIdx = withIdx.length ? Math.round(withIdx.reduce((a,b)=>a+b.index,0)/withIdx.length) : null;
-                  const best = drill.dir === "lower" ? Math.min(...ds.map(s=>s.score)) : Math.max(...ds.map(s=>s.score));
-                  const r = ratingColor(avgIdx);
-                  return (
-                    <div key={drill.id} className="bg-white rounded-xl shadow-sm p-4">
-                      <div className="flex items-start justify-between gap-4 flex-wrap">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-gray-800">{drill.name}</span>
-                            {avgIdx !== null && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 ${r.bg} ${r.text}`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${r.dot}`}></span>
-                                Avg Index: {avgIdx}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex gap-4 mt-2 text-sm text-gray-600 flex-wrap">
-                            <span>Sessions: <strong>{ds.length}</strong></span>
-                            <span>Best: <strong className="text-green-700">{best}{drill.unit ? ` ${drill.unit}` : ""}</strong></span>
-                            <span>Latest: <strong>{ds[0].score}{drill.unit ? ` ${drill.unit}` : ""}</strong></span>
-                          </div>
-                        </div>
-                        <div className="flex items-end gap-1 h-8">
-                          {ds.slice(0,8).reverse().map((s,i) => {
-                            const h = s.index !== null ? Math.max(4, Math.round(s.index * 0.32)) : 8;
-                            const c = s.index>=80?"bg-green-400":s.index>=50?"bg-yellow-400":s.index!==null?"bg-red-400":"bg-gray-300";
-                            return <div key={i} className={`w-3 rounded-sm ${c}`} style={{height:`${h}px`}}></div>;
-                          })}
-                        </div>
-                      </div>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {ds.map(s => {
-                          const sr = ratingColor(s.index);
-                          return (
-                            <span key={s.id} className={`text-xs px-2 py-1 rounded ${sr.bg} ${sr.text}`}>
-                              {new Date(s.date).toLocaleDateString("en-AU",{day:"numeric",month:"short"})} — {s.score}{drill.unit ? ` ${drill.unit}` : ""}
-                              {s.index !== null ? ` (${Math.round(s.index)})` : ""}
-                            </span>
-                          );
-                        })}
+              <>
+                {/* Sub-nav */}
+                <div className="flex gap-2 mb-5 flex-wrap">
+                  {[["overview","📈 Overview"],["drills","🏌️ By Drill"],["bests","🏅 Personal Bests"]].map(([k,l]) => (
+                    <button key={k} onClick={() => setStatsSection(k)}
+                      className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${statsSection===k?"bg-green-600 text-white border-green-600":"bg-white text-gray-600 border-gray-300 hover:border-green-400"}`}>
+                      {l}
+                    </button>
+                  ))}
+                </div>
+
+                {/* OVERVIEW */}
+                {statsSection === "overview" && (
+                  <div className="space-y-5">
+                    {/* Overall Index Trend */}
+                    <div className="bg-white rounded-xl shadow-sm p-4">
+                      <h3 className="font-semibold text-gray-700 mb-3">Overall Performance Index — All Sessions</h3>
+                      <OverallTrendChart sessions={sessions} />
+                      <div className="flex gap-4 mt-3 text-xs text-gray-500 flex-wrap">
+                        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span> Green (80–100)</span>
+                        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span> Yellow (50–79)</span>
+                        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-red-400 inline-block"></span> Red (0–49)</span>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+
+                    {/* Category Breakdown */}
+                    <div className="bg-white rounded-xl shadow-sm p-4">
+                      <h3 className="font-semibold text-gray-700 mb-3">Avg Index by Category</h3>
+                      <CategoryStatsPanel sessions={sessions} />
+                    </div>
+
+                    {/* Milestone Badges */}
+                    <div className="bg-white rounded-xl shadow-sm p-4">
+                      <h3 className="font-semibold text-gray-700 mb-3">🏅 Milestones & Badges</h3>
+                      <MilestoneBadges sessions={sessions} />
+                    </div>
+                  </div>
+                )}
+
+                {/* BY DRILL */}
+                {statsSection === "drills" && (
+                  <div className="space-y-3">
+                    {DRILLS.map(drill => {
+                      const ds = sessions.filter(s => s.drillId === drill.id);
+                      if (!ds.length) return null;
+                      const withIdx = ds.filter(s => s.index !== null);
+                      const avgIdx = withIdx.length ? Math.round(withIdx.reduce((a,b)=>a+b.index,0)/withIdx.length) : null;
+                      const best = drill.dir === "lower" ? Math.min(...ds.map(s=>s.score)) : Math.max(...ds.map(s=>s.score));
+                      const r = ratingColor(avgIdx);
+                      const cat = DRILL_CATEGORY[drill.id];
+                      const trendPts = withIdx.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(s=>({y:s.index}));
+                      return (
+                        <div key={drill.id} className="bg-white rounded-xl shadow-sm p-4">
+                          <div className="flex items-start justify-between gap-4 flex-wrap">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className={`text-xs px-2 py-0.5 rounded font-medium ${CAT_COLOR[cat]}`}>{cat}</span>
+                                <span className="font-semibold text-gray-800">{drill.name}</span>
+                                {avgIdx !== null && (
+                                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 ${r.bg} ${r.text}`}>
+                                    <span className={`w-1.5 h-1.5 rounded-full ${r.dot}`}></span>
+                                    Avg: {avgIdx}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex gap-4 mt-2 text-sm text-gray-600 flex-wrap">
+                                <span>Sessions: <strong>{ds.length}</strong></span>
+                                <span>Best: <strong className="text-green-700">{best}{drill.unit ? ` ${drill.unit}` : ""}</strong></span>
+                                <span>Latest: <strong>{ds[0].score}{drill.unit ? ` ${drill.unit}` : ""}</strong></span>
+                              </div>
+                            </div>
+                            <div className="flex items-end gap-1 h-8">
+                              {ds.slice(0,8).reverse().map((s,i) => {
+                                const h = s.index !== null ? Math.max(4, Math.round(s.index * 0.32)) : 8;
+                                const c = s.index>=80?"bg-green-400":s.index>=50?"bg-yellow-400":s.index!==null?"bg-red-400":"bg-gray-300";
+                                return <div key={i} className={`w-3 rounded-sm ${c}`} style={{height:`${h}px`}}></div>;
+                              })}
+                            </div>
+                          </div>
+                          {trendPts.length >= 2 && (
+                            <div className="mt-3 border-t border-gray-50 pt-3">
+                              <MiniLineChart points={trendPts} color={avgIdx >= 80 ? "#16a34a" : avgIdx >= 50 ? "#ca8a04" : "#dc2626"} />
+                            </div>
+                          )}
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            {ds.map(s => {
+                              const sr = ratingColor(s.index);
+                              return (
+                                <span key={s.id} className={`text-xs px-2 py-1 rounded ${sr.bg} ${sr.text}`}>
+                                  {new Date(s.date).toLocaleDateString("en-AU",{day:"numeric",month:"short"})} — {s.score}{drill.unit ? ` ${drill.unit}` : ""}
+                                  {s.index !== null ? ` (${Math.round(s.index)})` : ""}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* PERSONAL BESTS */}
+                {statsSection === "bests" && (
+                  <div className="bg-white rounded-xl shadow-sm p-4">
+                    <h3 className="font-semibold text-gray-700 mb-1">Personal Best Scores</h3>
+                    <p className="text-xs text-gray-400 mb-4">Your best recorded score per drill, sorted by Performance Index.</p>
+                    <PersonalBestsPanel sessions={sessions} />
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
 
+        {/* ── DRILL GUIDE ─────────────────────────────────────────────────────── */}
         {!loading && tab === "guide" && (
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-2">📖 Drill Guide</h2>
-            <p className="text-gray-500 text-sm mb-4">How to play and scoring for all 39 drills.</p>
-            <input
-              type="text"
-              placeholder="Search drills..."
-              value={guideSearch}
+            <p className="text-gray-500 text-sm mb-4">How to play and scoring for all {DRILLS.length} drills.</p>
+            <input type="text" placeholder="Search drills..." value={guideSearch}
               onChange={e => setGuideSearch(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-sm"
-            />
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 text-sm" />
             <div className="space-y-3">
               {DRILLS.filter(d => d.name.toLowerCase().includes(guideSearch.toLowerCase())).map(drill => {
                 const perfectLabel = drill.perfect !== null ? `${drill.perfect}${drill.unit ? ` ${drill.unit}` : ""}` : "N/A";
                 const worstLabel = drill.worst !== null ? `${drill.worst}${drill.unit ? ` ${drill.unit}` : ""}` : "N/A";
+                const cat = DRILL_CATEGORY[drill.id];
                 return (
                   <div key={drill.id} className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-400">
                     <div className="flex items-start gap-2 flex-wrap mb-1">
                       <span className="text-xs font-mono text-gray-400">#{drill.id}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded font-medium ${CAT_COLOR[cat]}`}>{cat}</span>
                       <h3 className="font-semibold text-gray-800">{drill.name}</h3>
                     </div>
                     <p className="text-sm text-gray-600 mb-3">{drill.notes}</p>
@@ -482,13 +831,6 @@ export default function App() {
                       </span>
                       <span className="bg-green-100 text-green-700 px-2 py-1 rounded">✅ Perfect: {perfectLabel}</span>
                       <span className="bg-red-100 text-red-700 px-2 py-1 rounded">❌ Worst: {worstLabel}</span>
-                      {drill.dir !== null && (
-                        <>
-                          <span className="bg-green-100 text-green-700 px-2 py-1 rounded">🟢 Index 80–100</span>
-                          <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">🟡 Index 50–79</span>
-                          <span className="bg-red-100 text-red-700 px-2 py-1 rounded">🔴 Index 0–49</span>
-                        </>
-                      )}
                     </div>
                   </div>
                 );
@@ -497,15 +839,30 @@ export default function App() {
           </div>
         )}
 
+        {/* ── LEADERBOARD ─────────────────────────────────────────────────────── */}
         {!loading && tab === "leaderboard" && (
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-4">🏆 Leaderboard</h2>
+
+            {/* Category filter pills */}
+            <div className="flex gap-2 flex-wrap mb-3">
+              {CATEGORIES.map(cat => (
+                <button key={cat} onClick={() => handleLbCategoryChange(cat)}
+                  className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${lbCategory===cat?"bg-green-600 text-white border-green-600":"bg-white text-gray-600 border-gray-300 hover:border-green-400"}`}>
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Drill dropdown — filtered by category */}
             <div className="mb-4">
-              <select value={lbDrill} onChange={e => { setLbDrill(+e.target.value); }}
+              <select value={lbDrill} onChange={e => setLbDrill(+e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 font-medium text-gray-700">
-                {DRILLS.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                {lbDrillsForCategory.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </div>
+
+            {/* Per-drill leaderboard */}
             {(() => {
               const drill = DRILLS.find(d => d.id === lbDrill);
               const sorted = [...leaderboard].sort((a,b) => {
@@ -514,7 +871,7 @@ export default function App() {
               });
               if (!sorted.length) return <p className="text-center text-gray-400 py-12">No scores recorded for this drill yet.</p>;
               return (
-                <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                <div className="bg-white rounded-xl shadow-md overflow-hidden mb-6">
                   <div className="bg-green-700 text-white px-4 py-3 text-sm font-semibold flex gap-4">
                     <span className="w-8">#</span>
                     <span className="flex-1">Player</span>
@@ -529,12 +886,14 @@ export default function App() {
                       <div key={`${e.player}-${i}`}
                         className={`flex gap-4 px-4 py-3 items-center border-b border-gray-100 text-sm ${e.player===player?"bg-green-50":i%2===0?"bg-white":"bg-gray-50"}`}>
                         <span className="w-8 font-bold text-gray-500">{medal||`${i+1}`}</span>
-                        <span className={`flex-1 font-medium ${e.player===player?"text-green-700":""}`}>{e.player}{e.player===player?" (you)":""}</span>
+                        <span className={`flex-1 font-medium ${e.player===player?"text-green-700":""}`}>
+                          {e.player}{e.player===player?" (you)":""}
+                        </span>
                         <span className="w-20 text-right font-semibold">{e.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
                         <span className="w-20 text-right">
-                          {e.index_score !== null ? (
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${r.bg} ${r.text}`}>{Math.round(e.index_score)}</span>
-                          ) : "—"}
+                          {e.index_score !== null
+                            ? <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${r.bg} ${r.text}`}>{Math.round(e.index_score)}</span>
+                            : "—"}
                         </span>
                         <span className="w-24 text-right text-gray-400">
                           {new Date(e.date).toLocaleDateString("en-AU",{day:"numeric",month:"short"})}
@@ -545,9 +904,12 @@ export default function App() {
                 </div>
               );
             })()}
+
+            {/* Overall PI Ranking with expandable player breakdown */}
             {piRanking.length > 0 && (
-              <div className="mt-6">
-                <h3 className="font-semibold text-gray-700 mb-3">Overall Performance Index Ranking</h3>
+              <div>
+                <h3 className="font-semibold text-gray-700 mb-2">Overall Performance Index Ranking</h3>
+                <p className="text-xs text-gray-400 mb-3">Click any player to see their drill-by-drill breakdown.</p>
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
                   <div className="bg-green-700 text-white px-4 py-3 text-sm font-semibold flex gap-4">
                     <span className="w-8">#</span>
@@ -558,15 +920,31 @@ export default function App() {
                   {piRanking.map((r2,i) => {
                     const rc = ratingColor(r2.avg_index);
                     const medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
+                    const isExpanded = expandedPlayer === r2.player;
                     return (
-                      <div key={r2.player}
-                        className={`flex gap-4 px-4 py-3 items-center border-b border-gray-100 text-sm ${r2.player===player?"bg-green-50":i%2===0?"bg-white":"bg-gray-50"}`}>
-                        <span className="w-8 font-bold text-gray-500">{medal||`${i+1}`}</span>
-                        <span className={`flex-1 font-medium ${r2.player===player?"text-green-700":""}`}>{r2.player}{r2.player===player?" (you)":""}</span>
-                        <span className="w-24 text-right">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${rc.bg} ${rc.text}`}>{r2.avg_index}</span>
-                        </span>
-                        <span className="w-24 text-right text-gray-500">{r2.session_count}</span>
+                      <div key={r2.player}>
+                        <div
+                          onClick={() => setExpandedPlayer(isExpanded ? null : r2.player)}
+                          className={`flex gap-4 px-4 py-3 items-center border-b border-gray-100 text-sm cursor-pointer hover:bg-green-50 transition-colors ${r2.player===player?"bg-green-50":i%2===0?"bg-white":"bg-gray-50"}`}>
+                          <span className="w-8 font-bold text-gray-500">{medal||`${i+1}`}</span>
+                          <span className={`flex-1 font-medium ${r2.player===player?"text-green-700":""}`}>
+                            {r2.player}{r2.player===player?" (you)":""}
+                          </span>
+                          <span className="w-24 text-right">
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${rc.bg} ${rc.text}`}>{r2.avg_index}</span>
+                          </span>
+                          <span className="w-24 text-right text-gray-500 flex items-center justify-end gap-1">
+                            {r2.session_count}
+                            <span className="text-gray-300 text-xs">{isExpanded ? "▲" : "▼"}</span>
+                          </span>
+                        </div>
+                        {isExpanded && (
+                          <PlayerDrillBreakdown
+                            playerName={r2.player}
+                            allEntries={allLbEntries}
+                            lbCategory={lbCategory}
+                          />
+                        )}
                       </div>
                     );
                   })}
