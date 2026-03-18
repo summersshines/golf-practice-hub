@@ -2,8 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from './supabase';
 
 // ─── DRILL CATEGORIES ────────────────────────────────────────────────────────
-// Putting = 33–78 | Chipping = 4–7, 29, 79 | Pitching = 8, 11, 26, 30–32
-// Bunker = 16, 17 (bunker-only 3-shot), 19, 80 | Mixed = everything else
 const DRILL_CATEGORY = {
   1:"Mixed", 2:"Mixed", 3:"Mixed", 4:"Chipping", 5:"Chipping", 6:"Chipping",
   7:"Chipping", 8:"Pitching", 9:"Mixed", 10:"Mixed", 11:"Pitching",
@@ -185,7 +183,6 @@ function MiniLineChart({ points, color = "#16a34a" }) {
   const rangeV = maxV - minV || 1;
   const xs = points.map((_, i) => pad + (i / (points.length - 1)) * (W - pad * 2));
   const ys = points.map(p => H - pad - ((p.y - minV) / rangeV) * (H - pad * 2));
-  const d = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
   return (
     <svg width={W} height={H} className="overflow-visible">
       <polyline points={xs.map((x,i)=>`${x},${ys[i]}`).join(" ")} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
@@ -198,28 +195,20 @@ function MiniLineChart({ points, color = "#16a34a" }) {
 
 // ─── OVERALL INDEX TREND CHART ────────────────────────────────────────────────
 function OverallTrendChart({ sessions }) {
-  // Group sessions by week, compute avg index
   const withIdx = sessions.filter(s => s.index !== null).slice().sort((a,b) => a.date.localeCompare(b.date));
   if (withIdx.length < 2) return (
     <div className="text-center text-gray-400 py-6 text-sm">Log at least 2 scored sessions to see your trend chart.</div>
   );
-
-  // Build rolling data points — use each session chronologically
   const pts = withIdx.map(s => ({ date: s.date, y: s.index }));
-
   const W = 600, H = 160, padL = 36, padR = 12, padT = 12, padB = 28;
   const iW = W - padL - padR, iH = H - padT - padB;
   const minY = 0, maxY = 100;
   const xs = pts.map((_, i) => padL + (i / Math.max(pts.length - 1, 1)) * iW);
   const ys = pts.map(p => padT + iH - ((p.y - minY) / (maxY - minY)) * iH);
-
-  // Colour each segment based on value
   const gridLines = [0, 25, 50, 75, 100];
-
   return (
     <div className="overflow-x-auto">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-2xl" style={{minWidth:300}}>
-        {/* Grid lines */}
         {gridLines.map(v => {
           const y = padT + iH - ((v - minY) / (maxY - minY)) * iH;
           const col = v >= 80 ? "#dcfce7" : v >= 50 ? "#fef9c3" : "#fee2e2";
@@ -231,27 +220,14 @@ function OverallTrendChart({ sessions }) {
             </g>
           );
         })}
-        {/* Zone labels */}
         <text x={padL+4} y={padT+8} fontSize="8" fill="#16a34a" opacity="0.7">Green Zone</text>
         <text x={padL+4} y={padT + iH*0.35} fontSize="8" fill="#ca8a04" opacity="0.7">Yellow Zone</text>
         <text x={padL+4} y={padT + iH*0.75} fontSize="8" fill="#dc2626" opacity="0.7">Red Zone</text>
-        {/* Line */}
-        <polyline
-          points={xs.map((x,i)=>`${x},${ys[i]}`).join(" ")}
-          fill="none" stroke="#16a34a" strokeWidth="2.5"
-          strokeLinejoin="round" strokeLinecap="round"
-        />
-        {/* Dots */}
+        <polyline points={xs.map((x,i)=>`${x},${ys[i]}`).join(" ")} fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
         {pts.map((p, i) => {
-          const r = ratingColor(p.y);
           const dotCol = p.y >= 80 ? "#16a34a" : p.y >= 50 ? "#ca8a04" : "#dc2626";
-          return (
-            <g key={i}>
-              <circle cx={xs[i]} cy={ys[i]} r="4" fill={dotCol} stroke="white" strokeWidth="1.5"/>
-            </g>
-          );
+          return <circle key={i} cx={xs[i]} cy={ys[i]} r="4" fill={dotCol} stroke="white" strokeWidth="1.5"/>;
         })}
-        {/* X-axis date labels — show first, middle, last */}
         {[0, Math.floor((pts.length-1)/2), pts.length-1].filter((v,i,a)=>a.indexOf(v)===i).map(i => (
           <text key={i} x={xs[i]} y={H-4} textAnchor="middle" fontSize="8" fill="#9ca3af">
             {new Date(pts[i].date).toLocaleDateString("en-AU",{day:"numeric",month:"short"})}
@@ -274,12 +250,8 @@ function PersonalBestsPanel({ sessions }) {
     const idx = calcIndex(drill, best.score);
     bests.push({ drill, session: best, idx });
   });
-
   if (!bests.length) return <p className="text-sm text-gray-400">No scored sessions yet.</p>;
-
-  // Sort by index descending — best performances first
   bests.sort((a,b) => (b.idx ?? -1) - (a.idx ?? -1));
-
   return (
     <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
       {bests.map(({ drill, session, idx }) => {
@@ -310,7 +282,6 @@ function CategoryStatsPanel({ sessions }) {
         const withIdx = catSessions.filter(s => s.index !== null);
         const avgIdx = withIdx.length ? Math.round(withIdx.reduce((a,b)=>a+b.index,0)/withIdx.length) : null;
         const r = ratingColor(avgIdx);
-        // Mini trend points
         const trendPts = withIdx.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(s=>({y:s.index}));
         return (
           <div key={cat} className="bg-white rounded-xl shadow-sm p-3 flex flex-col gap-1">
@@ -332,14 +303,12 @@ function CategoryStatsPanel({ sessions }) {
 
 // ─── MILESTONE BADGES ─────────────────────────────────────────────────────────
 function MilestoneBadges({ sessions }) {
-  const milestones = [];
   const total = sessions.length;
   const withIdx = sessions.filter(s => s.index !== null);
   const greens = withIdx.filter(s => s.index >= 80).length;
   const drillsPlayed = new Set(sessions.map(s => s.drillId)).size;
   const best = withIdx.length ? Math.max(...withIdx.map(s=>s.index)) : 0;
   const streak = (() => {
-    // Count consecutive days with sessions (most recent first)
     const days = [...new Set(sessions.map(s=>s.date))].sort((a,b)=>b.localeCompare(a));
     if (!days.length) return 0;
     let count = 1;
@@ -350,7 +319,6 @@ function MilestoneBadges({ sessions }) {
     }
     return count;
   })();
-
   const all = [
     { icon:"🎯", label:"First Session",    earned: total >= 1,   desc:"Logged your first session" },
     { icon:"📅", label:"10 Sessions",      earned: total >= 10,  desc:"Logged 10 sessions" },
@@ -365,10 +333,8 @@ function MilestoneBadges({ sessions }) {
     { icon:"📆", label:"3-Day Streak",     earned: streak >= 3,  desc:"Practiced 3 days in a row" },
     { icon:"🗓️", label:"7-Day Streak",     earned: streak >= 7,  desc:"Practiced 7 days in a row" },
   ];
-
   const earned = all.filter(m=>m.earned);
   const locked = all.filter(m=>!m.earned);
-
   return (
     <div>
       {earned.length > 0 && (
@@ -393,15 +359,13 @@ function MilestoneBadges({ sessions }) {
   );
 }
 
-// ─── PLAYER DRILL BREAKDOWN (for leaderboard expand) ─────────────────────────
+// ─── PLAYER DRILL BREAKDOWN ───────────────────────────────────────────────────
 function PlayerDrillBreakdown({ playerName, allEntries, lbCategory }) {
   const entries = allEntries.filter(e => e.player === playerName);
   const catEntries = lbCategory === "All"
     ? entries
     : entries.filter(e => DRILL_CATEGORY[e.drill_id] === lbCategory);
-
   if (!catEntries.length) return <p className="text-xs text-gray-400 px-4 pb-3">No entries in this category.</p>;
-
   const sorted = [...catEntries].sort((a,b) => (b.index_score ?? 0) - (a.index_score ?? 0));
   return (
     <div className="px-4 pb-3 pt-1 bg-green-50 border-t border-green-100">
@@ -427,9 +391,199 @@ function PlayerDrillBreakdown({ playerName, allEntries, lbCategory }) {
   );
 }
 
+// ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
+function DashboardPanel({ sessions, player, onGoToLog }) {
+  if (!sessions.length) return (
+    <div className="text-center py-16">
+      <div className="text-5xl mb-4">⛳</div>
+      <p className="text-gray-500 text-lg font-medium mb-2">No sessions logged yet</p>
+      <p className="text-gray-400 text-sm mb-6">Add your first practice session to see your dashboard.</p>
+      <button onClick={onGoToLog} className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700">
+        + Add First Session
+      </button>
+    </div>
+  );
+
+  const withIdx = sessions.filter(s => s.index !== null);
+
+  // ── Overall PI ──────────────────────────────────────────────────────────────
+  const overallPI = withIdx.length
+    ? Math.round(withIdx.reduce((a,b) => a + b.index, 0) / withIdx.length)
+    : null;
+
+  // Trend: compare avg of last 5 scored sessions vs the 5 before that
+  const trend = (() => {
+    if (withIdx.length < 2) return null;
+    const sorted = [...withIdx].sort((a,b) => b.date.localeCompare(a.date));
+    const recent = sorted.slice(0, 5);
+    const prior = sorted.slice(5, 10);
+    if (!prior.length) return null;
+    const recentAvg = recent.reduce((a,b) => a + b.index, 0) / recent.length;
+    const priorAvg = prior.reduce((a,b) => a + b.index, 0) / prior.length;
+    const diff = Math.round(recentAvg - priorAvg);
+    return diff;
+  })();
+
+  const piColor = overallPI === null ? "text-gray-400"
+    : overallPI >= 80 ? "text-green-600"
+    : overallPI >= 50 ? "text-yellow-500"
+    : "text-red-500";
+
+  const piBg = overallPI === null ? "bg-gray-50"
+    : overallPI >= 80 ? "bg-green-50 border border-green-200"
+    : overallPI >= 50 ? "bg-yellow-50 border border-yellow-200"
+    : "bg-red-50 border border-red-200";
+
+  const piLabel = overallPI === null ? "No data"
+    : overallPI >= 80 ? "Green Zone — Elite"
+    : overallPI >= 50 ? "Yellow Zone — Developing"
+    : "Red Zone — Needs Work";
+
+  // ── Weak category ──────────────────────────────────────────────────────────
+  const cats = ["Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
+  const catAvgs = cats.map(cat => {
+    const cs = withIdx.filter(s => DRILL_CATEGORY[s.drillId] === cat);
+    const avg = cs.length ? Math.round(cs.reduce((a,b) => a + b.index, 0) / cs.length) : null;
+    return { cat, avg, count: cs.length };
+  }).filter(c => c.avg !== null);
+
+  const weakCat = catAvgs.length
+    ? catAvgs.reduce((a,b) => a.avg < b.avg ? a : b)
+    : null;
+
+  // Suggested drills for weak category: played first (sorted by lowest avg index), then unplayed
+  const suggestedDrills = (() => {
+    if (!weakCat) return [];
+    const catDrills = DRILLS.filter(d => DRILL_CATEGORY[d.id] === weakCat.cat && d.dir !== null);
+
+    // Drills played — compute avg index per drill
+    const played = [];
+    catDrills.forEach(drill => {
+      const ds = withIdx.filter(s => s.drillId === drill.id);
+      if (!ds.length) return;
+      const avg = Math.round(ds.reduce((a,b) => a + b.index, 0) / ds.length);
+      played.push({ drill, avgIdx: avg, played: true });
+    });
+    played.sort((a,b) => a.avgIdx - b.avgIdx); // lowest index first = most needs work
+
+    // Unplayed drills in the category
+    const playedIds = new Set(played.map(p => p.drill.id));
+    const unplayed = catDrills
+      .filter(d => !playedIds.has(d.id))
+      .map(d => ({ drill: d, avgIdx: null, played: false }));
+
+    return [...played, ...unplayed].slice(0, 3);
+  })();
+
+  // ── Recent sessions (last 3) ────────────────────────────────────────────────
+  const recent = sessions.slice(0, 3);
+
+  return (
+    <div className="space-y-4">
+
+      {/* Quick log button */}
+  <div className="flex justify-end">
+    <button
+      onClick={onGoToLog}
+      className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-green-700 text-sm">
+      + Log Session
+    </button>
+  </div>
+      {/* 1 — Overall PI headline */}
+      <div className={`rounded-xl p-5 ${piBg}`}>
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Overall Performance Index</p>
+            <div className="flex items-end gap-3">
+              <span className={`text-6xl font-extrabold leading-none ${piColor}`}>
+                {overallPI ?? "—"}
+              </span>
+              <div className="pb-1">
+                {trend !== null && (
+                  <span className={`text-sm font-semibold flex items-center gap-1 ${trend > 0 ? "text-green-600" : trend < 0 ? "text-red-500" : "text-gray-400"}`}>
+                    {trend > 0 ? "▲" : trend < 0 ? "▼" : "—"} {Math.abs(trend)} vs prior 5
+                  </span>
+                )}
+                <span className="text-xs text-gray-500">{piLabel}</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-right text-sm text-gray-500">
+            <div><strong className="text-gray-700">{withIdx.length}</strong> scored sessions</div>
+            <div><strong className="text-gray-700">{sessions.length}</strong> total sessions</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2 — Category breakdown */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <p className="text-sm font-semibold text-gray-700 mb-3">Avg Index by Category</p>
+        <CategoryStatsPanel sessions={sessions} />
+      </div>
+
+      {/* 3 — Weak area + suggested drills */}
+      {weakCat && (
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🎯</span>
+            <div>
+              <p className="text-sm font-bold text-orange-800">Focus Area: {weakCat.cat}</p>
+              <p className="text-xs text-orange-600">Avg index {weakCat.avg} — your lowest category</p>
+            </div>
+          </div>
+          <p className="text-xs font-semibold text-orange-700 mb-2">Suggested drills to work on:</p>
+          <div className="space-y-2">
+            {suggestedDrills.map(({ drill, avgIdx, played }) => {
+              const r = played ? ratingColor(avgIdx) : null;
+              return (
+                <div key={drill.id} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-sm shadow-sm">
+                  <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${CAT_COLOR[weakCat.cat]}`}>{weakCat.cat}</span>
+                  <span className="flex-1 text-gray-700 truncate">{drill.name}</span>
+                  {played && avgIdx !== null ? (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>
+                      Avg {avgIdx}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-gray-400 shrink-0 italic">Not yet played</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 4 — Recent sessions */}
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <p className="text-sm font-semibold text-gray-700 mb-3">Recent Sessions</p>
+        <div className="space-y-2">
+          {recent.map(s => {
+            const r = ratingColor(s.index);
+            return (
+              <div key={s.id} className="flex items-center gap-3 text-sm border-b border-gray-50 pb-2 last:border-0 last:pb-0">
+                <span className="text-gray-400 text-xs w-20 shrink-0">
+                  {new Date(s.date).toLocaleDateString("en-AU", { day:"numeric", month:"short" })}
+                </span>
+                <span className="flex-1 text-gray-700 truncate">{s.drillName}</span>
+                <span className="font-semibold text-green-700 shrink-0">{s.score}{s.unit ? ` ${s.unit}` : ""}</span>
+                {s.index !== null && (
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>
+                    {Math.round(s.index)}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [tab, setTab] = useState("log");
+  const [tab, setTab] = useState("dashboard");
   const [player, setPlayer] = useState(() => localStorage.getItem('player') || null);
   const [playerInput, setPlayerInput] = useState("");
   const [sessions, setSessions] = useState([]);
@@ -444,7 +598,7 @@ export default function App() {
   const [expandedPlayer, setExpandedPlayer] = useState(null);
   const [loading, setLoading] = useState(false);
   const [guideSearch, setGuideSearch] = useState("");
-  const [statsSection, setStatsSection] = useState("overview"); // "overview" | "drills" | "bests"
+  const [statsSection, setStatsSection] = useState("overview");
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -489,7 +643,7 @@ export default function App() {
     setSessions(sessions.filter(x => x.id !== s.id));
   }
 
-  // ── Login screen ────────────────────────────────────────────────────────────
+  // ── Login screen ─────────────────────────────────────────────────────────────
   if (!player) return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
@@ -525,12 +679,10 @@ export default function App() {
 
   const stats = playerStats();
 
-  // Leaderboard: filter drills by category for the drill dropdown
   const lbDrillsForCategory = lbCategory === "All"
     ? DRILLS
     : DRILLS.filter(d => DRILL_CATEGORY[d.id] === lbCategory);
 
-  // When category changes, reset to first drill in that category
   function handleLbCategoryChange(cat) {
     setLbCategory(cat);
     setExpandedPlayer(null);
@@ -553,10 +705,16 @@ export default function App() {
         </div>
       </div>
 
-      {/* Nav tabs */}
+      {/* Nav tabs — Dashboard is now first */}
       <div className="bg-white border-b shadow-sm overflow-x-auto">
         <div className="max-w-5xl mx-auto flex">
-          {[["log","📋 Session Log"],["stats","📊 My Stats"],["leaderboard","🏆 Leaderboard"],["guide","📖 Drill Guide"]].map(([k,l]) => (
+          {[
+            ["dashboard","🏠 Dashboard"],
+            ["log","📋 Session Log"],
+            ["stats","📊 My Stats"],
+            ["leaderboard","🏆 Leaderboard"],
+            ["guide","📖 Drill Guide"],
+          ].map(([k,l]) => (
             <button key={k} onClick={() => setTab(k)}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${tab===k?"border-green-600 text-green-700":"border-transparent text-gray-500 hover:text-gray-700"}`}>
               {l}
@@ -567,6 +725,15 @@ export default function App() {
 
       <div className="max-w-5xl mx-auto p-4">
         {loading && <p className="text-center text-gray-400 py-8">Loading...</p>}
+
+        {/* ── DASHBOARD ───────────────────────────────────────────────────────── */}
+        {!loading && tab === "dashboard" && (
+          <DashboardPanel
+            sessions={sessions}
+            player={player}
+            onGoToLog={() => setTab("log")}
+          />
+        )}
 
         {/* ── SESSION LOG ─────────────────────────────────────────────────────── */}
         {!loading && tab === "log" && (
@@ -691,7 +858,6 @@ export default function App() {
               <p className="text-center text-gray-400 py-12">No sessions logged yet.</p>
             ) : (
               <>
-                {/* Sub-nav */}
                 <div className="flex gap-2 mb-5 flex-wrap">
                   {[["overview","📈 Overview"],["drills","🏌️ By Drill"],["bests","🏅 Personal Bests"]].map(([k,l]) => (
                     <button key={k} onClick={() => setStatsSection(k)}
@@ -700,11 +866,8 @@ export default function App() {
                     </button>
                   ))}
                 </div>
-
-                {/* OVERVIEW */}
                 {statsSection === "overview" && (
                   <div className="space-y-5">
-                    {/* Overall Index Trend */}
                     <div className="bg-white rounded-xl shadow-sm p-4">
                       <h3 className="font-semibold text-gray-700 mb-3">Overall Performance Index — All Sessions</h3>
                       <OverallTrendChart sessions={sessions} />
@@ -714,22 +877,16 @@ export default function App() {
                         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-red-400 inline-block"></span> Red (0–49)</span>
                       </div>
                     </div>
-
-                    {/* Category Breakdown */}
                     <div className="bg-white rounded-xl shadow-sm p-4">
                       <h3 className="font-semibold text-gray-700 mb-3">Avg Index by Category</h3>
                       <CategoryStatsPanel sessions={sessions} />
                     </div>
-
-                    {/* Milestone Badges */}
                     <div className="bg-white rounded-xl shadow-sm p-4">
                       <h3 className="font-semibold text-gray-700 mb-3">🏅 Milestones & Badges</h3>
                       <MilestoneBadges sessions={sessions} />
                     </div>
                   </div>
                 )}
-
-                {/* BY DRILL */}
                 {statsSection === "drills" && (
                   <div className="space-y-3">
                     {DRILLS.map(drill => {
@@ -790,8 +947,6 @@ export default function App() {
                     })}
                   </div>
                 )}
-
-                {/* PERSONAL BESTS */}
                 {statsSection === "bests" && (
                   <div className="bg-white rounded-xl shadow-sm p-4">
                     <h3 className="font-semibold text-gray-700 mb-1">Personal Best Scores</h3>
@@ -843,8 +998,6 @@ export default function App() {
         {!loading && tab === "leaderboard" && (
           <div>
             <h2 className="text-xl font-bold text-gray-800 mb-4">🏆 Leaderboard</h2>
-
-            {/* Category filter pills */}
             <div className="flex gap-2 flex-wrap mb-3">
               {CATEGORIES.map(cat => (
                 <button key={cat} onClick={() => handleLbCategoryChange(cat)}
@@ -853,16 +1006,12 @@ export default function App() {
                 </button>
               ))}
             </div>
-
-            {/* Drill dropdown — filtered by category */}
             <div className="mb-4">
               <select value={lbDrill} onChange={e => setLbDrill(+e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 font-medium text-gray-700">
                 {lbDrillsForCategory.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </div>
-
-            {/* Per-drill leaderboard */}
             {(() => {
               const drill = DRILLS.find(d => d.id === lbDrill);
               const sorted = [...leaderboard].sort((a,b) => {
@@ -904,8 +1053,6 @@ export default function App() {
                 </div>
               );
             })()}
-
-            {/* Overall PI Ranking with expandable player breakdown */}
             {piRanking.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">Overall Performance Index Ranking</h3>
