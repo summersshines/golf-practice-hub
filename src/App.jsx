@@ -591,7 +591,7 @@ export default function App() {
   const [allLbEntries, setAllLbEntries] = useState([]);
   const [piRanking, setPiRanking] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ drillId:"", score:"", notes:"", date:today() });
+  const [form, setForm] = useState({ drillId:"", drillCategory:"", score:"", notes:"", date:today() });
   const [filterDrill, setFilterDrill] = useState("");
   const [lbDrill, setLbDrill] = useState(DRILLS[0].id);
   const [lbCategory, setLbCategory] = useState("All");
@@ -635,7 +635,7 @@ export default function App() {
     await DB.addSession(session);
     setSessions([session, ...sessions]);
     setShowAdd(false);
-    setForm({ drillId:"", score:"", notes:"", date:today() });
+    setForm({ drillId:"", drillCategory:"", score:"", notes:"", date:today() });
   }
 
   async function deleteSession(s) {
@@ -768,13 +768,28 @@ export default function App() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Drill</label>
-                    <select value={form.drillId} onChange={e => setForm({...form, drillId:e.target.value})}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2">
-                      <option value="">Select drill...</option>
-                      {DRILLS.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                    </select>
-                  </div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">Drill</label>
+  <div className="flex flex-wrap gap-2 mb-2">
+    {["Putting","Chipping","Pitching","Bunker","Mixed"].map(cat => (
+      <button
+        type="button"
+        key={cat}
+        onClick={() => setForm({...form, drillCategory: cat, drillId: ""})}
+        className={`px-3 py-1 rounded-full text-sm font-medium border transition-colors ${form.drillCategory === cat ? "bg-green-600 text-white border-green-600" : "bg-white text-gray-600 border-gray-300 hover:border-green-400"}`}>
+        {cat}
+      </button>
+    ))}
+  </div>
+  {form.drillCategory && (
+    <select value={form.drillId} onChange={e => setForm({...form, drillId:e.target.value})}
+      className="w-full border border-gray-300 rounded-lg px-3 py-2">
+      <option value="">Select drill...</option>
+      {DRILLS.filter(d => DRILL_CATEGORY[d.id] === form.drillCategory).map(d => (
+        <option key={d.id} value={d.id}>{d.name}</option>
+      ))}
+    </select>
+  )}
+</div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Score {form.drillId && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
