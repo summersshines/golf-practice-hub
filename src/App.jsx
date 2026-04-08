@@ -144,6 +144,37 @@ const SWEDISH_OPTIONS = [
   { value: 3, label: "3 pts — 0–3ft" },
   { value: 4, label: "4 pts — Holed" },
 ];
+const PELZ_CATEGORIES = [
+  "3/4 Wedge 70m",
+  "1/2 Wedge 40m",
+  "Long Sand 20–35m",
+  "Short Sand 7–15m",
+  "Long Chip 15–30m",
+  "Short Chip 7–15m",
+  "Pitch Fairway 10–20m",
+  "Pitch Rough 10–20m",
+  "Cut Lob 10–20m",
+];
+const PELZ_OPTIONS = [
+  { value: 0, label: "0 pts — 6ft+" },
+  { value: 1, label: "1 pt  — 3–6ft" },
+  { value: 2, label: "2 pts — 0–3ft" },
+  { value: 4, label: "4 pts — Holed" },
+];
+const PELZ_HANDICAP = [
+  [155,"+8"],[148,"+7"],[143,"+6"],[138,"+5"],[134,"+4"],[127,"+3"],[125,"+2"],[121,"+1"],
+  [117,"0"],[113,"1"],[110,"2"],[106,"3"],[101,"4"],[99,"5"],[94,"6"],[90,"7"],
+  [88,"8"],[84,"9"],[80,"10"],[78,"11"],[74,"12"],[71,"13"],[68,"14"],[66,"15"],
+  [61,"16"],[59,"17"],[56,"18"],[52,"19"],[49,"20"],[46,"21"],[43,"22"],[41,"23"],
+  [37,"24"],[34,"25"],[33,"26"],[29,"27"],[27,"28"],[23,"29"],[22,"30"],[19,"31"],
+  [16,"32"],[14,"33"],[12,"34"],[9,"35"],[8,"36"],[3,"37"],[2,"38"],[0,"39"],
+];
+function getPelzHandicap(score) {
+  for (const [threshold, hcp] of PELZ_HANDICAP) {
+    if (score >= threshold) return hcp;
+  }
+  return "40";
+}
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -695,6 +726,191 @@ function Par72ScorecardModal({ onSave, onCancel }) {
   );
 }
 
+function PelzScorecardModal({ onSave, onCancel }) {
+  const [mode, setMode] = useState(null);
+  const [currentCat, setCurrentCat] = useState(0);
+  const [shots, setShots] = useState(null);
+
+  function initMode(m) {
+    const count = m === "full" ? 10 : 5;
+    setShots(PELZ_CATEGORIES.map(() => Array(count).fill(0)));
+    setMode(m);
+    setCurrentCat(0);
+  }
+
+  function setShot(shotIdx, val) {
+    setShots(prev => prev.map((cat, ci) =>
+      ci === currentCat ? cat.map((s, si) => si === shotIdx ? Number(val) : s) : cat
+    ));
+  }
+
+  const catTotals = shots ? shots.map(cat => cat.reduce((a, b) => a + b, 0)) : [];
+  const grandTotal = catTotals.reduce((a, b) => a + b, 0);
+  const shotCount = mode === "full" ? 10 : 5;
+  const isLast = currentCat === 8;
+  const isReview = mode !== null && shots !== null && currentCat === 9;
+  const finalScore = mode === "half" ? grandTotal * 2 : grandTotal;
+
+  if (!mode) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+          <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+            <h2 className="text-lg font-bold">🏌️ Dave Pelz Short Game Challenge</h2>
+            <p className="text-green-300 text-sm mt-0.5">Select challenge mode to begin</p>
+          </div>
+          <div className="px-5 py-6 space-y-4">
+            <button
+              onClick={() => initMode("full")}
+              className="w-full bg-green-700 text-white py-4 px-5 rounded-xl font-semibold hover:bg-green-800 text-left"
+            >
+              <div className="text-base">Full Challenge — 90 shots</div>
+              <div className="text-green-300 text-sm font-normal mt-0.5">10 shots from each of the 9 categories</div>
+            </button>
+            <button
+              onClick={() => initMode("half")}
+              className="w-full bg-green-600 text-white py-4 px-5 rounded-xl font-semibold hover:bg-green-700 text-left"
+            >
+              <div className="text-base">Half Challenge — 45 shots</div>
+              <div className="text-green-300 text-sm font-normal mt-0.5">5 shots from each category · score doubled for comparison</div>
+            </button>
+            <button onClick={onCancel} className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isReview) {
+    const hcp = getPelzHandicap(finalScore);
+    const zone = finalScore >= 117 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+      : finalScore >= 80 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+      : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+          <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+            <h2 className="text-lg font-bold">🏌️ Dave Pelz Short Game Challenge</h2>
+            <p className="text-green-300 text-sm mt-0.5">Summary — {mode === "full" ? "Full (90 shots)" : "Half (45 shots)"}</p>
+          </div>
+          <div className="px-4 py-4">
+            <table className="w-full text-sm mb-4">
+              <tbody>
+                {PELZ_CATEGORIES.map((cat, i) => (
+                  <tr key={i} className={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                    <td className="py-1.5 px-2 text-gray-700">{cat}</td>
+                    <td className="py-1.5 px-2 text-right font-semibold text-green-700">{catTotals[i]} pts</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="border-t border-gray-200 pt-3 mb-4 text-sm space-y-1">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Raw total</span>
+                <span className="font-semibold">{grandTotal} pts</span>
+              </div>
+              {mode === "half" && (
+                <div className="flex justify-between text-green-700">
+                  <span>Doubled score <span className="text-gray-400 font-normal">(Half version)</span></span>
+                  <span className="font-semibold">{finalScore} pts</span>
+                </div>
+              )}
+            </div>
+            <div className={`flex items-center justify-between rounded-xl border px-4 py-3 mb-4 ${zone.color}`}>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Final Score</p>
+                <p className="text-4xl font-extrabold leading-none">{finalScore}</p>
+                <p className="text-xs mt-0.5">out of {mode === "full" ? "360" : "360 (doubled)"} possible pts</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold">{zone.label}</p>
+                <p className="text-2xl font-extrabold">HCP {hcp}</p>
+                <p className="text-xs opacity-70 mt-0.5">PGA Tour 143+ · LPGA Tour 110–125</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3 px-5 pb-5">
+            <button
+              onClick={() => onSave(finalScore)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({finalScore} pts)
+            </button>
+            <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const catRunningTotal = shots.slice(0, currentCat + 1).reduce((a, cat) => a + cat.reduce((x, y) => x + y, 0), 0);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ Dave Pelz Short Game Challenge</h2>
+          <p className="text-green-300 text-sm mt-0.5">{mode === "full" ? "Full (90 shots)" : "Half (45 shots)"}</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span className="font-semibold">Category {currentCat + 1} of 9 — {PELZ_CATEGORIES[currentCat]}</span>
+          <span className="ml-auto">Holed = 4pts · 0–3ft = 2pts · 3–6ft = 1pt · 6ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4">
+          <div className="flex flex-wrap gap-3 mb-4">
+            {shots[currentCat].map((val, si) => (
+              <div key={si} className="flex flex-col items-center gap-0.5">
+                <span className="text-xs text-gray-400">Shot {si + 1}</span>
+                <select
+                  value={val}
+                  onChange={e => setShot(si, e.target.value)}
+                  className="border border-gray-300 rounded px-1 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+                >
+                  {PELZ_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-4 text-sm">
+            <div className="bg-gray-50 rounded-lg px-3 py-2">
+              <span className="text-gray-500 text-xs">This category</span>
+              <span className="block font-bold text-green-700 text-lg">{shots[currentCat].reduce((a, b) => a + b, 0)} pts</span>
+            </div>
+            <div className="bg-gray-50 rounded-lg px-3 py-2">
+              <span className="text-gray-500 text-xs">Running total</span>
+              <span className="block font-bold text-green-700 text-lg">{catRunningTotal} pts</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => setCurrentCat(c => c - 1)}
+            disabled={currentCat === 0}
+            className="bg-gray-200 text-gray-700 px-5 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => setCurrentCat(c => c + 1)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            {isLast ? "Review Score →" : `Next — ${PELZ_CATEGORIES[currentCat + 1] ?? ""} →`}
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -905,6 +1121,7 @@ export default function App() {
   const [statsSection, setStatsSection] = useState("overview");
   const [showSwedishScorecard, setShowSwedishScorecard] = useState(false);
   const [showPar72Scorecard, setShowPar72Scorecard] = useState(false);
+  const [showPelzScorecard, setShowPelzScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -975,6 +1192,7 @@ export default function App() {
 
   const isSwedish = +form.drillId === 93;
   const isPar72 = +form.drillId === 2;
+  const isPelz = +form.drillId === 9;
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -1017,6 +1235,15 @@ export default function App() {
             setShowPar72Scorecard(false);
           }}
           onCancel={() => setShowPar72Scorecard(false)}
+        />
+      )}
+      {showPelzScorecard && (
+        <PelzScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowPelzScorecard(false);
+          }}
+          onCancel={() => setShowPelzScorecard(false)}
         />
       )}
       {/* Header */}
@@ -1119,7 +1346,7 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -1156,6 +1383,26 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => setShowPar72Scorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isPelz ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowPelzScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowPelzScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
                             >Edit</button>
                           </div>
