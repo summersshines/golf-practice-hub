@@ -32,7 +32,7 @@ const CAT_COLOR = {
 };
 
 const DRILLS = [
-  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:100, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m." },
+  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m." },
   { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard is needed for instructions and scoring metrics." },
   { id:3,  name:"Level Up Challenge - Par 21",             type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and as you progress up each level you add one more shot in the 25-50m zone. Just getting through Level 1 is a good achievement and should be considered a pass." },
   { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs. Work around the green hitting different shots, trying not to hit the same shot multiple times. 20 min max to complete this challenge." },
@@ -124,7 +124,7 @@ const DRILLS = [
   { id:90, name:"Wedge Combine 50-90m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:90,  notes:"Hit 3 shots in total, one from 50, 70 and 90m. Total up your distance from the hole for each shot. Lower is better." },
   { id:91, name:"Wedge Combine 30-50m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit 5 shots in total, one from 30, 35, 40, 45 and 50m. Total up your distance from the hole for each shot. Lower is better." },
   { id:92, name:"Wedge Combine 40-60m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Hit 5 shots in total, one from 40, 45, 50, 55 and 60m. Total up your distance from the hole for each shot. Lower is better." },
-  { id:93, name:"Swedish National 40 Shot Combine",        type:"score",      unit:"pts",  dir:"higher", perfect:80,  worst:0,   notes:"Hit 5 shots from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts." },
+  { id:93, name:"Swedish National 40 Shot Combine",        type:"score",      unit:"pts",  dir:"higher", perfect:80,  worst:0,   notes:"Hit 5 shots from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts. You can use an alignment stick as the hole and change shots for each round/attempt." },
   { id:94, name:"Swedish National Quick Fire",             type:"score",      unit:"pts",  dir:"higher", perfect:16,  worst:0,   notes:"Hit 1 shot from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts." },
   { id:95, name:"Pelz Snapshot",                           type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 1 shot from each of the following: 3/4 wedge 70m, 1/2 wedge 40m, long sand 20-35m, short sand 7-15m, long chip 15-30m, short chip 7-15m, pitch fairway 10-20m, pitch rough 10-20m, cut lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt." },
   { id:96, name:"Wedge Combine 40-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:35,  worst:185, notes:"Hit 5 shots in total, one from 40, 55, 70, 85 and 100m. Total up your distance from the hole for each shot. Lower is better." },
@@ -133,6 +133,17 @@ const DRILLS = [
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
+const SWEDISH_ROWS = [
+  "Chip 10m", "Chip 20m", "Pitch 20m", "Pitch 40m",
+  "Lob 15m", "Lob 25m", "Bunker 10m", "Bunker 20m",
+];
+const SWEDISH_OPTIONS = [
+  { value: 0, label: "0 pts — 9ft+" },
+  { value: 1, label: "1 pt  — 6–9ft" },
+  { value: 2, label: "2 pts — 3–6ft" },
+  { value: 3, label: "3 pts — 0–3ft" },
+  { value: 4, label: "4 pts — Holed" },
+];
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -408,6 +419,282 @@ function PlayerDrillBreakdown({ playerName, allEntries, lbCategory }) {
   );
 }
 
+const PAR72_HOLES = [
+  {
+    hole: 1, desc: "50m shot to hole", balls: 5,
+    options: [
+      { value: 1, label: "1 — Inside 3ft" },
+      { value: 2, label: "2 — 3–6ft" },
+      { value: 3, label: "3 — Hit Green" },
+      { value: 4, label: "4 — Missed Green" },
+    ],
+    default: 4,
+  },
+  {
+    hole: 2, desc: "35m shot to hole", balls: 5,
+    options: [
+      { value: 1, label: "1 — Inside 3ft" },
+      { value: 2, label: "2 — 3–6ft" },
+      { value: 3, label: "3 — Hit Green" },
+      { value: 4, label: "4 — Missed Green" },
+    ],
+    default: 4,
+  },
+  {
+    hole: 3, desc: "20m pitch over bunker", balls: 3,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — 0–3ft" },
+      { value: 3, label: "3 — 3–6ft" },
+      { value: 4, label: "4 — Hit Green" },
+      { value: 5, label: "5 — Missed Green" },
+    ],
+    default: 5,
+  },
+  {
+    hole: 4, desc: "Greenside bunker", balls: 3,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — 0–3ft" },
+      { value: 3, label: "3 — 3–6ft" },
+      { value: 4, label: "4 — Hit Green" },
+      { value: 5, label: "5 — Missed Green" },
+    ],
+    default: 5,
+  },
+  {
+    hole: 5, desc: "15m chip", balls: 3,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — 0–3ft" },
+      { value: 3, label: "3 — 3–6ft" },
+      { value: 4, label: "4 — Hit Green" },
+      { value: 5, label: "5 — Missed Green" },
+    ],
+    default: 5,
+  },
+  {
+    hole: 6, desc: "30, 40, 50ft putts (1 each)", balls: 3,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — 0–3ft" },
+      { value: 3, label: "3 — 3–6ft" },
+      { value: 4, label: "4 — Hit Green" },
+      { value: 5, label: "5 — Missed Green" },
+    ],
+    default: 5,
+  },
+  {
+    hole: 7, desc: "20ft putt — 3 locations", balls: 3,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — 0–3ft" },
+      { value: 3, label: "3 — 3–6ft" },
+      { value: 4, label: "4 — Hit Green" },
+      { value: 5, label: "5 — Missed Green" },
+    ],
+    default: 5,
+  },
+  {
+    hole: 8, desc: "3ft putts around the hole", balls: 8,
+    options: [
+      { value: 1, label: "1 — Holed" },
+      { value: 2, label: "2 — Missed" },
+    ],
+    default: 2,
+  },
+];
+
+function SwedishScorecardModal({ onSave, onCancel }) {
+  const [grid, setGrid] = useState(
+    Array.from({ length: 8 }, () => Array(5).fill(0))
+  );
+  function setCell(row, col, val) {
+    setGrid(prev => prev.map((r, ri) =>
+      ri === row ? r.map((c, ci) => ci === col ? Number(val) : c) : r
+    ));
+  }
+  const rowTotals = grid.map(r => r.reduce((a, b) => a + b, 0));
+  const grandTotal = rowTotals.reduce((a, b) => a + b, 0);
+  const zone = grandTotal >= 64 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 40 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🇸🇪 Swedish National 40 Shot Combine</h2>
+          <p className="text-green-300 text-sm mt-0.5">Hit 5 attempts from each shot type — select your result per attempt</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4</span>
+          <span>0–3ft = 3</span>
+          <span>3–6ft = 2</span>
+          <span>6–9ft = 1</span>
+          <span>9ft+ = 0</span>
+          <span className="text-green-600 ml-auto italic">Åberg benchmark: 82 pts</span>
+        </div>
+        <div className="px-3 py-4 overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="text-xs text-gray-500 text-center">
+                <th className="text-left py-1 pr-2 font-semibold text-gray-700 w-28">Shot Type</th>
+                {[1,2,3,4,5].map(n => (
+                  <th key={n} className="py-1 px-1 font-medium w-24">Attempt {n}</th>
+                ))}
+                <th className="py-1 px-2 font-semibold text-gray-700">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SWEDISH_ROWS.map((row, ri) => (
+                <tr key={ri} className={ri % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                  <td className="py-2 pr-2 font-medium text-gray-700 text-xs">{row}</td>
+                  {[0,1,2,3,4].map(ci => (
+                    <td key={ci} className="py-1 px-1">
+                      <select
+                        value={grid[ri][ci]}
+                        onChange={e => setCell(ri, ci, e.target.value)}
+                        className="w-full border border-gray-300 rounded px-1 py-1 text-xs text-center bg-white focus:outline-none focus:border-green-500"
+                      >
+                        {SWEDISH_OPTIONS.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </td>
+                  ))}
+                  <td className="py-1 px-2 text-center font-bold text-green-700">{rowTotals[ri]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">out of 160 possible pts</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-bold">{zone.label}</p>
+              <p className="text-xs opacity-70 mt-0.5">Green 64+ · Yellow 40–63 · Red &lt;40</p>
+              <p className="text-xs opacity-70">Åberg benchmark: 82 pts</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button onClick={() => onSave(grandTotal)} className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm">
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Par72ScorecardModal({ onSave, onCancel }) {
+  const [shots, setShots] = useState(
+    PAR72_HOLES.map(h => Array(h.balls).fill(h.default))
+  );
+
+  function setShot(holeIdx, shotIdx, val) {
+    setShots(prev => prev.map((h, hi) =>
+      hi === holeIdx ? h.map((s, si) => si === shotIdx ? Number(val) : s) : h
+    ));
+  }
+
+  const holeTotals = shots.map(h => h.reduce((a, b) => a + b, 0));
+  const grandTotal = holeTotals.reduce((a, b) => a + b, 0);
+  const toPar = grandTotal - 72;
+  const toParLabel = toPar === 0 ? "Level par" : toPar > 0 ? `+${toPar} over par` : `${toPar} under par`;
+
+  const zone = grandTotal <= 68 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal <= 75 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-4">
+
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">⛳ Par 72 Scoring Challenge</h2>
+          <p className="text-green-300 text-sm mt-0.5">Select your result for each shot — lower is better</p>
+        </div>
+
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holes 1–2: Inside 3ft = 1 · 3–6ft = 2 · Hit Green = 3 · Missed Green = 4</span>
+          <span>Holes 3–7: Holed = 1 · 0–3ft = 2 · 3–6ft = 3 · Hit Green = 4 · Missed Green = 5</span>
+          <span>Hole 8: Holed = 1 · Missed = 2</span>
+        </div>
+
+        <div className="px-4 py-4 space-y-4">
+          {PAR72_HOLES.map((h, hi) => (
+            <div key={hi} className={`rounded-xl p-3 ${hi % 2 === 0 ? "bg-gray-50" : "bg-white border border-gray-100"}`}>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <span className="text-xs font-bold text-green-700 mr-2">Hole {h.hole}</span>
+                  <span className="text-xs text-gray-600">{h.desc}</span>
+                  <span className="text-xs text-gray-400 ml-1">({h.balls} {h.balls === 1 ? "ball" : "balls"})</span>
+                </div>
+                <span className="text-sm font-bold text-green-700">Total: {holeTotals[hi]}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {shots[hi].map((val, si) => (
+                  <div key={si} className="flex flex-col items-center gap-0.5">
+                    <span className="text-xs text-gray-400">#{si + 1}</span>
+                    <select
+                      value={val}
+                      onChange={e => setShot(hi, si, e.target.value)}
+                      className="border border-gray-300 rounded px-1 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+                    >
+                      {h.options.map(opt => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">{toParLabel} · Par 72</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-bold">{zone.label}</p>
+              <p className="text-xs opacity-70 mt-0.5">Perfect: 68 · Par: 72 · Worst: 88</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            Save Score ({grandTotal})
+          </button>
+          <button
+            onClick={onCancel}
+            className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium"
+          >
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -616,6 +903,8 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [guideSearch, setGuideSearch] = useState("");
   const [statsSection, setStatsSection] = useState("overview");
+  const [showSwedishScorecard, setShowSwedishScorecard] = useState(false);
+  const [showPar72Scorecard, setShowPar72Scorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -656,6 +945,7 @@ export default function App() {
   }
 
   async function deleteSession(s) {
+    if (!window.confirm(`Delete "${s.drillName}" on ${new Date(s.date).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}? This cannot be undone.`)) return;
     await DB.deleteSession(s.id);
     setSessions(sessions.filter(x => x.id !== s.id));
   }
@@ -683,6 +973,8 @@ export default function App() {
     </div>
   );
 
+  const isSwedish = +form.drillId === 93;
+  const isPar72 = +form.drillId === 2;
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -709,6 +1001,24 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {showSwedishScorecard && (
+        <SwedishScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowSwedishScorecard(false);
+          }}
+          onCancel={() => setShowSwedishScorecard(false)}
+        />
+      )}
+      {showPar72Scorecard && (
+        <Par72ScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowPar72Scorecard(false);
+          }}
+          onCancel={() => setShowPar72Scorecard(false)}
+        />
+      )}
       {/* Header */}
       <div className="bg-green-800 text-white px-4 py-4 shadow-md">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
@@ -798,7 +1108,7 @@ export default function App() {
     ))}
   </div>
   {form.drillCategory && (
-    <select value={form.drillId} onChange={e => setForm({...form, drillId:e.target.value})}
+    <select value={form.drillId} onChange={e => setForm({...form, drillId:e.target.value, score:""})}
       className="w-full border border-gray-300 rounded-lg px-3 py-2">
       <option value="">Select drill...</option>
       {DRILLS.filter(d => DRILL_CATEGORY[d.id] === form.drillCategory).map(d => (
@@ -809,12 +1119,54 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
-                    <input type="number" step="0.1" value={form.score}
-                      onChange={e => setForm({...form, score:e.target.value})}
-                      placeholder="Enter score..."
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                    {isSwedish ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowSwedishScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🇸🇪 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowSwedishScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isPar72 ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowPar72Scorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          ⛳ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score}
+                            <button
+                              type="button"
+                              onClick={() => setShowPar72Scorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <input type="number" step="0.1" value={form.score}
+                        onChange={e => setForm({...form, score:e.target.value})}
+                        placeholder="Enter score..."
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                    )}
                     {form.drillId && form.score !== "" && (() => {
                       const d = DRILLS.find(x => x.id === +form.drillId);
                       const idx = calcIndex(d, form.score);
