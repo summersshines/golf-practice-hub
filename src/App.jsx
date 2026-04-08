@@ -32,7 +32,7 @@ const CAT_COLOR = {
 };
 
 const DRILLS = [
-  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included." },
+  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:48,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included." },
   { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard included." },
   { id:3,  name:"Level Up Challenge - Par 21",             type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and as you progress up each level you add one more shot in the 25-50m zone. Just getting through Level 1 is a good achievement and should be considered a pass." },
   { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs. Work around the green hitting different shots, trying not to hit the same shot multiple times. 20 min max to complete this challenge." },
@@ -53,8 +53,8 @@ const DRILLS = [
   { id:19, name:"Bunker 6 - 10-35m",                       type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:150, notes:"Hit shots from the bunker from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:20, name:"Rough 6 - 10-35m",                        type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit shots from the rough from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:21, name:"10 Shot Circuit - 8-35m",                 type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:200, notes:"Hit shots from: 8m bunker, 9m fairway, 11m rough, 12m fairway, 16m bunker, 20m fairway, 22m rough, 25m bunker, 33m rough and 45m fairway. Total up distance from the hole for each shot for your score. Best on record is 32ft. Scorecard included." },
-  { id:22, name:"Texas Tech Challenge",                    type:"score",      unit:"",     dir:"lower",  perfect:-3,  worst:6,   notes:"Hit shots from: 10m fringe chip, 15m flop shot (short sided), 20m fairway with 50% green available, 20m fairway bump & run, 15m bunker (short sided), bunker 20m (open side), rough 15m with 50% green available, rough 25m open sided downhill, rough 10m short side. Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
-  { id:23, name:"Recovery Mission - 9 Hole Challenge",     type:"score",      unit:"",     dir:"lower",  perfect:-3,  worst:6,   notes:"Hit shots from: 8m fringe (downslope), 12m chip & run (upslope), bunker 12m (upslope), bunker 15m (downslope), pitch 25m (ball above feet), pitch 30m (ball below feet), lob 10m (upslope), chip & run 20m (uphill), chip & run 25m (downhill). Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
+  { id:22, name:"Texas Tech Challenge",                    type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 10m fringe chip, 15m flop shot (short sided), 20m fairway with 50% green available, 20m fairway bump & run, 15m bunker (short sided), bunker 20m (open side), rough 15m with 50% green available, rough 25m open sided downhill, rough 10m short side. Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
+  { id:23, name:"Recovery Mission - 9 Hole Challenge",     type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 8m fringe (downslope), 12m chip & run (upslope), bunker 12m (upslope), bunker 15m (downslope), pitch 25m (ball above feet), pitch 30m (ball below feet), lob 10m (upslope), chip & run 20m (uphill), chip & run 25m (downhill). Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
   { id:24, name:"Lob Master - 6 Shot Challenge (10-35m)",  type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:90,  notes:"Hit shots with your LW 58° or 60° from 10, 15, 20, 25, 30 and 35m. Total up the distance from the hole for each shot and record your score." },
   { id:25, name:"The 9 Station Circuit (10-35m)",          type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:180, notes:"Hit shots from: fairway 15, 25 and 35m. Rough 10, 20 and 30m. Bunker 11, 22 and 33m. Total up the distance from the hole for each shot and record your score. Best on record is 22.5ft. Scorecard included." },
   { id:26, name:"Wedge Combine 80-120m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:200, notes:"Hit shots from 80, 90, 100, 110 and 120m. Proximity to target, add up total feet for each shot for your score." },
@@ -248,6 +248,45 @@ const PROXIMITY_SCORECARDS = {
     ],
   },
 };
+const NEGATIVE_SCORECARDS = {
+  22: {
+    title: "Texas Tech Challenge",
+    icon: "🤠",
+    shots: [
+      "10m fringe chip",
+      "15m flop shot (short sided)",
+      "20m fairway — 50% green available",
+      "20m fairway bump & run",
+      "15m bunker (short sided)",
+      "20m bunker (open side)",
+      "15m rough — 50% green available",
+      "25m rough open sided downhill",
+      "10m rough short side",
+    ],
+  },
+  23: {
+    title: "Recovery Mission — 9 Hole Challenge",
+    icon: "🚨",
+    shots: [
+      "8m fringe (downslope)",
+      "12m chip & run (upslope)",
+      "12m bunker (upslope)",
+      "15m bunker (downslope)",
+      "25m pitch (ball above feet)",
+      "30m pitch (ball below feet)",
+      "10m lob (upslope)",
+      "20m chip & run (uphill)",
+      "25m chip & run (downhill)",
+    ],
+  },
+};
+const NEGATIVE_OPTIONS = [
+  { value: -2, label: "-2 — Holed" },
+  { value: -1, label: "-1 — 0–3ft" },
+  { value:  0, label: " 0 — 3–6ft" },
+  { value:  1, label: "+1 — 6–12ft" },
+  { value:  2, label: "+2 — 12ft+" },
+];
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -1071,6 +1110,82 @@ function ProximityScorecardModal({ drillId, onSave, onCancel }) {
   );
 }
 
+function NegativeScorecardModal({ drillId, onSave, onCancel }) {
+  const config = NEGATIVE_SCORECARDS[drillId];
+  const [values, setValues] = useState(config.shots.map(() => 2));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const grandTotal = values.reduce((a, b) => a + b, 0);
+  const totalLabel = grandTotal < 0
+    ? { text: `${grandTotal} under`, color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal > 0
+    ? { text: `+${grandTotal} over`, color: "text-red-700 bg-red-50 border-red-200" }
+    : { text: "Level", color: "text-yellow-700 bg-yellow-50 border-yellow-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Select your result for each shot — lower is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex flex-wrap gap-x-4 gap-y-1">
+          <span>Holed = -2</span>
+          <span>0–3ft = -1</span>
+          <span>3–6ft = 0</span>
+          <span>6–12ft = +1</span>
+          <span>12ft+ = +2</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {config.shots.map((shot, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-xs font-bold text-green-700 w-5 shrink-0">{i + 1}</span>
+              <span className="text-sm text-gray-700 flex-1">{shot}</span>
+              <select
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                {NEGATIVE_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${totalLabel.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">{totalLabel.text} · Perfect: -3 · Worst: +6</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p>-3 = perfect</p>
+              <p>0 = level par</p>
+              <p>+6 = worst</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            Save Score ({grandTotal})
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -1283,6 +1398,7 @@ export default function App() {
   const [showPar72Scorecard, setShowPar72Scorecard] = useState(false);
   const [showPelzScorecard, setShowPelzScorecard] = useState(false);
   const [showProximityScorecard, setShowProximityScorecard] = useState(false);
+  const [showNegativeScorecard, setShowNegativeScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -1355,6 +1471,7 @@ export default function App() {
   const isPar72 = +form.drillId === 2;
   const isPelz = +form.drillId === 9;
   const isProximity = [1, 8, 10, 21, 25, 27, 28].includes(+form.drillId);
+  const isNegative = [22, 23].includes(+form.drillId);
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -1416,6 +1533,16 @@ export default function App() {
             setShowProximityScorecard(false);
           }}
           onCancel={() => setShowProximityScorecard(false)}
+        />
+      )}
+      {showNegativeScorecard && isNegative && (
+        <NegativeScorecardModal
+          drillId={+form.drillId}
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowNegativeScorecard(false);
+          }}
+          onCancel={() => setShowNegativeScorecard(false)}
         />
       )}
       {/* Header */}
@@ -1518,7 +1645,7 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -1595,6 +1722,26 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => setShowProximityScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isNegative ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowNegativeScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🤠 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score}
+                            <button
+                              type="button"
+                              onClick={() => setShowNegativeScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
                             >Edit</button>
                           </div>
