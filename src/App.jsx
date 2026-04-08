@@ -32,16 +32,16 @@ const CAT_COLOR = {
 };
 
 const DRILLS = [
-  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m." },
-  { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard is needed for instructions and scoring metrics." },
+  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:30,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included." },
+  { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard included." },
   { id:3,  name:"Level Up Challenge - Par 21",             type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and as you progress up each level you add one more shot in the 25-50m zone. Just getting through Level 1 is a good achievement and should be considered a pass." },
   { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs. Work around the green hitting different shots, trying not to hit the same shot multiple times. 20 min max to complete this challenge." },
   { id:5,  name:"First to 6 Shootout",                     type:"points",     unit:"holes",dir:"lower",  perfect:2,   worst:10,  notes:"First to 6 points wins. Scoring: holed = 3pts, 0-3ft = 2pts, 3-6ft = 1pt. Count number of holes needed to be played to win and/or reach 6 points." },
   { id:6,  name:"Basket Gauntlet - 3ft Zone",              type:"completion", unit:"shots",dir:"lower",  perfect:10,  worst:30,  notes:"Total number of shots to get 10 balls inside the target range (either 3ft or 6ft circles)." },
   { id:7,  name:"Hole Out Gauntlet",                       type:"completion", unit:"shots",dir:"lower",  perfect:10,  worst:50,  notes:"Total number of shots to get 10 balls inside the basket." },
-  { id:8,  name:"The Full Range Combine 10-100m",          type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:250, notes:"Proximity to target, total feet added up after the 10 shots, closer is better. Hit shots from 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100m." },
-  { id:9,  name:"Pelz Gauntlet",                           type:"score",      unit:"pts",  dir:"higher", perfect:136, worst:0,   notes:"Hit 10 shots from each of the following — 3/4 Wedge 70m, 1/2 Wedge 40m, Long Sand 20-35m, Short Sand 7-15m, Long Chip 15-30m, Short Chip 7-15m, Pitch Fairway 10-20m, Pitch Rough 10-20m, Cut Lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt." },
-  { id:10, name:"Variety Combine",                         type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Total proximity to hole for all 10 shots. Hit 3 chip & run shots from 8m, 16m, 24m. 2 bunker shots from 10m and 20m. 3 shots with any wedge from 8m, 23m, 36m. 2 flop/lob shots from 11m and 16m." },
+  { id:8,  name:"The Full Range Combine 10-100m",          type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:250, notes:"Proximity to target, total feet added up after the 10 shots, closer is better. Hit shots from 10, 20, 30, 40, 50, 60, 70, 80, 90 and 100m. Scorecard included." },
+  { id:9,  name:"Pelz Gauntlet",                           type:"score",      unit:"pts",  dir:"higher", perfect:136, worst:0,   notes:"Hit 10 shots from each of the following — 3/4 Wedge 70m, 1/2 Wedge 40m, Long Sand 20-35m, Short Sand 7-15m, Long Chip 15-30m, Short Chip 7-15m, Pitch Fairway 10-20m, Pitch Rough 10-20m, Cut Lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt. Scorecard included." },
+  { id:10, name:"Variety Combine",                         type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Total proximity to hole for all 10 shots. Hit 3 chip & run shots from 8m, 16m, 24m. 2 bunker shots from 10m and 20m. 3 shots with any wedge from 8m, 23m, 36m. 2 flop/lob shots from 11m and 16m. Scorecard included." },
   { id:11, name:"Wedge Combine 30-70m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Hit shots from 30, 40, 50, 60 and 70m. Score is the total number of feet for the shots added up. Proximity to hole." },
   { id:12, name:"3 Shot Close Range Combine (10-14m)",     type:"distance",   unit:"ft",   dir:"lower",  perfect:6,   worst:60,  notes:"Hit shots from 10m fairway, 12m bunker and 14m rough. Total up the distance from the hole for each shot for your score." },
   { id:13, name:"3 Shot Mid Range Combine (20-25m)",       type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:75,  notes:"Hit shots from 20m rough, 23m bunker and 25m fairway. Total up the distance from the hole for each shot for your score." },
@@ -52,14 +52,14 @@ const DRILLS = [
   { id:18, name:"Fairway 6 - 10-35m",                      type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:100, notes:"Hit shots from the fairway from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:19, name:"Bunker 6 - 10-35m",                       type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:150, notes:"Hit shots from the bunker from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:20, name:"Rough 6 - 10-35m",                        type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit shots from the rough from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
-  { id:21, name:"10 Shot Circuit - 8-35m",                 type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:200, notes:"Hit shots from: 8m bunker, 9m fairway, 11m rough, 12m fairway, 16m bunker, 20m fairway, 22m rough, 25m bunker, 33m rough and 45m fairway. Total up distance from the hole for each shot for your score. Best on record is 32ft." },
+  { id:21, name:"10 Shot Circuit - 8-35m",                 type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:200, notes:"Hit shots from: 8m bunker, 9m fairway, 11m rough, 12m fairway, 16m bunker, 20m fairway, 22m rough, 25m bunker, 33m rough and 45m fairway. Total up distance from the hole for each shot for your score. Best on record is 32ft. Scorecard included." },
   { id:22, name:"Texas Tech Challenge",                    type:"score",      unit:"",     dir:"lower",  perfect:-3,  worst:6,   notes:"Hit shots from: 10m fringe chip, 15m flop shot (short sided), 20m fairway with 50% green available, 20m fairway bump & run, 15m bunker (short sided), bunker 20m (open side), rough 15m with 50% green available, rough 25m open sided downhill, rough 10m short side. Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
   { id:23, name:"Recovery Mission - 9 Hole Challenge",     type:"score",      unit:"",     dir:"lower",  perfect:-3,  worst:6,   notes:"Hit shots from: 8m fringe (downslope), 12m chip & run (upslope), bunker 12m (upslope), bunker 15m (downslope), pitch 25m (ball above feet), pitch 30m (ball below feet), lob 10m (upslope), chip & run 20m (uphill), chip & run 25m (downhill). Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
   { id:24, name:"Lob Master - 6 Shot Challenge (10-35m)",  type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:90,  notes:"Hit shots with your LW 58° or 60° from 10, 15, 20, 25, 30 and 35m. Total up the distance from the hole for each shot and record your score." },
-  { id:25, name:"The 9 Station Circuit (10-35m)",          type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:180, notes:"Hit shots from: fairway 15, 25 and 35m. Rough 10, 20 and 30m. Bunker 11, 22 and 33m. Total up the distance from the hole for each shot and record your score. Best on record is 22.5ft." },
+  { id:25, name:"The 9 Station Circuit (10-35m)",          type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:180, notes:"Hit shots from: fairway 15, 25 and 35m. Rough 10, 20 and 30m. Bunker 11, 22 and 33m. Total up the distance from the hole for each shot and record your score. Best on record is 22.5ft. Scorecard included." },
   { id:26, name:"Wedge Combine 80-120m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:200, notes:"Hit shots from 80, 90, 100, 110 and 120m. Proximity to target, add up total feet for each shot for your score." },
-  { id:27, name:"All the Shots Combine (18) 20-70m",       type:"distance",   unit:"ft",   dir:"lower",  perfect:80,  worst:540, notes:"Hit shots from the fairway, bunker and rough from 20, 30, 40, 50, 60 and 70m. Total up the distance from the hole for each shot and record your score." },
-  { id:28, name:"15 Shot Grinder Combine (7-35m)",         type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:450, notes:"Hit shots from the fairway, bunker and rough from 7, 14, 21, 28 and 35m. Total up the distance from the hole for each shot and record your score." },
+  { id:27, name:"All the Shots Combine (18) 20-70m",       type:"distance",   unit:"ft",   dir:"lower",  perfect:80,  worst:540, notes:"Hit shots from the fairway, bunker and rough from 20, 30, 40, 50, 60 and 70m. Total up the distance from the hole for each shot and record your score. Scorecard included." },
+  { id:28, name:"15 Shot Grinder Combine (7-35m)",         type:"distance",   unit:"ft",   dir:"lower",  perfect:50,  worst:450, notes:"Hit shots from the fairway, bunker and rough from 7, 14, 21, 28 and 35m. Total up the distance from the hole for each shot and record your score. Scorecard included." },
   { id:29, name:"Bump and Run - No Wedges Allowed",        type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:100, notes:"Hit shots from 10, 15, 20, 25, 30 and 35m. No wedges allowed! Total up the distance from the hole for each shot and record your score." },
   { id:30, name:"Wedge Combine 50-75m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:75,  notes:"Hit shots from 50, 65 and 75m. Total up the distance from the hole for each shot and record your score." },
   { id:31, name:"Wedge Combine 80-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:15,  worst:90,  notes:"Hit shots from 80, 90 and 100m. Total up the distance from the hole for each shot and record your score." },
@@ -124,7 +124,7 @@ const DRILLS = [
   { id:90, name:"Wedge Combine 50-90m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:90,  notes:"Hit 3 shots in total, one from 50, 70 and 90m. Total up your distance from the hole for each shot. Lower is better." },
   { id:91, name:"Wedge Combine 30-50m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit 5 shots in total, one from 30, 35, 40, 45 and 50m. Total up your distance from the hole for each shot. Lower is better." },
   { id:92, name:"Wedge Combine 40-60m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Hit 5 shots in total, one from 40, 45, 50, 55 and 60m. Total up your distance from the hole for each shot. Lower is better." },
-  { id:93, name:"Swedish National 40 Shot Combine",        type:"score",      unit:"pts",  dir:"higher", perfect:80,  worst:0,   notes:"Hit 5 shots from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts. You can use an alignment stick as the hole and change shots for each round/attempt." },
+  { id:93, name:"Swedish National 40 Shot Combine",        type:"score",      unit:"pts",  dir:"higher", perfect:80,  worst:0,   notes:"Hit 5 shots from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts. You can use an alignment stick as the hole and change shots for each round/attempt. Scorecard included." },
   { id:94, name:"Swedish National Quick Fire",             type:"score",      unit:"pts",  dir:"higher", perfect:16,  worst:0,   notes:"Hit 1 shot from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts." },
   { id:95, name:"Pelz Snapshot",                           type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 1 shot from each of the following: 3/4 wedge 70m, 1/2 wedge 40m, long sand 20-35m, short sand 7-15m, long chip 15-30m, short chip 7-15m, pitch fairway 10-20m, pitch rough 10-20m, cut lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt." },
   { id:96, name:"Wedge Combine 40-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:35,  worst:185, notes:"Hit 5 shots in total, one from 40, 55, 70, 85 and 100m. Total up your distance from the hole for each shot. Lower is better." },
@@ -175,6 +175,79 @@ function getPelzHandicap(score) {
   }
   return "40";
 }
+const PROXIMITY_SCORECARDS = {
+  1: {
+    title: "Global Combine",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Chip & Run", stations: ["15–19m", "20–25m", "30–35m"] },
+      { label: "Bunker",     stations: ["10–14m", "20–25m", "30–35m"] },
+      { label: "Pitch",      stations: ["20–25m", "30–35m", "40–45m"] },
+      { label: "Lob",        stations: ["10–12m", "15–17m", "20–22m"] },
+    ],
+  },
+  8: {
+    title: "Full Range Combine 10–100m",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["10m", "20m", "30m", "40m", "50m", "60m", "70m", "80m", "90m", "100m"] },
+    ],
+  },
+  10: {
+    title: "Variety Combine",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Chip & Run", stations: ["8m", "16m", "24m"] },
+      { label: "Bunker",     stations: ["10m", "20m"] },
+      { label: "Wedge",      stations: ["8m", "23m", "36m"] },
+      { label: "Flop / Lob", stations: ["11m", "16m"] },
+    ],
+  },
+  21: {
+    title: "10 Shot Circuit 8–35m",
+    icon: "🔄",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["9m", "12m", "20m"] },
+      { label: "Bunker",  stations: ["8m", "16m", "25m"] },
+      { label: "Rough",   stations: ["11m", "22m", "33m"] },
+      { label: "Pitch",   stations: ["45m fairway"] },
+    ],
+  },
+  25: {
+    title: "9 Station Circuit 10–35m",
+    icon: "🔁",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["15m", "25m", "35m"] },
+      { label: "Rough",   stations: ["10m", "20m", "30m"] },
+      { label: "Bunker",  stations: ["11m", "22m", "33m"] },
+    ],
+  },
+  27: {
+    title: "All the Shots Combine 20–70m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["20m", "30m", "40m", "50m", "60m", "70m"] },
+      { label: "Bunker",  stations: ["20m", "30m", "40m", "50m", "60m", "70m"] },
+      { label: "Rough",   stations: ["20m", "30m", "40m", "50m", "60m", "70m"] },
+    ],
+  },
+  28: {
+    title: "15 Shot Grinder Combine 7–35m",
+    icon: "💪",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["7m", "14m", "21m", "28m", "35m"] },
+      { label: "Bunker",  stations: ["7m", "14m", "21m", "28m", "35m"] },
+      { label: "Rough",   stations: ["7m", "14m", "21m", "28m", "35m"] },
+    ],
+  },
+};
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
   const s = parseFloat(score);
@@ -911,6 +984,93 @@ function PelzScorecardModal({ onSave, onCancel }) {
   );
 }
 
+function ProximityScorecardModal({ drillId, onSave, onCancel }) {
+  const config = PROXIMITY_SCORECARDS[drillId];
+  const drill = DRILLS.find(d => d.id === drillId);
+  const flatStations = config.groups.flatMap(g => g.stations.map(s => ({ group: g.label, station: s })));
+  const [values, setValues] = useState(flatStations.map(() => ""));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? val : v));
+  }
+
+  const runningTotal = parseFloat(
+    values.reduce((sum, v) => sum + (v === "" ? 0 : parseFloat(v) || 0), 0).toFixed(1)
+  );
+  const allFilled = values.every(v => v !== "");
+  const finalScore = parseFloat(
+    values.reduce((sum, v) => sum + (parseFloat(v) || 0), 0).toFixed(1)
+  );
+
+  let stationIdx = 0;
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Enter proximity to hole in feet for each shot — lower is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Record how many feet each shot finishes from the hole · Total all shots for your score
+        </div>
+        <div className="px-4 py-4 space-y-4">
+          {config.groups.map((group, gi) => (
+            <div key={gi}>
+              <div className="text-xs font-bold text-green-700 uppercase tracking-wide mb-2 pb-1 border-b border-green-100">
+                {group.label}
+              </div>
+              <div className="space-y-2">
+                {group.stations.map((station) => {
+                  const idx = stationIdx++;
+                  return (
+                    <div key={idx} className="flex items-center gap-3">
+                      <span className="text-sm text-gray-700 flex-1">{station}</span>
+                      <input
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        value={values[idx]}
+                        onChange={e => setValue(idx, e.target.value)}
+                        placeholder="ft"
+                        className="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-right focus:outline-none focus:border-green-500"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Running Total</p>
+              <p className="text-4xl font-extrabold leading-none">{runningTotal}</p>
+              <p className="text-xs mt-0.5">feet — lower is better</p>
+            </div>
+            <div className="text-right text-xs text-green-600">
+              {drill && <p>Perfect: {drill.perfect} ft</p>}
+              {drill && <p>Worst: {drill.worst} ft</p>}
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(finalScore)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({runningTotal} ft)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -1122,6 +1282,7 @@ export default function App() {
   const [showSwedishScorecard, setShowSwedishScorecard] = useState(false);
   const [showPar72Scorecard, setShowPar72Scorecard] = useState(false);
   const [showPelzScorecard, setShowPelzScorecard] = useState(false);
+  const [showProximityScorecard, setShowProximityScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -1193,6 +1354,7 @@ export default function App() {
   const isSwedish = +form.drillId === 93;
   const isPar72 = +form.drillId === 2;
   const isPelz = +form.drillId === 9;
+  const isProximity = [1, 8, 10, 21, 25, 27, 28].includes(+form.drillId);
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -1244,6 +1406,16 @@ export default function App() {
             setShowPelzScorecard(false);
           }}
           onCancel={() => setShowPelzScorecard(false)}
+        />
+      )}
+      {showProximityScorecard && isProximity && (
+        <ProximityScorecardModal
+          drillId={+form.drillId}
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowProximityScorecard(false);
+          }}
+          onCancel={() => setShowProximityScorecard(false)}
         />
       )}
       {/* Header */}
@@ -1346,7 +1518,7 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -1403,6 +1575,26 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => setShowPelzScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isProximity ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowProximityScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          📏 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} ft
+                            <button
+                              type="button"
+                              onClick={() => setShowProximityScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
                             >Edit</button>
                           </div>
