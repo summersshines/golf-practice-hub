@@ -64,8 +64,8 @@ const DRILLS = [
   { id:30, name:"Wedge Combine 50-75m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:75,  notes:"Hit shots from 50, 65 and 75m. Total up the distance from the hole for each shot and record your score." },
   { id:31, name:"Wedge Combine 80-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:15,  worst:90,  notes:"Hit shots from 80, 90 and 100m. Total up the distance from the hole for each shot and record your score." },
   { id:32, name:"Wedge Circuit 50-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:46,  worst:196, notes:"Hit shots from 50, 90, 75, 83, 63 and 99m. Total up the distance from the hole for each shot and record your score." },
-  { id:33, name:"100ft Gauntlet (18 Putts)",               type:"score",      unit:"",     dir:"lower",  perfect:18,  worst:0,   notes:"It is either in or miss — you only count the putts you hole towards your score. Set up 9x3ft putts around the hole, then 4x6ft, 3x9ft, 1x10ft and 1x12ft, changing slope and break on each putt." },
-  { id:34, name:"250ft Challenge",                         type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:0,   notes:"Total feet holed. 100 is average, 130 is excellent, 250 is near impossible. Set up putts from 5, 10, 15, 20ft at 5 different holes changing slope and break on each one." },
+  { id:33, name:"100ft Gauntlet (18 Putts)",               type:"score",      unit:"",     dir:"lower",  perfect:18,  worst:0,   notes:"It is either in or miss — you only count the putts you hole towards your score. Set up 9x3ft putts around the hole, then 4x6ft, 3x9ft, 1x10ft and 1x12ft, changing slope and break on each putt. Scorecard included." },
+  { id:34, name:"250ft Challenge",                         type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:0,   notes:"Total feet holed. 100 is average, 130 is excellent, 250 is near impossible. Set up putts from 5, 10, 15, 20ft at 5 different holes changing slope and break on each one. Scorecard included." },
   { id:35, name:"The Carousel 4-10ft",                     type:"level",      unit:"ft",   dir:"higher", perfect:10,  worst:0,   notes:"Start with 8 tees around the hole at 4ft. Hole the putt and move the tee back to 5ft. Miss and remove the tee. Keep working around the hole until all tees are removed. The distance you last putted from is your score." },
   { id:36, name:"Drawback Gauntlet 5-15ft",                type:"score",      unit:"putts",dir:"lower",  perfect:9,   worst:27,  notes:"Play 9 holes on the putting green with each first putt starting from between 5 and 15ft. Change slope and break on each putt. If your first putt misses draw the ball back 1 putter length and continue until holed. No tap ins! Goal is 13 putts or less." },
   { id:37, name:"Long Distance Proximity Test",            type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Closer is better. Hit putts from 30, 40, 50, 60 and 70ft. Total up distance from the hole after each putt for your score." },
@@ -80,7 +80,7 @@ const DRILLS = [
   { id:46, name:"Momentum Keeper 12ft Eliminator",         type:"count",      unit:"putts",dir:"lower",  perfect:12,  worst:36,  notes:"Hole the putt to eliminate that position. Keep going around the hole until all 8 putts are eliminated. 36 putts maximum to finish." },
   { id:47, name:"The Surgeon 4ft Eliminator",              type:"count",      unit:"putts",dir:"lower",  perfect:8,   worst:14,  notes:"Hole the putt to eliminate that position. Keep going around the hole until all 8 putts are eliminated. 14 putts maximum to finish." },
   { id:48, name:"The Payday 8ft Eliminator",               type:"count",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Hole the putt to eliminate that position. Keep going around the hole until all 8 putts are eliminated. 24 putts maximum to complete." },
-  { id:49, name:"Luke Donald Make Zone Test (4-8ft)",      type:"score",      unit:"/20",  dir:"higher", perfect:20,  worst:0,   notes:"Set up putts from 4, 5, 6, 7 and 8ft around the hole at 4 different holes, changing slope and break on each. Score = total putts holed out of 20. 15 is tour average." },
+  { id:49, name:"Luke Donald Make Zone Test (4-8ft)",      type:"score",      unit:"/20",  dir:"higher", perfect:20,  worst:0,   notes:"Set up putts from 4, 5, 6, 7 and 8ft around the hole at 4 different holes, changing slope and break on each. Score = total putts holed out of 20. 15 is tour average. Scorecard included." },
   { id:50, name:"Iron Gates",                              type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:20,  notes:"Count how many putts it takes to get 10 putts through the start gate and into the hole without hitting any barriers." },
   { id:51, name:"Iron Gates (R-L)",                        type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Count how many putts it takes to get 10 putts right-to-left through the start gate and into the hole without hitting any barriers." },
   { id:52, name:"Iron Gates (L-R)",                        type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:24,  notes:"Count how many putts it takes to get 10 putts left-to-right through the start gate and into the hole without hitting any barriers." },
@@ -100,13 +100,13 @@ const DRILLS = [
   { id:66, name:"Crucible 'The Trenches' 6-8ft",           type:"completion", unit:"putts",dir:"lower",  perfect:12,  worst:42,  notes:"Set up 5 tees around the hole at 6ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 8ft." },
   { id:67, name:"Crucible 'Sniper School' 7-10ft",         type:"completion", unit:"putts",dir:"lower",  perfect:30,  worst:130, notes:"Set up 5 tees around the hole at 7ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 10ft." },
   { id:68, name:"Drawback Gauntlet 15-30ft",               type:"score",      unit:"putts",dir:"lower",  perfect:16,  worst:36,  notes:"Play 9 holes on the putting green with each first putt from 15-30ft. Change slope and break on each putt. If your first putt misses draw the ball back 1 putter length and continue until holed. No tap ins! Goal is 18 putts or less." },
-  { id:69, name:"4-5-6m Points Race (12,15,18ft)",         type:"score",      unit:"putts",dir:"lower",  perfect:12,  worst:40,  notes:"Hit alternating random putts from 4, 5, 6, 4, 5, 6m changing slope and break. Objective is to get to 15 points in as few putts as possible. Scoring: holed = 3pts, 0-3ft past = 0pts, short or 3-putt = -3pts. Total up the number of putts to reach 15 points." },
-  { id:70, name:"Broadie Chase 5ft",                       type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:16,  notes:"Hit putts from 5ft around the hole. Count how many putts to reach 15pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts." },
-  { id:71, name:"Broadie Chase 10ft",                      type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:26,  notes:"Hit putts from 10ft around the hole. Count how many putts to reach 10pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts." },
-  { id:72, name:"Broadie Chase 15ft",                      type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:26,  notes:"Hit putts from 15ft around the hole. Count how many putts to reach 5pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts." },
-  { id:73, name:"Broadie Test 5ft",                        type:"score",      unit:"",     dir:"higher", perfect:20,  worst:0,   notes:"Hit 10 putts from 5ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts." },
-  { id:74, name:"Broadie Test 10ft",                       type:"score",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Hit 10 putts from 10ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts." },
-  { id:75, name:"Broadie Test 15ft",                       type:"score",      unit:"",     dir:"higher", perfect:6,   worst:0,   notes:"Hit 10 putts from 15ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts." },
+  { id:69, name:"4-5-6m Points Race (12,15,18ft)",         type:"score",      unit:"putts",dir:"lower",  perfect:12,  worst:40,  notes:"Hit alternating random putts from 4, 5, 6, 4, 5, 6m changing slope and break. Objective is to get to 15 points in as few putts as possible. Scoring: holed = 3pts, 0-3ft past = 0pts, short or 3-putt = -3pts. Total up the number of putts to reach 15 points. Scorecard included." },
+  { id:70, name:"Broadie Chase 5ft",                       type:"score",      unit:"putts",dir:"lower",  perfect:8,   worst:16,  notes:"Hit putts from 5ft around the hole. Count how many putts to reach 15pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Scorecard included." },
+  { id:71, name:"Broadie Chase 10ft",                      type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:26,  notes:"Hit putts from 10ft around the hole. Count how many putts to reach 10pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Scorecard included." },
+  { id:72, name:"Broadie Chase 15ft",                      type:"score",      unit:"putts",dir:"lower",  perfect:10,  worst:26,  notes:"Hit putts from 15ft around the hole. Count how many putts to reach 5pts. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Scorecard included." },
+  { id:73, name:"Broadie Test 5ft",                        type:"score",      unit:"",     dir:"higher", perfect:20,  worst:0,   notes:"Hit 10 putts from 5ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts. Scorecard included." },
+  { id:74, name:"Broadie Test 10ft",                       type:"score",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Hit 10 putts from 10ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts. Scorecard included." },
+  { id:75, name:"Broadie Test 15ft",                       type:"score",      unit:"",     dir:"higher", perfect:6,   worst:0,   notes:"Hit 10 putts from 15ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts. Scorecard included." },
   { id:76, name:"Washington Speed Control - 20ft",         type:"distance",   unit:"ft",   dir:"lower",  perfect:8,   worst:40,  notes:"Hit 10 putts from 20ft around the hole. Measure total distance from the hole for each putt in inches (2.5cm) and total them up. Record your score in feet (12 inches or 30cm = 1 foot)." },
   { id:77, name:"Washington Speed Control - 30ft",         type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:40,  notes:"Hit 10 putts from 30ft around the hole. Measure total distance from the hole for each putt in inches (2.5cm) and total them up. Record your score in feet (12 inches or 30cm = 1 foot)." },
   { id:78, name:"Junior Putting Circuit",                  type:"score",      unit:"putts",dir:"lower",  perfect:12,  worst:24,  notes:"Hit putts from 3, 4, 5, 6, 8, 12, 15, 20 and 30ft. Putt each ball out until it is in the hole. Add up your total for the 9 holes for your score. Scorecard included." },
@@ -286,6 +286,17 @@ const NEGATIVE_OPTIONS = [
   { value:  0, label: " 0 — 3–6ft" },
   { value:  1, label: "+1 — 6–12ft" },
   { value:  2, label: "+2 — 12ft+" },
+];
+const BROADIE_OPTIONS = [
+  { value: 2,  label: "2 pts — Holed" },
+  { value: 0,  label: "0 pts — 2-putt" },
+  { value: -1, label: "-1 pt — Short, 2-putt" },
+  { value: -3, label: "-3 pts — 3-putt" },
+];
+const POINTS_RACE_OPTIONS = [
+  { value:  3, label: "3 pts — Holed" },
+  { value:  0, label: "0 pts — 0–3ft past hole" },
+  { value: -3, label: "-3 pts — Short or 3-putt" },
 ];
 const JUNIOR_PUTTING_HOLES = [
   { hole: 1, dist: "3ft" },
@@ -1657,6 +1668,578 @@ function PelzSnapshotScorecardModal({ onSave, onCancel }) {
   );
 }
 
+function BroadieChaseModal({ drillId, onSave, onCancel }) {
+  const configs = {
+    70: { dist: "5ft",  target: 15, cap: 16 },
+    71: { dist: "10ft", target: 10, cap: 26 },
+    72: { dist: "15ft", target: 5,  cap: 26 },
+  };
+  const config = configs[drillId];
+  const [putts, setPutts] = useState([]);
+  const [finished, setFinished] = useState(false);
+  const [capReached, setCapReached] = useState(false);
+
+  const runningPoints = putts.reduce((a, b) => a + b, 0);
+  const totalPutts = putts.length;
+
+  function addPutt(val) {
+    const newVal = Number(val);
+    const newPutts = [...putts, newVal];
+    const newPoints = newPutts.reduce((a, b) => a + b, 0);
+    setPutts(newPutts);
+    if (newPoints >= config.target) {
+      setFinished(true);
+    } else if (newPutts.length >= config.cap) {
+      setCapReached(true);
+      setFinished(true);
+    }
+  }
+
+  const nextPuttNum = totalPutts + 1;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ Broadie Chase — {config.dist}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Reach {config.target} points — count total putts taken</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex justify-between text-xs font-medium text-green-800">
+          <span>Holed = 2pts · 2-putt = 0pts · Short 2-putt = -1pt · 3-putt = -3pts</span>
+        </div>
+
+        <div className="px-4 py-4">
+          {/* Running log */}
+          {putts.length > 0 && (
+            <div className="space-y-1 mb-4 max-h-48 overflow-y-auto">
+              {putts.map((v, i) => {
+                const opt = BROADIE_OPTIONS.find(o => o.value === v);
+                return (
+                  <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+                    <span className="text-xs font-bold text-green-700 w-16 shrink-0">Putt {i + 1} — {config.dist}</span>
+                    <span className="flex-1 text-gray-600 text-xs">{opt?.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Next putt input or finished message */}
+          {!finished ? (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+              <p className="text-sm font-semibold text-green-800 mb-2">Putt {nextPuttNum} — {config.dist}</p>
+              <div className="flex flex-col gap-2">
+                {BROADIE_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => addPutt(opt.value)}
+                    className="w-full text-left px-4 py-2 rounded-lg border border-gray-200 bg-white hover:bg-green-50 hover:border-green-400 text-sm transition-colors"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={`rounded-xl border px-4 py-4 text-center ${capReached ? "bg-red-50 border-red-200 text-red-700" : "bg-green-50 border-green-200 text-green-700"}`}>
+              <p className="text-lg font-bold mb-1">
+                {capReached ? "Maximum putts reached!" : "Target reached! 🎉"}
+              </p>
+              <p className="text-xs opacity-70 mb-2">
+                {capReached ? `You hit the ${config.cap} putt cap` : `You reached ${config.target} points`}
+              </p>
+              <p className="text-4xl font-extrabold">{totalPutts}</p>
+              <p className="text-sm mt-1">total putts · {runningPoints} pts</p>
+            </div>
+          )}
+        </div>
+
+        {/* Stats bar */}
+        <div className="px-5 pb-4 flex gap-3">
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Putts taken</p>
+            <p className="text-2xl font-extrabold text-gray-700">{totalPutts}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Points</p>
+            <p className={`text-2xl font-extrabold ${runningPoints >= 0 ? "text-green-700" : "text-red-600"}`}>{runningPoints}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Target</p>
+            <p className="text-2xl font-extrabold text-gray-700">{config.target}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          {finished && (
+            <button
+              onClick={() => onSave(totalPutts)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({totalPutts} putts)
+            </button>
+          )}
+          <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PointsRaceScorecardModal({ onSave, onCancel }) {
+  const TARGET = 15;
+  const CAP = 40;
+  const DISTANCES = ["4m", "5m", "6m"];
+  const [putts, setPutts] = useState([]);
+  const [finished, setFinished] = useState(false);
+  const [capReached, setCapReached] = useState(false);
+
+  const runningPoints = putts.reduce((a, b) => a + b, 0);
+  const totalPutts = putts.length;
+  const currentDist = DISTANCES[totalPutts % 3];
+
+  function addPutt(val) {
+    const newVal = Number(val);
+    const newPutts = [...putts, newVal];
+    const newPoints = newPutts.reduce((a, b) => a + b, 0);
+    setPutts(newPutts);
+    if (newPoints >= TARGET) {
+      setFinished(true);
+    } else if (newPutts.length >= CAP) {
+      setCapReached(true);
+      setFinished(true);
+    }
+  }
+
+  const nextPuttNum = totalPutts + 1;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🎯 4-5-6m Points Race</h2>
+          <p className="text-green-300 text-sm mt-0.5">Reach {TARGET} points — count total putts taken</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          <span>Holed = 3pts · 0–3ft past = 0pts · Short or 3-putt = -3pts</span>
+        </div>
+
+        <div className="px-4 py-4">
+          {putts.length > 0 && (
+            <div className="space-y-1 mb-4 max-h-48 overflow-y-auto">
+              {putts.map((v, i) => {
+                const dist = DISTANCES[i % 3];
+                const opt = POINTS_RACE_OPTIONS.find(o => o.value === v);
+                return (
+                  <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+                    <span className="text-xs font-bold text-green-700 w-16 shrink-0">Putt {i + 1} — {dist}</span>
+                    <span className="flex-1 text-gray-600 text-xs">{opt?.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {!finished ? (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+              <p className="text-sm font-semibold text-green-800 mb-2">Putt {nextPuttNum} — {currentDist}</p>
+              <div className="flex flex-col gap-2">
+                {POINTS_RACE_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => addPutt(opt.value)}
+                    className="w-full text-left px-4 py-2 rounded-lg border border-gray-200 bg-white hover:bg-green-50 hover:border-green-400 text-sm transition-colors"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={`rounded-xl border px-4 py-4 text-center ${capReached ? "bg-red-50 border-red-200 text-red-700" : "bg-green-50 border-green-200 text-green-700"}`}>
+              <p className="text-lg font-bold mb-1">
+                {capReached ? "Maximum putts reached!" : "Target reached! 🎉"}
+              </p>
+              <p className="text-xs opacity-70 mb-2">
+                {capReached ? `You hit the ${CAP} putt cap` : `You reached ${TARGET} points`}
+              </p>
+              <p className="text-4xl font-extrabold">{totalPutts}</p>
+              <p className="text-sm mt-1">total putts · {runningPoints} pts</p>
+            </div>
+          )}
+        </div>
+
+        <div className="px-5 pb-4 flex gap-3">
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Putts taken</p>
+            <p className="text-2xl font-extrabold text-gray-700">{totalPutts}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Points</p>
+            <p className={`text-2xl font-extrabold ${runningPoints >= 0 ? "text-green-700" : "text-red-600"}`}>{runningPoints}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Target</p>
+            <p className="text-2xl font-extrabold text-gray-700">{TARGET}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          {finished && (
+            <button
+              onClick={() => onSave(totalPutts)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({totalPutts} putts)
+            </button>
+          )}
+          <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BroadieTestModal({ drillId, onSave, onCancel }) {
+  const configs = {
+    73: { dist: "5ft",  putts: 10 },
+    74: { dist: "10ft", putts: 10 },
+    75: { dist: "15ft", putts: 10 },
+  };
+  const config = configs[drillId];
+  const [values, setValues] = useState(Array(config.putts).fill(null));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const allFilled = values.every(v => v !== null);
+  const grandTotal = values.reduce((a, b) => a + (b ?? 0), 0);
+  const zone = grandTotal >= (drillId === 73 ? 16 : drillId === 74 ? 8 : 4)
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= (drillId === 73 ? 10 : drillId === 74 ? 4 : 2)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ Broadie Test — {config.dist}</h2>
+          <p className="text-green-300 text-sm mt-0.5">10 putts from {config.dist} — select result for each</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 2pts</span>
+          <span>2-putt = 0pts</span>
+          <span>Short 2-putt = -1pt</span>
+          <span>3-putt = -3pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {values.map((val, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-xs font-bold text-green-700 w-16 shrink-0">Putt {i + 1} — {config.dist}</span>
+              <select
+                value={val ?? ""}
+                onChange={e => setValue(i, e.target.value)}
+                className="flex-1 border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                <option value="" disabled>Select...</option>
+                {BROADIE_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">from 10 putts</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LukeDonaldScorecardModal({ onSave, onCancel }) {
+  const HOLES = 4;
+  const DISTANCES = ["4ft", "5ft", "6ft", "7ft", "8ft"];
+  const [values, setValues] = useState(
+    Array(HOLES).fill(null).map(() => Array(DISTANCES.length).fill(null))
+  );
+
+  function togglePutt(hole, dist, val) {
+    setValues(prev => prev.map((h, hi) =>
+      hi === hole ? h.map((v, di) => di === dist ? val : v) : h
+    ));
+  }
+
+  const allFilled = values.every(h => h.every(v => v !== null));
+  const grandTotal = values.reduce((a, h) => a + h.reduce((x, v) => x + (v ?? 0), 0), 0);
+  const zone = grandTotal >= 17 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 10 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🎯 Luke Donald Make Zone Test</h2>
+          <p className="text-green-300 text-sm mt-0.5">4 holes × 5 distances — tap to mark holed</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Tap each putt — ✅ Holed · ❌ Missed · Tour average: 15/20
+        </div>
+        <div className="px-4 py-4 space-y-4">
+          {Array(HOLES).fill(null).map((_, hi) => (
+            <div key={hi} className={`rounded-xl p-3 ${hi % 2 === 0 ? "bg-gray-50" : "bg-white border border-gray-100"}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-green-700">Hole {hi + 1}</span>
+                <span className="text-xs text-gray-500">{values[hi].filter(v => v === 1).length} / {DISTANCES.length} holed</span>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {DISTANCES.map((dist, di) => {
+                  const val = values[hi][di];
+                  return (
+                    <div key={di} className="flex flex-col items-center gap-1">
+                      <span className="text-xs text-gray-400">{dist}</span>
+                      <button
+                        type="button"
+                        onClick={() => togglePutt(hi, di, val === 1 ? 0 : val === 0 ? null : 1)}
+                        className={`w-12 h-12 rounded-lg border-2 text-lg font-bold transition-colors ${val === 1 ? "bg-green-500 border-green-600 text-white" : val === 0 ? "bg-red-100 border-red-300 text-red-400" : "bg-gray-100 border-gray-300 text-gray-300"}`}
+                      >
+                        {val === 1 ? "✅" : val === 0 ? "❌" : "·"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal} / 20</p>
+              <p className="text-xs mt-0.5">Tour average: 15</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 17+ · Yellow 10–16 · Red &lt;10</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} / 20)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GauntletScorecardModal({ onSave, onCancel }) {
+  const PUTTS = [
+    ...Array(9).fill("3ft"),
+    ...Array(4).fill("6ft"),
+    ...Array(3).fill("9ft"),
+    "10ft", "12ft",
+  ];
+  const [values, setValues] = useState(Array(18).fill(null));
+
+  function togglePutt(idx) {
+    setValues(prev => prev.map((v, i) => i === idx ? (v === 1 ? 0 : v === 0 ? null : 1) : v));
+  }
+
+  const allFilled = values.every(v => v !== null);
+  const grandTotal = values.reduce((a, v) => a + (v ?? 0), 0);
+  const zone = grandTotal >= 14 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 9 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🎯 100ft Gauntlet</h2>
+          <p className="text-green-300 text-sm mt-0.5">18 putts — tap to mark holed or missed</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          9×3ft · 4×6ft · 3×9ft · 1×10ft · 1×12ft — tap to toggle ✅ Holed · ❌ Missed
+        </div>
+        <div className="px-4 py-4">
+          <div className="flex flex-wrap gap-2">
+            {PUTTS.map((dist, i) => {
+              const val = values[i];
+              return (
+                <div key={i} className="flex flex-col items-center gap-1">
+                  <span className="text-xs text-gray-400">{dist}</span>
+                  <button
+                    type="button"
+                    onClick={() => togglePutt(i)}
+                    className={`w-12 h-12 rounded-lg border-2 text-lg transition-colors ${val === 1 ? "bg-green-500 border-green-600 text-white" : val === 0 ? "bg-red-100 border-red-300 text-red-400" : "bg-gray-100 border-gray-300 text-gray-300"}`}
+                  >
+                    {val === 1 ? "✅" : val === 0 ? "❌" : "·"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal} / 18</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 14+ · Yellow 9–13 · Red &lt;9</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} / 18)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Challenge250ScorecardModal({ onSave, onCancel }) {
+  const DISTANCES = ["5ft", "10ft", "15ft", "20ft"];
+  const HOLES = 5;
+  const [values, setValues] = useState(
+    Array(HOLES).fill(null).map(() => Array(DISTANCES.length).fill(null))
+  );
+
+  function togglePutt(hole, dist) {
+    setValues(prev => prev.map((h, hi) =>
+      hi === hole ? h.map((v, di) => di === dist ? (v === 1 ? 0 : v === 0 ? null : 1) : v) : h
+    ));
+  }
+
+  const allFilled = values.every(h => h.every(v => v !== null));
+  const feetValues = [5, 10, 15, 20];
+  const grandTotal = values.reduce((a, h) =>
+    a + h.reduce((x, v, di) => x + (v === 1 ? feetValues[di] : 0), 0), 0
+  );
+  const zone = grandTotal >= 130 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 75 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">📏 250ft Challenge</h2>
+          <p className="text-green-300 text-sm mt-0.5">5 holes × 4 distances — tap to mark holed</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Score = total feet of holed putts · 100ft = average · 130ft = excellent · 250ft = near impossible
+        </div>
+        <div className="px-4 py-4 space-y-4">
+          {Array(HOLES).fill(null).map((_, hi) => (
+            <div key={hi} className={`rounded-xl p-3 ${hi % 2 === 0 ? "bg-gray-50" : "bg-white border border-gray-100"}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold text-green-700">Hole {hi + 1}</span>
+                <span className="text-xs text-gray-500">
+                  {values[hi].reduce((a, v, di) => a + (v === 1 ? feetValues[di] : 0), 0)}ft holed
+                </span>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {DISTANCES.map((dist, di) => {
+                  const val = values[hi][di];
+                  return (
+                    <div key={di} className="flex flex-col items-center gap-1">
+                      <span className="text-xs text-gray-400">{dist}</span>
+                      <button
+                        type="button"
+                        onClick={() => togglePutt(hi, di)}
+                        className={`w-12 h-12 rounded-lg border-2 text-lg transition-colors ${val === 1 ? "bg-green-500 border-green-600 text-white" : val === 0 ? "bg-red-100 border-red-300 text-red-400" : "bg-gray-100 border-gray-300 text-gray-300"}`}
+                      >
+                        {val === 1 ? "✅" : val === 0 ? "❌" : "·"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Feet Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}ft</p>
+              <p className="text-xs mt-0.5">100ft = average · 130ft = excellent</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 130+ · Yellow 75–129 · Red &lt;75</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal}ft)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -1875,6 +2458,12 @@ export default function App() {
   const [showSundayStandardScorecard, setShowSundayStandardScorecard] = useState(false);
   const [showSwedishQuickFireScorecard, setShowSwedishQuickFireScorecard] = useState(false);
   const [showPelzSnapshotScorecard, setShowPelzSnapshotScorecard] = useState(false);
+  const [showBroadieChaseScorecard, setShowBroadieChaseScorecard] = useState(false);
+  const [showPointsRaceScorecard, setShowPointsRaceScorecard] = useState(false);
+  const [showBroadieTestScorecard, setShowBroadieTestScorecard] = useState(false);
+  const [showLukeDonaldScorecard, setShowLukeDonaldScorecard] = useState(false);
+  const [showGauntletScorecard, setShowGauntletScorecard] = useState(false);
+  const [show250ChallengeScorecard, setShow250ChallengeScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -1953,6 +2542,12 @@ export default function App() {
   const isSundayStandard = +form.drillId === 42;
   const isSwedishQuickFire = +form.drillId === 94;
   const isPelzSnapshot = +form.drillId === 95;
+  const isBroadieChase = [70, 71, 72].includes(+form.drillId);
+  const isPointsRace = +form.drillId === 69;
+  const isBroadieTest = [73, 74, 75].includes(+form.drillId);
+  const isLukeDonald = +form.drillId === 49;
+  const isGauntlet = +form.drillId === 33;
+  const is250Challenge = +form.drillId === 34;
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -2071,6 +2666,62 @@ export default function App() {
           onCancel={() => setShowPelzSnapshotScorecard(false)}
         />
       )}
+      {showBroadieChaseScorecard && isBroadieChase && (
+        <BroadieChaseModal
+          drillId={+form.drillId}
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowBroadieChaseScorecard(false);
+          }}
+          onCancel={() => setShowBroadieChaseScorecard(false)}
+        />
+      )}
+      {showPointsRaceScorecard && (
+        <PointsRaceScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowPointsRaceScorecard(false);
+          }}
+          onCancel={() => setShowPointsRaceScorecard(false)}
+        />
+      )}
+      {showBroadieTestScorecard && isBroadieTest && (
+        <BroadieTestModal
+          drillId={+form.drillId}
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowBroadieTestScorecard(false);
+          }}
+          onCancel={() => setShowBroadieTestScorecard(false)}
+        />
+      )}
+      {showLukeDonaldScorecard && (
+        <LukeDonaldScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowLukeDonaldScorecard(false);
+          }}
+          onCancel={() => setShowLukeDonaldScorecard(false)}
+        />
+      )}
+      {showGauntletScorecard && (
+        <GauntletScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowGauntletScorecard(false);
+          }}
+          onCancel={() => setShowGauntletScorecard(false)}
+        />
+      )}
+      {show250ChallengeScorecard && (
+        <Challenge250ScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShow250ChallengeScorecard(false);
+          }}
+          onCancel={() => setShow250ChallengeScorecard(false)}
+        />
+      )}
       {/* Header */}
       <div className="bg-green-800 text-white px-4 py-4 shadow-md">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
@@ -2171,7 +2822,7 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && !isBroadieChase && !isPointsRace && !isBroadieTest && !isLukeDonald && !isGauntlet && !is250Challenge && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -2368,6 +3019,126 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => setShowPelzSnapshotScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isBroadieChase ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowBroadieChaseScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} putts
+                            <button
+                              type="button"
+                              onClick={() => setShowBroadieChaseScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isPointsRace ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowPointsRaceScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🎯 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} putts
+                            <button
+                              type="button"
+                              onClick={() => setShowPointsRaceScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isBroadieTest ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowBroadieTestScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowBroadieTestScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isLukeDonald ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowLukeDonaldScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🎯 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} / 20
+                            <button
+                              type="button"
+                              onClick={() => setShowLukeDonaldScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isGauntlet ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowGauntletScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🎯 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} / 18
+                            <button
+                              type="button"
+                              onClick={() => setShowGauntletScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : is250Challenge ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShow250ChallengeScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          📏 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score}ft
+                            <button
+                              type="button"
+                              onClick={() => setShow250ChallengeScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
                             >Edit</button>
                           </div>
