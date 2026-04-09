@@ -32,7 +32,7 @@ const CAT_COLOR = {
 };
 
 const DRILLS = [
-  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:48,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included." },
+  { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:48,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included. Best recorded score: Tommy Fleetwood 37ft." },
   { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard included." },
   { id:3,  name:"Level Up Challenge - Par 21",             type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and as you progress up each level you add one more shot in the 25-50m zone. Just getting through Level 1 is a good achievement and should be considered a pass." },
   { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs. Work around the green hitting different shots, trying not to hit the same shot multiple times. 20 min max to complete this challenge." },
@@ -53,8 +53,8 @@ const DRILLS = [
   { id:19, name:"Bunker 6 - 10-35m",                       type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:150, notes:"Hit shots from the bunker from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:20, name:"Rough 6 - 10-35m",                        type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit shots from the rough from 10, 15, 20, 25, 30 and 35m. Total up your distance from the hole for your score." },
   { id:21, name:"10 Shot Circuit - 8-35m",                 type:"distance",   unit:"ft",   dir:"lower",  perfect:30,  worst:200, notes:"Hit shots from: 8m bunker, 9m fairway, 11m rough, 12m fairway, 16m bunker, 20m fairway, 22m rough, 25m bunker, 33m rough and 45m fairway. Total up distance from the hole for each shot for your score. Best on record is 32ft. Scorecard included." },
-  { id:22, name:"Texas Tech Challenge",                    type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 10m fringe chip, 15m flop shot (short sided), 20m fairway with 50% green available, 20m fairway bump & run, 15m bunker (short sided), bunker 20m (open side), rough 15m with 50% green available, rough 25m open sided downhill, rough 10m short side. Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
-  { id:23, name:"Recovery Mission - 9 Hole Challenge",     type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 8m fringe (downslope), 12m chip & run (upslope), bunker 12m (upslope), bunker 15m (downslope), pitch 25m (ball above feet), pitch 30m (ball below feet), lob 10m (upslope), chip & run 20m (uphill), chip & run 25m (downhill). Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2." },
+  { id:22, name:"Texas Tech Challenge",                    type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 10m fringe chip, 15m flop shot (short sided), 20m fairway with 50% green available, 20m fairway bump & run, 15m bunker (short sided), bunker 20m (open side), rough 15m with 50% green available, rough 25m open sided downhill, rough 10m short side. Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2. Scorecard included." },
+  { id:23, name:"Recovery Mission - 9 Hole Challenge",     type:"score",      unit:"",     dir:"lower",  perfect:-4,  worst:16,  notes:"Hit shots from: 8m fringe (downslope), 12m chip & run (upslope), bunker 12m (upslope), bunker 15m (downslope), pitch 25m (ball above feet), pitch 30m (ball below feet), lob 10m (upslope), chip & run 20m (uphill), chip & run 25m (downhill). Scoring: holed = -2, 0-3ft = -1, 3-6ft = 0, 6-12ft = +1, 12+ft = +2. Scorecard included." },
   { id:24, name:"Lob Master - 6 Shot Challenge (10-35m)",  type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:90,  notes:"Hit shots with your LW 58° or 60° from 10, 15, 20, 25, 30 and 35m. Total up the distance from the hole for each shot and record your score." },
   { id:25, name:"The 9 Station Circuit (10-35m)",          type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:180, notes:"Hit shots from: fairway 15, 25 and 35m. Rough 10, 20 and 30m. Bunker 11, 22 and 33m. Total up the distance from the hole for each shot and record your score. Best on record is 22.5ft. Scorecard included." },
   { id:26, name:"Wedge Combine 80-120m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:200, notes:"Hit shots from 80, 90, 100, 110 and 120m. Proximity to target, add up total feet for each shot for your score." },
@@ -73,7 +73,7 @@ const DRILLS = [
   { id:39, name:"3 Putt Eliminator Challenge",             type:"completion", unit:"",     dir:"lower",  perfect:0,   worst:3,   notes:"Play 9 holes on the putting green with each first putt from 30ft+. Count up the number of 3-putts. 0 = no 3-putts, 1 = one 3-putt, 2 = two 3-putts." },
   { id:40, name:"Race to 25ft Challenge",                  type:"distance",   unit:"ft",   dir:"lower",  perfect:2,   worst:12,  notes:"Race to hole 25ft. You can choose your start distance — your opponent chooses any distance they like. If you leave a putt short, your total footage resets to 0 but keep counting putts. Count total putts taken to hole 25ft of putts." },
   { id:41, name:"Project 1 Putt Circuit (Level 1)",        type:"score",      unit:"",     dir:"lower",  perfect:16,  worst:40,  notes:"Set up putts from 2, 3, 4, 5, 6, 7, 8 and 9ft on a breaking R-L and same on a L-R putt. Count how many putts it takes to hole all 16 putts. 24 is the pass mark — anything at or below is above average." },
-  { id:42, name:"Sunday Standard - 48 Putt PK",           type:"score",      unit:"",     dir:"higher", perfect:42,  worst:12,  notes:"3 sections: (1) Gate drill putting through a start gate from 6-10ft. (2) Breaking putts to a ghost hole from 6, 9, 12, 15ft finishing in a speed zone 1-2ft behind the hole — uphill/downhill R-L and L-R. (3) Hole out putts from 4, 5, 6, 7ft from all 4 breaks and slopes. Total up the number of successful putts. 36 is an excellent score." },
+  { id:42, name:"Sunday Standard - 48 Putt PK",           type:"score",      unit:"",     dir:"higher", perfect:42,  worst:12,  notes:"3 sections: (1) Gate drill putting through a start gate from 6-10ft. (2) Breaking putts to a ghost hole from 6, 9, 12, 15ft finishing in a speed zone 1-2ft behind the hole — uphill/downhill R-L and L-R. (3) Hole out putts from 4, 5, 6, 7ft from all 4 breaks and slopes. Total up the number of successful putts. 36 is an excellent score. Scorecard included." },
   { id:43, name:"13 Tee Gauntlet",                         type:"score",      unit:"",     dir:"higher", perfect:13,  worst:0,   notes:"Set up putts at N, E, S, W from 5-7ft (12 in total). The 13th tee is placed randomly at 7ft. You need to hole 10/12 to reach the 13th tee. The game is complete when you hole the putt from the 13th tee." },
   { id:44, name:"Spiral Hole Out Test (5-15ft)",           type:"score",      unit:"/18",  dir:"higher", perfect:14,  worst:0,   notes:"Set up putts from 5, 7, 9, 11, 13 and 15ft around the hole in a spiral. Do this at 3 different holes. Score is how many you hole out of 18." },
   { id:45, name:"Mountain Climber - Jagged Peaks",         type:"count",      unit:"putts",dir:"lower",  perfect:12,  worst:60,  notes:"Work ladder style through the following putts in order: 3ft, 7ft, 4ft, 8ft, 5ft, 9ft, 6ft, 10ft. Hole the putt and move up to the next distance, miss and move back. The game is complete when you hole the 10ft putt. Total number of putts is your score." },
@@ -109,8 +109,8 @@ const DRILLS = [
   { id:75, name:"Broadie Test 15ft",                       type:"score",      unit:"",     dir:"higher", perfect:6,   worst:0,   notes:"Hit 10 putts from 15ft around the hole. Scoring: holed = 2pts, 2-putt = 0pts, short but 2-putt = -1pt, 3-putt = -3pts. Total up your score for the 10 putts." },
   { id:76, name:"Washington Speed Control - 20ft",         type:"distance",   unit:"ft",   dir:"lower",  perfect:8,   worst:40,  notes:"Hit 10 putts from 20ft around the hole. Measure total distance from the hole for each putt in inches (2.5cm) and total them up. Record your score in feet (12 inches or 30cm = 1 foot)." },
   { id:77, name:"Washington Speed Control - 30ft",         type:"distance",   unit:"ft",   dir:"lower",  perfect:12,  worst:40,  notes:"Hit 10 putts from 30ft around the hole. Measure total distance from the hole for each putt in inches (2.5cm) and total them up. Record your score in feet (12 inches or 30cm = 1 foot)." },
-  { id:78, name:"Junior Putting Circuit",                  type:"score",      unit:"putts",dir:"lower",  perfect:12,  worst:24,  notes:"Hit putts from 3, 4, 5, 6, 8, 12, 15, 20 and 30ft. Putt each ball out until it is in the hole. Add up your total for the 9 holes for your score." },
-  { id:79, name:"Junior Short Game Circuit",               type:"score",      unit:"pts",  dir:"higher", perfect:24,  worst:0,   notes:"Play 9 holes around the chipping green: (1) Fringe <10m. (2) Fringe 10-20m. (3) Chip & run 10m. (4) Chip & run 10-20m. (5) Pitch 20m. (6) Pitch 30m. (7) Lob 10m. (8) Bunker 10m. (9) Bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts." },
+  { id:78, name:"Junior Putting Circuit",                  type:"score",      unit:"putts",dir:"lower",  perfect:12,  worst:24,  notes:"Hit putts from 3, 4, 5, 6, 8, 12, 15, 20 and 30ft. Putt each ball out until it is in the hole. Add up your total for the 9 holes for your score. Scorecard included." },
+  { id:79, name:"Junior Short Game Circuit",               type:"score",      unit:"pts",  dir:"higher", perfect:24,  worst:0,   notes:"Play 9 holes around the chipping green: (1) Fringe <10m. (2) Fringe 10-20m. (3) Chip & run 10m. (4) Chip & run 10-20m. (5) Pitch 20m. (6) Pitch 30m. (7) Lob 10m. (8) Bunker 10m. (9) Bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts. Scorecard included." },
   { id:80, name:"6 Lie Bunker Challenge",                  type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 6 shots from the bunker from: (1) flat, (2) ball above feet, (3) ball below feet, (4) upslope, (5) downslope, (6) plugged lie. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts." },
   { id:81, name:"Close Range Lie Mix",                     type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 5 shots from the bunker from 0-10m from the hole from: (1) flat, (2) ball above feet, (3) ball below feet, (4) upslope, (5) downslope. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts." },
   { id:82, name:"Mid Range Lie Mix",                       type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 5 shots from the bunker 10-20m from the hole from: (1) flat, (2) ball above feet, (3) ball below feet, (4) upslope, (5) downslope. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts." },
@@ -125,8 +125,8 @@ const DRILLS = [
   { id:91, name:"Wedge Combine 30-50m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:20,  worst:120, notes:"Hit 5 shots in total, one from 30, 35, 40, 45 and 50m. Total up your distance from the hole for each shot. Lower is better." },
   { id:92, name:"Wedge Combine 40-60m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:25,  worst:150, notes:"Hit 5 shots in total, one from 40, 45, 50, 55 and 60m. Total up your distance from the hole for each shot. Lower is better." },
   { id:93, name:"Swedish National 40 Shot Combine",        type:"score",      unit:"pts",  dir:"higher", perfect:80,  worst:0,   notes:"Hit 5 shots from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts. You can use an alignment stick as the hole and change shots for each round/attempt. Scorecard included." },
-  { id:94, name:"Swedish National Quick Fire",             type:"score",      unit:"pts",  dir:"higher", perfect:16,  worst:0,   notes:"Hit 1 shot from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts." },
-  { id:95, name:"Pelz Snapshot",                           type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 1 shot from each of the following: 3/4 wedge 70m, 1/2 wedge 40m, long sand 20-35m, short sand 7-15m, long chip 15-30m, short chip 7-15m, pitch fairway 10-20m, pitch rough 10-20m, cut lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt." },
+  { id:94, name:"Swedish National Quick Fire",             type:"score",      unit:"pts",  dir:"higher", perfect:16,  worst:0,   notes:"Hit 1 shot from each of the following: chip 10m, chip 20m, pitch 20m, pitch 40m, lob 15m, lob 25m, bunker 10m, bunker 20m. Scoring: holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-9ft = 1pt, 9ft+ = 0pts. Scorecard included." },
+  { id:95, name:"Pelz Snapshot",                           type:"score",      unit:"pts",  dir:"higher", perfect:15,  worst:0,   notes:"Hit 1 shot from each of the following: 3/4 wedge 70m, 1/2 wedge 40m, long sand 20-35m, short sand 7-15m, long chip 15-30m, short chip 7-15m, pitch fairway 10-20m, pitch rough 10-20m, cut lob 10-20m. Scoring: holed = 4pts, 0-3ft = 2pts, 3-6ft = 1pt. Scorecard included." },
   { id:96, name:"Wedge Combine 40-100m",                   type:"distance",   unit:"ft",   dir:"lower",  perfect:35,  worst:185, notes:"Hit 5 shots in total, one from 40, 55, 70, 85 and 100m. Total up your distance from the hole for each shot. Lower is better." },
   { id:97, name:"Wedge Combine 30-90m",                    type:"distance",   unit:"ft",   dir:"lower",  perfect:18,  worst:108, notes:"Hit 3 shots in total, one from 30, 60 and 90m. Total up your distance from the hole for each shot. Lower is better." },
   { id:98, name:"Team Ripper Challenge (4,6,8ft)",         type:"score",      unit:"/10",  dir:"higher", perfect:10,  worst:0,   notes:"Set up 4x4ft, 4x6ft and 2x8ft putts around the hole in a spiral or random pattern. Count how many putts you make out of 10. Higher is better." },
@@ -286,6 +286,58 @@ const NEGATIVE_OPTIONS = [
   { value:  0, label: " 0 — 3–6ft" },
   { value:  1, label: "+1 — 6–12ft" },
   { value:  2, label: "+2 — 12ft+" },
+];
+const JUNIOR_PUTTING_HOLES = [
+  { hole: 1, dist: "3ft" },
+  { hole: 2, dist: "4ft" },
+  { hole: 3, dist: "5ft" },
+  { hole: 4, dist: "6ft" },
+  { hole: 5, dist: "8ft" },
+  { hole: 6, dist: "12ft" },
+  { hole: 7, dist: "15ft" },
+  { hole: 8, dist: "20ft" },
+  { hole: 9, dist: "30ft" },
+];
+const JUNIOR_SHORT_GAME_HOLES = [
+  { hole: 1, desc: "Fringe <10m" },
+  { hole: 2, desc: "Fringe 10–20m" },
+  { hole: 3, desc: "Chip & run 10m" },
+  { hole: 4, desc: "Chip & run 10–20m" },
+  { hole: 5, desc: "Pitch 20m" },
+  { hole: 6, desc: "Pitch 30m" },
+  { hole: 7, desc: "Lob 10m" },
+  { hole: 8, desc: "Bunker 10m" },
+  { hole: 9, desc: "Bunker 20m" },
+];
+const JUNIOR_SHORT_GAME_OPTIONS = [
+  { value: 4, label: "4 pts — Holed" },
+  { value: 3, label: "3 pts — 0–3ft" },
+  { value: 2, label: "2 pts — 3–6ft" },
+  { value: 1, label: "1 pt  — 6–12ft" },
+  { value: 0, label: "0 pts — 12ft+" },
+];
+const SUNDAY_STANDARD_QUADRANTS = [
+  "R to L Uphill",
+  "R to L Downhill",
+  "L to R Uphill",
+  "L to R Downhill",
+];
+const SUNDAY_STANDARD_SECTIONS = [
+  {
+    label: "Section 1 — Gate Drill",
+    desc: "4 putts from ~6ft through start gates — must go through gates AND hole out",
+    putts: 4,
+  },
+  {
+    label: "Section 2 — Speed Read",
+    desc: "Putts from 6, 9, 12, 15ft to a ghost hole — must pass through ghost hole AND finish in speed zone 1–2ft behind",
+    putts: 4,
+  },
+  {
+    label: "Section 3 — Hole Out",
+    desc: "Putts from 4, 5, 6, 7ft — must hole out",
+    putts: 4,
+  },
 ];
 function calcIndex(drill, score) {
   if (drill.dir === null) return null;
@@ -1186,6 +1238,425 @@ function NegativeScorecardModal({ drillId, onSave, onCancel }) {
   );
 }
 
+function JuniorPuttingScorecardModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(JUNIOR_PUTTING_HOLES.map(() => ""));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? val : v));
+  }
+
+  const allFilled = values.every(v => v !== "" && !isNaN(parseInt(v)) && parseInt(v) >= 1);
+  const grandTotal = values.reduce((sum, v) => sum + (parseInt(v) || 0), 0);
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🟢 Junior Putting Circuit</h2>
+          <p className="text-green-300 text-sm mt-0.5">Enter number of putts to hole out at each distance — lower is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Putt each ball out until holed · Add up total putts across all 9 holes · Perfect: 12 · Worst: 24
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {JUNIOR_PUTTING_HOLES.map((h, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-xs font-bold text-green-700 w-6 shrink-0">{h.hole}</span>
+              <span className="text-sm text-gray-700 flex-1">{h.dist}</span>
+              <input
+                type="number"
+                min="1"
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                placeholder="putts"
+                className="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-right focus:outline-none focus:border-green-500"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Putts</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal || "—"}</p>
+              <p className="text-xs mt-0.5">lower is better</p>
+            </div>
+            <div className="text-right text-xs text-green-600">
+              <p>Perfect: 12 putts</p>
+              <p>Worst: 24 putts</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} putts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function JuniorShortGameScorecardModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(JUNIOR_SHORT_GAME_HOLES.map(() => 0));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const grandTotal = values.reduce((a, b) => a + b, 0);
+  const zone = grandTotal >= 20 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 12 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ Junior Short Game Circuit</h2>
+          <p className="text-green-300 text-sm mt-0.5">Select your result for each hole — higher is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4pts</span>
+          <span>0–3ft = 3pts</span>
+          <span>3–6ft = 2pts</span>
+          <span>6–12ft = 1pt</span>
+          <span>12ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {JUNIOR_SHORT_GAME_HOLES.map((h, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-xs font-bold text-green-700 w-6 shrink-0">{h.hole}</span>
+              <span className="text-sm text-gray-700 flex-1">{h.desc}</span>
+              <select
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                {JUNIOR_SHORT_GAME_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">out of 36 possible pts</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 20+ · Yellow 12–19 · Red &lt;12</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SundayStandardScorecardModal({ onSave, onCancel }) {
+  const [quadrant, setQuadrant] = useState(0);
+  // scores[quadrant][section][putt] = 0 or 1
+  const [scores, setScores] = useState(
+    SUNDAY_STANDARD_QUADRANTS.map(() =>
+      SUNDAY_STANDARD_SECTIONS.map(s => Array(s.putts).fill(0))
+    )
+  );
+
+  function togglePutt(q, s, p) {
+    setScores(prev => prev.map((qs, qi) =>
+      qi === q ? qs.map((ss, si) =>
+        si === s ? ss.map((v, pi) => pi === p ? (v === 1 ? 0 : 1) : v) : ss
+      ) : qs
+    ));
+  }
+
+  const quadrantTotals = scores.map(qs => qs.reduce((a, ss) => a + ss.reduce((x, v) => x + v, 0), 0));
+  const grandTotal = quadrantTotals.reduce((a, b) => a + b, 0);
+  const isLastQuadrant = quadrant === 3;
+  const isReview = quadrant === 4;
+
+  const zone = grandTotal >= 36 ? { label: "Excellent", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 24 ? { label: "Good", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Needs Work", color: "text-red-700 bg-red-50 border-red-200" };
+
+  if (isReview) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+          <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+            <h2 className="text-lg font-bold">📋 Sunday Standard — Summary</h2>
+            <p className="text-green-300 text-sm mt-0.5">48 Putt Performance Check</p>
+          </div>
+          <div className="px-4 py-4">
+            <table className="w-full text-sm mb-4">
+              <tbody>
+                {SUNDAY_STANDARD_QUADRANTS.map((q, i) => (
+                  <tr key={i} className={i % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                    <td className="py-2 px-2 text-gray-700">{q}</td>
+                    <td className="py-2 px-2 text-right font-semibold text-green-700">{quadrantTotals[i]} / 12</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Grand Total</p>
+                <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+                <p className="text-xs mt-0.5">out of 48 putts</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold">{zone.label}</p>
+                <p className="text-xs opacity-70 mt-0.5">36+ = Excellent · 24–35 = Good</p>
+                <p className="text-xs opacity-70">Benchmark: 36</p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3 px-5 pb-5">
+            <button
+              onClick={() => onSave(grandTotal)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({grandTotal} / 48)
+            </button>
+            <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const currentQuadrantTotal = quadrantTotals[quadrant];
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">📋 Sunday Standard — 48 Putt PK</h2>
+          <p className="text-green-300 text-sm mt-0.5">Quadrant {quadrant + 1} of 4 — {SUNDAY_STANDARD_QUADRANTS[quadrant]}</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex justify-between">
+          <span>Tap to toggle each putt — ✅ = success · ⬜ = miss</span>
+          <span className="font-bold">Grand total: {grandTotal} / 48</span>
+        </div>
+        <div className="px-4 py-4 space-y-4">
+          {SUNDAY_STANDARD_SECTIONS.map((section, si) => (
+            <div key={si}>
+              <div className="text-xs font-bold text-green-700 uppercase tracking-wide mb-0.5">{section.label}</div>
+              <div className="text-xs text-gray-400 mb-2">{section.desc}</div>
+              <div className="flex gap-2 flex-wrap">
+                {scores[quadrant][si].map((val, pi) => (
+                  <button
+                    key={pi}
+                    type="button"
+                    onClick={() => togglePutt(quadrant, si, pi)}
+                    className={`w-12 h-12 rounded-lg border-2 text-xl font-bold transition-colors ${val === 1 ? "bg-green-500 border-green-600 text-white" : "bg-gray-100 border-gray-300 text-gray-300"}`}
+                  >
+                    {val === 1 ? "✅" : "⬜"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className="flex gap-3">
+            <div className="flex-1 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-center">
+              <p className="text-xs text-green-600 font-medium">This quadrant</p>
+              <p className="text-2xl font-extrabold text-green-700">{currentQuadrantTotal} / 12</p>
+            </div>
+            <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+              <p className="text-xs text-gray-500 font-medium">Grand total</p>
+              <p className="text-2xl font-extrabold text-gray-700">{grandTotal} / 48</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => setQuadrant(q => q - 1)}
+            disabled={quadrant === 0}
+            className="bg-gray-200 text-gray-700 px-5 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ← Back
+          </button>
+          <button
+            onClick={() => setQuadrant(q => q + 1)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            {isLastQuadrant ? "Review Score →" : `Next — ${SUNDAY_STANDARD_QUADRANTS[quadrant + 1]} →`}
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SwedishQuickFireScorecardModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(SWEDISH_ROWS.map(() => 0));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const grandTotal = values.reduce((a, b) => a + b, 0);
+  const zone = grandTotal >= 13 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 8 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🇸🇪 Swedish National Quick Fire</h2>
+          <p className="text-green-300 text-sm mt-0.5">1 shot from each category — select your result</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4pts</span>
+          <span>0–3ft = 3pts</span>
+          <span>3–6ft = 2pts</span>
+          <span>6–9ft = 1pt</span>
+          <span>9ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {SWEDISH_ROWS.map((row, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-sm text-gray-700 flex-1">{row}</span>
+              <select
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                {SWEDISH_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 13+ · Yellow 8–12 · Red &lt;8</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PelzSnapshotScorecardModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(PELZ_CATEGORIES.map(() => 0));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const grandTotal = values.reduce((a, b) => a + b, 0);
+  const zone = grandTotal >= 12 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 6 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ Pelz Snapshot</h2>
+          <p className="text-green-300 text-sm mt-0.5">1 shot from each category — select your result</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4pts</span>
+          <span>0–3ft = 2pts</span>
+          <span>3–6ft = 1pt</span>
+          <span>6ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {PELZ_CATEGORIES.map((cat, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-sm text-gray-700 flex-1">{cat}</span>
+              <select
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                {PELZ_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 12+ · Yellow 6–11 · Red &lt;6</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+          >
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -1399,6 +1870,11 @@ export default function App() {
   const [showPelzScorecard, setShowPelzScorecard] = useState(false);
   const [showProximityScorecard, setShowProximityScorecard] = useState(false);
   const [showNegativeScorecard, setShowNegativeScorecard] = useState(false);
+  const [showJuniorPuttingScorecard, setShowJuniorPuttingScorecard] = useState(false);
+  const [showJuniorShortGameScorecard, setShowJuniorShortGameScorecard] = useState(false);
+  const [showSundayStandardScorecard, setShowSundayStandardScorecard] = useState(false);
+  const [showSwedishQuickFireScorecard, setShowSwedishQuickFireScorecard] = useState(false);
+  const [showPelzSnapshotScorecard, setShowPelzSnapshotScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -1472,6 +1948,11 @@ export default function App() {
   const isPelz = +form.drillId === 9;
   const isProximity = [1, 8, 10, 21, 25, 27, 28].includes(+form.drillId);
   const isNegative = [22, 23].includes(+form.drillId);
+  const isJuniorPutting = +form.drillId === 78;
+  const isJuniorShortGame = +form.drillId === 79;
+  const isSundayStandard = +form.drillId === 42;
+  const isSwedishQuickFire = +form.drillId === 94;
+  const isPelzSnapshot = +form.drillId === 95;
   const filtered = filterDrill ? sessions.filter(s => s.drillId === +filterDrill) : sessions;
 
   function playerStats() {
@@ -1543,6 +2024,51 @@ export default function App() {
             setShowNegativeScorecard(false);
           }}
           onCancel={() => setShowNegativeScorecard(false)}
+        />
+      )}
+      {showJuniorPuttingScorecard && (
+        <JuniorPuttingScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowJuniorPuttingScorecard(false);
+          }}
+          onCancel={() => setShowJuniorPuttingScorecard(false)}
+        />
+      )}
+      {showJuniorShortGameScorecard && (
+        <JuniorShortGameScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowJuniorShortGameScorecard(false);
+          }}
+          onCancel={() => setShowJuniorShortGameScorecard(false)}
+        />
+      )}
+      {showSundayStandardScorecard && (
+        <SundayStandardScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowSundayStandardScorecard(false);
+          }}
+          onCancel={() => setShowSundayStandardScorecard(false)}
+        />
+      )}
+      {showSwedishQuickFireScorecard && (
+        <SwedishQuickFireScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowSwedishQuickFireScorecard(false);
+          }}
+          onCancel={() => setShowSwedishQuickFireScorecard(false)}
+        />
+      )}
+      {showPelzSnapshotScorecard && (
+        <PelzSnapshotScorecardModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowPelzSnapshotScorecard(false);
+          }}
+          onCancel={() => setShowPelzSnapshotScorecard(false)}
         />
       )}
       {/* Header */}
@@ -1645,7 +2171,7 @@ export default function App() {
 </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -1742,6 +2268,106 @@ export default function App() {
                             <button
                               type="button"
                               onClick={() => setShowNegativeScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isJuniorPutting ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowJuniorPuttingScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🟢 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} putts
+                            <button
+                              type="button"
+                              onClick={() => setShowJuniorPuttingScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isJuniorShortGame ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowJuniorShortGameScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowJuniorShortGameScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isSundayStandard ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowSundayStandardScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          📋 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} / 48
+                            <button
+                              type="button"
+                              onClick={() => setShowSundayStandardScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isSwedishQuickFire ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowSwedishQuickFireScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🇸🇪 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowSwedishQuickFireScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
+                            >Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isPelzSnapshot ? (
+                      <div>
+                        <button
+                          type="button"
+                          onClick={() => setShowPelzSnapshotScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm"
+                        >
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button
+                              type="button"
+                              onClick={() => setShowPelzSnapshotScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700"
                             >Edit</button>
                           </div>
