@@ -596,33 +596,105 @@ function MilestoneBadges({ sessions }) {
 }
 
 // ─── PLAYER DRILL BREAKDOWN ───────────────────────────────────────────────────
-function PlayerDrillBreakdown({ playerName, allEntries, lbCategory }) {
-  const entries = allEntries.filter(e => e.player === playerName);
-  const catEntries = lbCategory === "All"
-    ? entries
-    : entries.filter(e => DRILL_CATEGORY[e.drill_id] === lbCategory);
-  if (!catEntries.length) return <p className="text-xs text-gray-400 px-4 pb-3">No entries in this category.</p>;
-  const sorted = [...catEntries].sort((a,b) => (b.index_score ?? 0) - (a.index_score ?? 0));
+function PlayerDrillBreakdown({ playerName, allEntries }) {
+  const CATS = ["Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
+  const [activeTab, setActiveTab] = useState("Putting");
+
+  const playerEntries = allEntries.filter(e => e.player === playerName);
+
+  function getCatAvg(cat) {
+    const entries = playerEntries.filter(e => DRILL_CATEGORY[e.drill_id] === cat && e.index_score !== null);
+    if (!entries.length) return null;
+    return Math.round(entries.reduce((a, b) => a + b.index_score, 0) / entries.length);
+  }
+
+  function getCatTrend(cat) {
+    const entries = playerEntries
+      .filter(e => DRILL_CATEGORY[e.drill_id] === cat && e.index_score !== null)
+      .sort((a, b) => a.date.localeCompare(b.date));
+    return entries.map(e => ({ y: e.index_score }));
+  }
+
+  function getRecentSessions(cat) {
+    return playerEntries
+      .filter(e => DRILL_CATEGORY[e.drill_id] === cat)
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 5);
+  }
+
+  const recentSessions = getRecentSessions(activeTab);
+  const avgIdx = getCatAvg(activeTab);
+
   return (
-    <div className="px-4 pb-3 pt-1 bg-green-50 border-t border-green-100">
-      <p className="text-xs font-semibold text-green-800 mb-2">Drill Breakdown — {lbCategory === "All" ? "All Categories" : lbCategory}</p>
-      <div className="space-y-1">
-        {sorted.map((e, i) => {
-          const drill = DRILLS.find(d => d.id === e.drill_id);
-          const r = ratingColor(e.index_score);
-          const cat = DRILL_CATEGORY[e.drill_id];
+    <div className="px-4 pb-4 pt-2 bg-green-50 border-t border-green-100">
+      <p className="text-xs font-semibold text-green-800 mb-3">{playerName} — drill breakdown</p>
+
+      {/* Category tabs */}
+      <div className="flex gap-2 flex-wrap mb-4">
+        {CATS.map(cat => {
+          const avg = getCatAvg(cat);
+          const trend = getCatTrend(cat);
+          const isActive = cat === activeTab;
+          const avgColor = avg === null ? "text-gray-400" : avg >= 80 ? "text-green-600" : avg >= 50 ? "text-yellow-600" : "text-red-500";
           return (
-            <div key={i} className="flex items-center gap-2 text-xs">
-              <span className={`px-1.5 py-0.5 rounded text-xs font-medium shrink-0 ${CAT_COLOR[cat]}`}>{cat}</span>
-              <span className="flex-1 text-gray-700 truncate">{e.drill_name}</span>
-              <span className="font-semibold text-gray-700 shrink-0">{e.score}{drill?.unit ? ` ${drill.unit}` : ""}</span>
-              {e.index_score !== null && (
-                <span className={`px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>{Math.round(e.index_score)}</span>
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveTab(cat)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                isActive
+                  ? "bg-green-700 text-white border-green-700"
+                  : "bg-white text-gray-600 border-gray-300 hover:border-green-400"
+              }`}
+            >
+              {trend.length >= 2 && (
+                <svg width="24" height="12" viewBox="0 0 24 12">
+                  {(() => {
+                    const vals = trend.map(p => p.y);
+                    const min = Math.min(...vals), max = Math.max(...vals);
+                    const range = max - min || 1;
+                    const pts = trend.map((p, i) => {
+                      const x = 2 + (i / (trend.length - 1)) * 20;
+                      const y = 10 - ((p.y - min) / range) * 8;
+                      return `${x},${y}`;
+                    }).join(" ");
+                    return <polyline points={pts} fill="none" stroke={isActive ? "#fff" : "#16a34a"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>;
+                  })()}
+                </svg>
               )}
-            </div>
+              {cat}
+              <span className={`${isActive ? "text-green-200" : avgColor} font-semibold`}>
+                · {avg ?? "—"}
+              </span>
+            </button>
           );
         })}
       </div>
+
+      {/* Drill list */}
+      <p className="text-xs font-semibold text-green-700 mb-2">{activeTab} — last 5 sessions</p>
+      {recentSessions.length === 0 ? (
+        <p className="text-xs text-gray-400 italic">No sessions logged yet.</p>
+      ) : (
+        <div className="space-y-1.5">
+          {recentSessions.map((e, i) => {
+            const drill = DRILLS.find(d => d.id === e.drill_id);
+            const r = ratingColor(e.index_score);
+            return (
+              <div key={i} className="flex items-center gap-2 bg-white border border-gray-100 rounded-lg px-3 py-2 text-xs">
+                <span className="flex-1 text-gray-700 truncate">{e.drill_name}</span>
+                <span className="font-semibold text-green-700 shrink-0">{e.score}{drill?.unit ? ` ${drill.unit}` : ""}</span>
+                {e.index_score !== null && (
+                  <span className={`px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>{Math.round(e.index_score)}</span>
+                )}
+                <span className="text-gray-400 shrink-0 w-16 text-right">
+                  {new Date(e.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -4682,7 +4754,6 @@ export default function App() {
                           <PlayerDrillBreakdown
                             playerName={r2.player}
                             allEntries={allLbEntries}
-                            lbCategory={lbCategory}
                           />
                         )}
                       </div>
