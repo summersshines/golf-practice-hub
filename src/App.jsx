@@ -3331,6 +3331,119 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
   );
 }
 
+// ─── DRILL HISTORY PANEL ──────────────────────────────────────────────────────
+function DrillHistoryPanel({ drillId, sessions }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (!drillId) return null;
+
+  const drill = DRILLS.find(d => d.id === drillId);
+  if (!drill) return null;
+
+  const history = sessions
+    .filter(s => s.drillId === drillId)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5);
+
+  if (!history.length) return null;
+
+  const withIdx = history.filter(s => s.index !== null);
+  const hasTrend = withIdx.length >= 2;
+
+  const trendSummary = (() => {
+    if (!hasTrend) return null;
+    const oldest = withIdx[withIdx.length - 1].index;
+    const newest = withIdx[0].index;
+    const diff = Math.round(newest - oldest);
+    if (diff > 0) return { label: `+${diff} pts over ${withIdx.length} sessions`, up: true };
+    if (diff < 0) return { label: `${diff} pts over ${withIdx.length} sessions`, up: false };
+    return { label: `No change over ${withIdx.length} sessions`, up: null };
+  })();
+
+  const trendColor = trendSummary === null ? "" : trendSummary.up === true ? "text-green-600" : trendSummary.up === false ? "text-red-500" : "text-gray-400";
+
+  const sparkPoints = (() => {
+    if (!hasTrend) return null;
+    const pts = [...withIdx].reverse();
+    const vals = pts.map(p => p.index);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const range = max - min || 1;
+    return pts.map((p, i) => {
+      const x = 2 + (i / (pts.length - 1)) * 56;
+      const y = 18 - ((p.index - min) / range) * 14;
+      return `${x},${y}`;
+    }).join(" ");
+  })();
+
+  const last = history[0];
+  const lastR = ratingColor(last.index);
+
+  return (
+    <div className="mt-2 mb-1 border border-gray-200 rounded-lg overflow-hidden">
+      {/* Compact strip — always visible */}
+      <div className="flex items-center gap-3 px-3 py-2 bg-gray-50">
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-gray-500 mb-0.5">Last attempt</p>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-green-700">{last.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
+            <span className="text-xs text-gray-400">{new Date(last.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
+            {last.index !== null && (
+              <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${lastR.bg} ${lastR.text}`}>{Math.round(last.index)}</span>
+            )}
+          </div>
+        </div>
+        {trendSummary && (
+          <div className="shrink-0 text-right">
+            <p className="text-xs text-gray-500 mb-0.5">Trend</p>
+            <p className={`text-xs font-semibold ${trendColor}`}>{trendSummary.label}</p>
+          </div>
+        )}
+        {sparkPoints && (
+          <svg width="60" height="20" viewBox="0 0 60 20" className="shrink-0">
+            <polyline points={sparkPoints} fill="none" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {history.length > 1 && (
+          <button
+            type="button"
+            onClick={() => setExpanded(e => !e)}
+            className="shrink-0 text-xs text-green-700 underline hover:text-green-800"
+          >
+            {expanded ? "Hide" : "Show history"}
+          </button>
+        )}
+      </div>
+
+      {/* Expanded detail */}
+      {expanded && (
+        <div className="px-3 py-2 border-t border-gray-200 bg-white space-y-1.5">
+          {history.map((s, i) => {
+            const r = ratingColor(s.index);
+            const barWidth = s.index !== null ? Math.round(s.index) : 0;
+            const barColor = s.index >= 80 ? "#16a34a" : s.index >= 50 ? "#ca8a04" : "#dc2626";
+            return (
+              <div key={i} className="flex items-center gap-2 text-xs">
+                <span className="text-gray-400 w-14 shrink-0">
+                  {new Date(s.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
+                </span>
+                <span className="font-semibold text-green-700 w-16 shrink-0">{s.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
+                <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                  {s.index !== null && (
+                    <div className="h-full rounded-full" style={{ width: `${barWidth}%`, background: barColor }}></div>
+                  )}
+                </div>
+                {s.index !== null && (
+                  <span className={`px-1.5 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>{Math.round(s.index)}</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── DASHBOARD PANEL ──────────────────────────────────────────────────────────
 function DashboardPanel({ sessions, player, onGoToLog }) {
   if (!sessions.length) return (
@@ -3381,37 +3494,66 @@ function DashboardPanel({ sessions, player, onGoToLog }) {
 
   // ── Weak category ──────────────────────────────────────────────────────────
   const cats = ["Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
+
+  // Build category stats
   const catAvgs = cats.map(cat => {
     const cs = withIdx.filter(s => DRILL_CATEGORY[s.drillId] === cat);
-    const avg = cs.length ? Math.round(cs.reduce((a,b) => a + b.index, 0) / cs.length) : null;
+    const avg = cs.length ? Math.round(cs.reduce((a, b) => a + b.index, 0) / cs.length) : null;
     return { cat, avg, count: cs.length };
   }).filter(c => c.avg !== null);
 
-  const weakCat = catAvgs.length
-    ? catAvgs.reduce((a,b) => a.avg < b.avg ? a : b)
-    : null;
+  // Priority 1 — declining trend (overall direction over last 3 scored sessions)
+  const decliningCat = (() => {
+    for (const cat of cats) {
+      const recent = withIdx
+        .filter(s => DRILL_CATEGORY[s.drillId] === cat)
+        .sort((a, b) => b.date.localeCompare(a.date))
+        .slice(0, 3);
+      if (recent.length < 3) continue;
+      const newest = recent[0].index;
+      const oldest = recent[2].index;
+      if (newest < oldest) return { cat, newest: Math.round(newest), oldest: Math.round(oldest) };
+    }
+    return null;
+  })();
 
-  // Suggested drills for weak category: played first (sorted by lowest avg index), then unplayed
+  // Priority 2 — neglected category (no session in 14+ days)
+  const neglectedCat = (() => {
+    if (decliningCat) return null;
+    const today = new Date();
+    for (const cat of cats) {
+      const catSessions = sessions.filter(s => DRILL_CATEGORY[s.drillId] === cat);
+      if (!catSessions.length) continue;
+      const latest = catSessions.sort((a, b) => b.date.localeCompare(a.date))[0];
+      const daysSince = Math.floor((today - new Date(latest.date)) / 86400000);
+      if (daysSince >= 14) return { cat, daysSince };
+    }
+    return null;
+  })();
+
+  // Priority 3 — fallback to lowest average
+  const weakCat = (() => {
+    if (decliningCat || neglectedCat) return null;
+    if (!catAvgs.length) return null;
+    return catAvgs.reduce((a, b) => a.avg < b.avg ? a : b);
+  })();
+
+  // Suggested drills for fallback weakCat only
   const suggestedDrills = (() => {
     if (!weakCat) return [];
     const catDrills = DRILLS.filter(d => DRILL_CATEGORY[d.id] === weakCat.cat && d.dir !== null);
-
-    // Drills played — compute avg index per drill
     const played = [];
     catDrills.forEach(drill => {
       const ds = withIdx.filter(s => s.drillId === drill.id);
       if (!ds.length) return;
-      const avg = Math.round(ds.reduce((a,b) => a + b.index, 0) / ds.length);
+      const avg = Math.round(ds.reduce((a, b) => a + b.index, 0) / ds.length);
       played.push({ drill, avgIdx: avg, played: true });
     });
-    played.sort((a,b) => a.avgIdx - b.avgIdx); // lowest index first = most needs work
-
-    // Unplayed drills in the category
+    played.sort((a, b) => a.avgIdx - b.avgIdx);
     const playedIds = new Set(played.map(p => p.drill.id));
     const unplayed = catDrills
       .filter(d => !playedIds.has(d.id))
       .map(d => ({ drill: d, avgIdx: null, played: false }));
-
     return [...played, ...unplayed].slice(0, 3);
   })();
 
@@ -3462,34 +3604,60 @@ function DashboardPanel({ sessions, player, onGoToLog }) {
       </div>
 
       {/* 3 — Weak area + suggested drills */}
-      {weakCat && (
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+      {(decliningCat || neglectedCat || weakCat) && (
+        <div className={`rounded-xl p-4 border ${
+          decliningCat ? "bg-red-50 border-red-200" :
+          neglectedCat ? "bg-yellow-50 border-yellow-200" :
+          "bg-orange-50 border-orange-200"
+        }`}>
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-lg">🎯</span>
+            <span className="text-lg">
+              {decliningCat ? "📉" : neglectedCat ? "⏰" : "🎯"}
+            </span>
             <div>
-              <p className="text-sm font-bold text-orange-800">Focus Area: {weakCat.cat}</p>
-              <p className="text-xs text-orange-600">Avg index {weakCat.avg} — your lowest category</p>
+              {decliningCat && (
+                <>
+                  <p className="text-sm font-bold text-red-800">Declining: {decliningCat.cat}</p>
+                  <p className="text-xs text-red-600">Index dropped from {decliningCat.oldest} to {decliningCat.newest} over your last 3 sessions</p>
+                </>
+              )}
+              {neglectedCat && (
+                <>
+                  <p className="text-sm font-bold text-yellow-800">Overdue: {neglectedCat.cat}</p>
+                  <p className="text-xs text-yellow-600">No {neglectedCat.cat} session in {neglectedCat.daysSince} days — time to revisit</p>
+                </>
+              )}
+              {weakCat && (
+                <>
+                  <p className="text-sm font-bold text-orange-800">Focus Area: {weakCat.cat}</p>
+                  <p className="text-xs text-orange-600">Avg index {weakCat.avg} — your lowest category</p>
+                </>
+              )}
             </div>
           </div>
-          <p className="text-xs font-semibold text-orange-700 mb-2">Suggested drills to work on:</p>
-          <div className="space-y-2">
-            {suggestedDrills.map(({ drill, avgIdx, played }) => {
-              const r = played ? ratingColor(avgIdx) : null;
-              return (
-                <div key={drill.id} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-sm shadow-sm">
-                  <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${CAT_COLOR[weakCat.cat]}`}>{weakCat.cat}</span>
-                  <span className="flex-1 text-gray-700 truncate">{drill.name}</span>
-                  {played && avgIdx !== null ? (
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>
-                      Avg {avgIdx}
-                    </span>
-                  ) : (
-                    <span className="text-xs text-gray-400 shrink-0 italic">Not yet played</span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          {weakCat && suggestedDrills.length > 0 && (
+            <>
+              <p className="text-xs font-semibold text-orange-700 mb-2">Suggested drills to work on:</p>
+              <div className="space-y-2">
+                {suggestedDrills.map(({ drill, avgIdx, played }) => {
+                  const r = played ? ratingColor(avgIdx) : null;
+                  return (
+                    <div key={drill.id} className="flex items-center gap-2 bg-white rounded-lg px-3 py-2 text-sm shadow-sm">
+                      <span className={`text-xs px-2 py-0.5 rounded font-medium shrink-0 ${CAT_COLOR[weakCat.cat]}`}>{weakCat.cat}</span>
+                      <span className="flex-1 text-gray-700 truncate">{drill.name}</span>
+                      {played && avgIdx !== null ? (
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${r.bg} ${r.text}`}>
+                          Avg {avgIdx}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-400 shrink-0 italic">Not yet played</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -3614,7 +3782,7 @@ export default function App() {
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
         <div className="text-5xl mb-4">⛳</div>
         <h1 className="text-2xl font-bold text-green-800 mb-1">Anthony Summers</h1>
-        <h2 className="text-lg text-gray-600 mb-6">Short Game Practice Hub</h2>
+        <h2 className="text-lg text-gray-600 mb-6">AS Performance Centre</h2>
         <p className="text-sm text-gray-500 mb-4">Enter your name to get started</p>
         <input
           className="w-full border border-gray-300 rounded-lg px-4 py-3 text-center text-lg mb-4 focus:outline-none focus:border-green-500"
@@ -3888,7 +4056,7 @@ export default function App() {
       <div className="bg-green-800 text-white px-4 py-4 shadow-md">
         <div className="max-w-5xl mx-auto flex items-center justify-between flex-wrap gap-2">
           <div>
-            <h1 className="text-xl font-bold">⛳ Anthony Summers Short Game Practice Hub</h1>
+            <h1 className="text-xl font-bold">⛳ AS Performance Centre</h1>
             <p className="text-green-300 text-sm">Welcome, <strong>{player}</strong></p>
           </div>
           <button onClick={() => { localStorage.removeItem('player'); setPlayer(null); }} className="text-green-300 text-sm hover:text-white underline">
@@ -3983,6 +4151,7 @@ export default function App() {
   )}
 </div>
                   <div>
+                    <DrillHistoryPanel drillId={+form.drillId || null} sessions={sessions} />
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && !isBroadieChase && !isPointsRace && !isBroadieTest && !isLukeDonald && !isGauntlet && !is250Challenge && !isSuddenDeathCarousel && !isDrawbackGauntlet && !isJaggedPeaks && !isAscent && !isAnchor && !isCrucible && !isSniperSchool && !isFullRangeTourTest && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
