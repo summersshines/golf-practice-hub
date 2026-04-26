@@ -158,6 +158,254 @@ const PROXIMITY_SCORECARDS = {
       { label: "Rough",   stations: ["7m", "14m", "21m", "28m", "35m"] },
     ],
   },
+  11: {
+    title: "Wedge Combine 30–70m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["30m", "40m", "50m", "60m", "70m"] },
+    ],
+  },
+  12: {
+    title: "3 Shot Close Range Combine (10–14m)",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Shots", stations: ["10m Fairway", "12m Bunker", "14m Rough"] },
+    ],
+  },
+  13: {
+    title: "3 Shot Mid Range Combine (20–25m)",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Shots", stations: ["20m Rough", "23m Bunker", "25m Fairway"] },
+    ],
+  },
+  14: {
+    title: "3 Shot Long Range Combine (30–40m)",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Shots", stations: ["30m Bunker", "35m Fairway", "40m Rough"] },
+    ],
+  },
+  15: {
+    title: "Fairway 3 – 10-30m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["10m", "20m", "30m"] },
+    ],
+  },
+  16: {
+    title: "Bunker 3 – 10-30m",
+    icon: "⛱️",
+    unit: "ft",
+    groups: [
+      { label: "Bunker", stations: ["10m", "20m", "30m"] },
+    ],
+  },
+  17: {
+    title: "Rough 3 – 10-30m",
+    icon: "🌿",
+    unit: "ft",
+    groups: [
+      { label: "Rough", stations: ["10m", "20m", "30m"] },
+    ],
+  },
+  18: {
+    title: "Fairway 6 – 10-35m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Fairway", stations: ["10m", "15m", "20m", "25m", "30m", "35m"] },
+    ],
+  },
+  19: {
+    title: "Bunker 6 – 10-35m",
+    icon: "⛱️",
+    unit: "ft",
+    groups: [
+      { label: "Bunker", stations: ["10m", "15m", "20m", "25m", "30m", "35m"] },
+    ],
+  },
+  20: {
+    title: "Rough 6 – 10-35m",
+    icon: "🌿",
+    unit: "ft",
+    groups: [
+      { label: "Rough", stations: ["10m", "15m", "20m", "25m", "30m", "35m"] },
+    ],
+  },
+  24: {
+    title: "Lob Master – 6 Shot Challenge (10–35m)",
+    icon: "🎯",
+    unit: "ft",
+    groups: [
+      { label: "Lob Wedge", stations: ["10m", "15m", "20m", "25m", "30m", "35m"] },
+    ],
+  },
+  26: {
+    title: "Wedge Combine 80–120m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["80m", "90m", "100m", "110m", "120m"] },
+    ],
+  },
+  29: {
+    title: "Bump and Run – No Wedges Allowed",
+    icon: "⛳",
+    unit: "ft",
+    groups: [
+      { label: "Bump & Run", stations: ["10m", "15m", "20m", "25m", "30m", "35m"] },
+    ],
+  },
+  30: {
+    title: "Wedge Combine 50–75m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["50m", "65m", "75m"] },
+    ],
+  },
+  31: {
+    title: "Wedge Combine 80–100m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["80m", "90m", "100m"] },
+    ],
+  },
+  32: {
+    title: "Wedge Circuit 50–100m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["50m", "90m", "75m", "83m", "63m", "99m"] },
+    ],
+  },
+  37: {
+    title: "Long Distance Proximity Test",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Putts", stations: ["30ft", "40ft", "50ft", "60ft", "70ft"] },
+    ],
+  },
+  76: {
+    title: "Washington Speed Control – 20ft",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Putts from 20ft", stations: ["Putt 1", "Putt 2", "Putt 3", "Putt 4", "Putt 5", "Putt 6", "Putt 7", "Putt 8", "Putt 9", "Putt 10"] },
+    ],
+  },
+  77: {
+    title: "Washington Speed Control – 30ft",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Putts from 30ft", stations: ["Putt 1", "Putt 2", "Putt 3", "Putt 4", "Putt 5", "Putt 6", "Putt 7", "Putt 8", "Putt 9", "Putt 10"] },
+    ],
+  },
+  83: {
+    title: "3 Distance Test (10, 15, 20m)",
+    icon: "📏",
+    unit: "ft",
+    groups: [
+      { label: "Shots", stations: ["10m", "15m", "20m"] },
+    ],
+  },
+  84: {
+    title: "Wedge Combine 50–80m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["50m", "65m", "80m"] },
+    ],
+  },
+  85: {
+    title: "Wedge Combine 55–95m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["55m", "65m", "75m", "85m", "95m"] },
+    ],
+  },
+  86: {
+    title: "Wedge Combine 60–80m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["60m", "65m", "70m", "75m", "80m"] },
+    ],
+  },
+  87: {
+    title: "Wedge Combine 80–100m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["80m", "85m", "90m", "95m", "100m"] },
+    ],
+  },
+  88: {
+    title: "Wedge Combine 70–90m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["70m", "75m", "80m", "85m", "90m"] },
+    ],
+  },
+  89: {
+    title: "Wedge Combine 40–80m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["40m", "60m", "80m"] },
+    ],
+  },
+  90: {
+    title: "Wedge Combine 50–90m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["50m", "70m", "90m"] },
+    ],
+  },
+  91: {
+    title: "Wedge Combine 30–50m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["30m", "35m", "40m", "45m", "50m"] },
+    ],
+  },
+  92: {
+    title: "Wedge Combine 40–60m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["40m", "45m", "50m", "55m", "60m"] },
+    ],
+  },
+  96: {
+    title: "Wedge Combine 40–100m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["40m", "55m", "70m", "85m", "100m"] },
+    ],
+  },
+  97: {
+    title: "Wedge Combine 30–90m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["30m", "60m", "90m"] },
+    ],
+  },
 };
 
 const NEGATIVE_SCORECARDS = {
@@ -319,7 +567,590 @@ function getPelzHandicap(score) {
   return "40";
 }
 
+const HOLE_ALL_DISTANCES_CONFIGS = {
+  55: { title: "Full Range Tour Test (3–15ft)", icon: "🎯", distances: [3,4,5,6,7,8,9,10,11,12,13,14,15], perfect: 13, worst: 37 },
+  53: { title: "Tour Test 3–10ft",              icon: "🎯", distances: [3,4,5,6,7,8,9,10],               perfect: 8,  worst: 14 },
+  54: { title: "Tour Test 10–15ft",             icon: "🎯", distances: [10,11,12,13,14,15],              perfect: 6,  worst: 30 },
+  56: { title: "Make Zone Test 3–7ft",          icon: "🎯", distances: [3,4,5,6,7],                      perfect: 5,  worst: 10 },
+  57: { title: "Make Zone Test 6–10ft",         icon: "🎯", distances: [6,7,8,9,10],                     perfect: 5,  worst: 15 },
+  58: { title: "Make Zone Test 8–12ft",         icon: "🎯", distances: [8,9,10,11,12],                   perfect: 5,  worst: 20 },
+  59: { title: "Make Zone Test 3–8ft",          icon: "🎯", distances: [3,4,5,6,7,8],                    perfect: 6,  worst: 10 },
+};
+
+const TAP_TO_TOGGLE_CONFIGS = {
+  60: {
+    title: "Peter Hanson Test (4–5ft)", icon: "🎯",
+    putts: [
+      { label: "4ft (N)" }, { label: "4ft (E)" }, { label: "4ft (S)" }, { label: "4ft (W)" },
+      { label: "5ft (NE)" }, { label: "5ft (NW)" }, { label: "5ft (SE)" }, { label: "5ft (SW)" },
+    ],
+    total: 8,
+  },
+  61: {
+    title: "4-5-6 Circuit – 6 Putts", icon: "🎯",
+    putts: [
+      { label: "4ft" }, { label: "5ft" }, { label: "6ft" },
+      { label: "4ft" }, { label: "5ft" }, { label: "6ft" },
+    ],
+    total: 6,
+  },
+  62: {
+    title: "4-5-6 Circuit – 9 Putts", icon: "🎯",
+    putts: [
+      { label: "4ft" }, { label: "5ft" }, { label: "6ft" },
+      { label: "4ft" }, { label: "5ft" }, { label: "6ft" },
+      { label: "4ft" }, { label: "5ft" }, { label: "6ft" },
+    ],
+    total: 9,
+  },
+  98: {
+    title: "Team Ripper Challenge (4, 6, 8ft)", icon: "🎯",
+    putts: [
+      { label: "4ft" }, { label: "4ft" }, { label: "4ft" }, { label: "4ft" },
+      { label: "6ft" }, { label: "6ft" }, { label: "6ft" }, { label: "6ft" },
+      { label: "8ft" }, { label: "8ft" },
+    ],
+    total: 10,
+  },
+};
+
+// Spiral Hole Out grid config — separate from flat TapToToggle drills
+const SPIRAL_HOLE_OUT_CONFIG = {
+  title: "Spiral Hole Out Test (5–15ft)", icon: "🌀",
+  distances: ["5ft", "7ft", "9ft", "11ft", "13ft", "15ft"],
+  holes: 3,
+  total: 18,
+};
+
+const ELIMINATOR_CONFIGS = {
+  46: { title: "Momentum Keeper – 12ft Eliminator", icon: "💪", distance: "12ft", positions: 8, cap: 36 },
+  47: { title: "The Surgeon – 4ft Eliminator",      icon: "🔬", distance: "4ft",  positions: 8, cap: 14 },
+  48: { title: "The Payday – 8ft Eliminator",       icon: "💰", distance: "8ft",  positions: 8, cap: 24 },
+};
+
+const GATE_COMPLETION_CONFIGS = {
+  50: { title: "Iron Gates",        icon: "🚪", target: 10, cap: 20, label: "Flat"  },
+  51: { title: "Iron Gates (R–L)", icon: "🚪", target: 10, cap: 24, label: "Right to Left" },
+  52: { title: "Iron Gates (L–R)", icon: "🚪", target: 10, cap: 24, label: "Left to Right" },
+};
+
 // ─── SCORECARD MODAL COMPONENTS ──────────────────────────────────────────────
+
+const LIE_MIX_CONFIGS = {
+  80: {
+    title: "6 Lie Bunker Challenge",
+    icon: "⛱️",
+    context: "Hit from various distances — your choice",
+    lies: [
+      "1 — Flat lie",
+      "2 — Ball above feet",
+      "3 — Ball below feet",
+      "4 — Upslope",
+      "5 — Downslope",
+      "6 — Plugged lie",
+    ],
+  },
+  81: {
+    title: "Close Range Lie Mix",
+    icon: "⛱️",
+    context: "All shots from 0–10m from the hole",
+    lies: [
+      "1 — Flat lie",
+      "2 — Ball above feet",
+      "3 — Ball below feet",
+      "4 — Upslope",
+      "5 — Downslope",
+    ],
+  },
+  82: {
+    title: "Mid Range Lie Mix",
+    icon: "⛱️",
+    context: "All shots from 10–20m from the hole",
+    lies: [
+      "1 — Flat lie",
+      "2 — Ball above feet",
+      "3 — Ball below feet",
+      "4 — Upslope",
+      "5 — Downslope",
+    ],
+  },
+};
+
+const LIE_MIX_OPTIONS = [
+  { value: 4, label: "4 pts — Holed" },
+  { value: 3, label: "3 pts — 0–3ft" },
+  { value: 2, label: "2 pts — 3–6ft" },
+  { value: 1, label: "1 pt  — 6–12ft" },
+  { value: 0, label: "0 pts — 12ft+" },
+];
+
+function LieMixScorecardModal({ drillId, onSave, onCancel }) {
+  const config = LIE_MIX_CONFIGS[drillId];
+  const [values, setValues] = useState(config.lies.map(() => 0));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? Number(val) : v));
+  }
+
+  const grandTotal = values.reduce((a, b) => a + b, 0);
+  const maxScore = config.lies.length * 4;
+  const zone = grandTotal >= Math.round(maxScore * 0.75)
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= Math.round(maxScore * 0.5)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">{config.context}</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4pts</span>
+          <span>0–3ft = 3pts</span>
+          <span>3–6ft = 2pts</span>
+          <span>6–12ft = 1pt</span>
+          <span>12ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {config.lies.map((lie, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-sm text-gray-700 flex-1">{lie}</span>
+              <select
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-xs bg-white focus:outline-none focus:border-green-500"
+              >
+                {LIE_MIX_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Perfect: {maxScore} pts</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button onClick={() => onSave(grandTotal)} className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm">
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TapToToggleModal({ drillId, onSave, onCancel }) {
+  const config = TAP_TO_TOGGLE_CONFIGS[drillId];
+  const [values, setValues] = useState(Array(config.total).fill(null));
+
+  function toggle(idx) {
+    setValues(prev => prev.map((v, i) => i === idx ? (v === 1 ? 0 : 1) : v));
+  }
+
+  const allFilled = values.every(v => v !== null);
+  const grandTotal = values.reduce((a, v) => a + (v ?? 0), 0);
+  const zone = grandTotal >= Math.round(config.total * 0.8)
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= Math.round(config.total * 0.5)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Tap each putt to mark holed or missed — higher is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Tap to toggle ✅ Holed · ❌ Missed · Score = total holed
+        </div>
+        <div className="px-4 py-4">
+          <div className="flex flex-wrap gap-3 justify-center">
+            {config.putts.map((putt, i) => {
+              const val = values[i];
+              return (
+                <div key={i} className="flex flex-col items-center gap-1">
+                  <span className="text-xs text-gray-400">{putt.label}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggle(i)}
+                    className={`w-14 h-14 rounded-xl border-2 text-xl font-bold transition-colors ${
+                      val === 1 ? "bg-green-500 border-green-600 text-white"
+                      : val === 0 ? "bg-red-100 border-red-300 text-red-400"
+                      : "bg-gray-100 border-gray-300 text-gray-300"
+                    }`}
+                  >
+                    {val === 1 ? "✅" : val === 0 ? "❌" : "·"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${allFilled ? zone.color : "text-gray-500 bg-gray-50 border-gray-200"}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal} / {config.total}</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} / {config.total})
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpiralHoleOutModal({ onSave, onCancel }) {
+  const config = SPIRAL_HOLE_OUT_CONFIG;
+  // values[hole][distIdx]: null = untapped, 1 = holed, 0 = missed
+  const [values, setValues] = useState(
+    Array(config.holes).fill(null).map(() => Array(config.distances.length).fill(null))
+  );
+
+  function toggle(hi, di) {
+    setValues(prev => prev.map((h, hIdx) =>
+      hIdx === hi ? h.map((v, dIdx) => dIdx === di ? (v === 1 ? 0 : 1) : v) : h
+    ));
+  }
+
+  const allFilled = values.every(h => h.every(v => v !== null));
+  const grandTotal = values.reduce((a, h) => a + h.reduce((x, v) => x + (v ?? 0), 0), 0);
+  const zone = grandTotal >= 12 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 7 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">3 holes × 6 distances — tap to mark holed or missed</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Tap to toggle ✅ Holed · ❌ Missed · Score = total holed out of 18
+        </div>
+        <div className="px-4 py-4 overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="text-left pb-2 text-xs font-semibold text-gray-500 w-16">Dist</th>
+                {Array(config.holes).fill(null).map((_, hi) => (
+                  <th key={hi} className="text-center pb-2 text-xs font-semibold text-green-700">
+                    Hole {hi + 1}
+                    <div className="text-gray-400 font-normal">
+                      {values[hi].filter(v => v === 1).length}/{config.distances.length}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {config.distances.map((dist, di) => (
+                <tr key={di} className={di % 2 === 0 ? "bg-gray-50" : "bg-white"}>
+                  <td className="py-1.5 pr-2 text-xs font-semibold text-gray-600">{dist}</td>
+                  {Array(config.holes).fill(null).map((_, hi) => {
+                    const val = values[hi][di];
+                    return (
+                      <td key={hi} className="py-1 text-center">
+                        <button
+                          type="button"
+                          onClick={() => toggle(hi, di)}
+                          className={`w-12 h-10 rounded-lg border-2 text-base font-bold transition-colors ${
+                            val === 1 ? "bg-green-500 border-green-600 text-white"
+                            : val === 0 ? "bg-red-100 border-red-300 text-red-400"
+                            : "bg-gray-100 border-gray-300 text-gray-300"
+                          }`}
+                        >
+                          {val === 1 ? "✅" : val === 0 ? "❌" : "·"}
+                        </button>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${allFilled ? zone.color : "text-gray-500 bg-gray-50 border-gray-200"}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal} / 18</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
+              <p>Green 12+ · Yellow 7–11 · Red &lt;7</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} / 18)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EliminatorModal({ drillId, onSave, onCancel }) {
+  const config = ELIMINATOR_CONFIGS[drillId];
+  // null = active, true = eliminated
+  const [eliminated, setEliminated] = useState(Array(config.positions).fill(false));
+  const [puttCount, setPuttCount] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [capReached, setCapReached] = useState(false);
+
+  function recordPutt(posIdx, made) {
+    const newPuttCount = puttCount + 1;
+    setPuttCount(newPuttCount);
+    if (made) {
+      const newEliminated = eliminated.map((v, i) => i === posIdx ? true : v);
+      setEliminated(newEliminated);
+      if (newEliminated.every(v => v)) setFinished(true);
+    }
+    if (!finished && newPuttCount >= config.cap) {
+      setCapReached(true);
+      setFinished(true);
+    }
+  }
+
+  const eliminatedCount = eliminated.filter(v => v).length;
+  const zone = puttCount <= config.perfect + 2
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : puttCount <= Math.round((config.perfect + config.cap) / 2)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  const COMPASS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Hole the putt to eliminate each position — count total putts</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex justify-between">
+          <span>All putts from {config.distance} · Cap: {config.cap} putts</span>
+          <span className="font-bold">Eliminated: {eliminatedCount} / {config.positions}</span>
+        </div>
+
+        <div className="px-4 py-6">
+          <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+            {Array(config.positions).fill(null).map((_, i) => {
+              const isEliminated = eliminated[i];
+              return (
+                <div
+                  key={i}
+                  className={`${i === 1 ? "col-start-2" : i === 3 ? "col-start-3" : i === 4 ? "col-start-2" : i === 5 ? "col-start-1" : ""}`}
+                >
+                  {!isEliminated ? (
+                    <div className="flex flex-col gap-1.5">
+                      <div className="text-center text-xs font-semibold text-gray-500">{COMPASS[i]}</div>
+                      <div className="flex gap-1.5 justify-center">
+                        <button
+                          type="button"
+                          onClick={() => recordPutt(i, true)}
+                          disabled={finished}
+                          className="flex-1 bg-green-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-green-700 disabled:opacity-40"
+                        >✅</button>
+                        <button
+                          type="button"
+                          onClick={() => recordPutt(i, false)}
+                          disabled={finished}
+                          className="flex-1 bg-red-100 text-red-600 py-2 rounded-lg text-xs font-bold hover:bg-red-200 border border-red-200 disabled:opacity-40"
+                        >❌</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="text-center text-xs font-semibold text-gray-400">{COMPASS[i]}</div>
+                      <div className="w-full h-12 rounded-lg bg-green-100 border-2 border-green-300 flex items-center justify-center text-lg">✅</div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {finished && (
+          <div className={`mx-4 mb-4 rounded-xl border px-4 py-3 text-center ${capReached ? "bg-red-50 border-red-200 text-red-700" : zone.color}`}>
+            <p className="text-sm font-bold mb-1">{capReached ? "Cap reached" : "All positions eliminated! 🎉"}</p>
+            <p className="text-4xl font-extrabold">{puttCount}</p>
+            <p className="text-sm mt-1">total putts</p>
+          </div>
+        )}
+
+        <div className="px-4 pb-4 flex gap-3">
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Putts taken</p>
+            <p className="text-2xl font-extrabold text-gray-700">{puttCount}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Remaining</p>
+            <p className="text-2xl font-extrabold text-gray-700">{config.positions - eliminatedCount}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Cap</p>
+            <p className="text-2xl font-extrabold text-gray-700">{config.cap}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          {finished && (
+            <button
+              onClick={() => onSave(puttCount)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({puttCount} putts)
+            </button>
+          )}
+          <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GateCompletionModal({ drillId, onSave, onCancel }) {
+  const config = GATE_COMPLETION_CONFIGS[drillId];
+  const [successful, setSuccessful] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [capReached, setCapReached] = useState(false);
+
+  function recordPutt(success) {
+    const newTotal = total + 1;
+    const newSuccessful = success ? successful + 1 : successful;
+    setTotal(newTotal);
+    setSuccessful(newSuccessful);
+    if (newSuccessful >= config.target) setFinished(true);
+    else if (newTotal >= config.cap) { setCapReached(true); setFinished(true); }
+  }
+
+  const zone = total <= config.target + 2
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : total <= Math.round((config.target + config.cap) / 2)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
+          <p className="text-green-300 text-sm mt-0.5">{config.label} — get {config.target} putts through the gate</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex justify-between">
+          <span>Count all putts taken · Lower is better · Cap: {config.cap}</span>
+          <span className="font-bold">Through gate: {successful} / {config.target}</span>
+        </div>
+
+        <div className="px-4 py-6">
+          {!finished ? (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+              <p className="text-sm font-semibold text-green-800 mb-3">Putt {total + 1} — did it go through the gate and hole out?</p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => recordPutt(true)}
+                  className="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-green-700"
+                >
+                  ✅ Through gate + holed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => recordPutt(false)}
+                  className="flex-1 bg-red-100 text-red-700 py-3 rounded-xl font-semibold text-sm hover:bg-red-200 border border-red-200"
+                >
+                  ❌ Failed
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={`rounded-xl border px-4 py-4 text-center ${capReached ? "bg-red-50 border-red-200 text-red-700" : zone.color}`}>
+              <p className="text-lg font-bold mb-1">{capReached ? "Cap reached" : "Target reached! 🎉"}</p>
+              <p className="text-4xl font-extrabold">{total}</p>
+              <p className="text-sm mt-1">total putts · {successful} successful</p>
+            </div>
+          )}
+        </div>
+
+        <div className="px-4 pb-4 flex gap-3">
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Total putts</p>
+            <p className="text-2xl font-extrabold text-gray-700">{total}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Successful</p>
+            <p className="text-2xl font-extrabold text-green-700">{successful}</p>
+          </div>
+          <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
+            <p className="text-xs text-gray-500">Needed</p>
+            <p className="text-2xl font-extrabold text-gray-700">{Math.max(0, config.target - successful)}</p>
+          </div>
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          {finished && (
+            <button
+              onClick={() => onSave(total)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({total} putts)
+            </button>
+          )}
+          <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function SwedishScorecardModal({ onSave, onCancel }) {
   const [grid, setGrid] = useState(
@@ -2726,9 +3557,10 @@ function SniperSchoolModal({ onSave, onCancel }) {
   );
 }
 
-function FullRangeTourTestModal({ onSave, onCancel }) {
-  const DISTANCES = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-  const [puttCounts, setPuttCounts] = useState(Array(13).fill(0));
+function HoleAllDistancesModal({ drillId, onSave, onCancel }) {
+  const config = HOLE_ALL_DISTANCES_CONFIGS[drillId];
+  const DISTANCES = config.distances;
+  const [puttCounts, setPuttCounts] = useState(Array(DISTANCES.length).fill(0));
   const [activeIdx, setActiveIdx] = useState(0);
   const [finished, setFinished] = useState(false);
 
@@ -2738,9 +3570,9 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
 
   function handleHole() {
     setPuttCounts(prev => prev.map((v, i) => i === activeIdx ? v + 1 : v));
-    if (activeIdx === 12) {
+    if (activeIdx === DISTANCES.length - 1) {
       setFinished(true);
-      setActiveIdx(13);
+      setActiveIdx(DISTANCES.length);
     } else {
       setActiveIdx(activeIdx + 1);
     }
@@ -2748,8 +3580,10 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
 
   const totalPutts = puttCounts.reduce((a, b) => a + b, 0);
   const completedCount = activeIdx;
-  const zone = totalPutts <= 16 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
-    : totalPutts <= 25 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+  const zone = totalPutts <= config.perfect + 3
+    ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : totalPutts <= Math.round((config.perfect + config.worst) / 2)
+    ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
     : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
 
   function puttOrdinal(count) {
@@ -2763,11 +3597,11 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
         <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
-          <h2 className="text-lg font-bold">🎯 Full Range Tour Test (3–15ft)</h2>
+          <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
           <p className="text-green-300 text-sm mt-0.5">Hole each distance — miss keeps the putt going</p>
         </div>
         <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
-          Hole It → distance complete · Miss → another putt at same distance · Score = total putts across all 13 distances
+          Hole It → distance complete · Miss → another putt at same distance · Score = total putts across all {DISTANCES.length} distances
         </div>
 
         <div className="px-4 py-4 space-y-1.5">
@@ -2827,7 +3661,7 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
               <p className="text-lg font-bold mb-1">Complete! 🎉</p>
               <p className="text-4xl font-extrabold leading-none">{totalPutts}</p>
               <p className="text-sm mt-1">total putts</p>
-              <p className="text-xs mt-1 opacity-70">{zone.label} · Green ≤16 · Yellow 17–25 · Red 26+</p>
+              <p className="text-xs mt-1 opacity-70">{zone.label} · Perfect {config.perfect} · Worst {config.worst}</p>
             </div>
           )}
         </div>
@@ -2840,11 +3674,11 @@ function FullRangeTourTestModal({ onSave, onCancel }) {
           </div>
           <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
             <p className="text-xs text-gray-500">Distances done</p>
-            <p className="text-2xl font-extrabold text-gray-700">{completedCount} / 13</p>
+            <p className="text-2xl font-extrabold text-gray-700">{completedCount} / {DISTANCES.length}</p>
           </div>
           <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
             <p className="text-xs text-gray-500">Remaining</p>
-            <p className="text-2xl font-extrabold text-gray-700">{13 - completedCount}</p>
+            <p className="text-2xl font-extrabold text-gray-700">{DISTANCES.length - completedCount}</p>
           </div>
         </div>
 
@@ -2890,5 +3724,10 @@ export {
   AnchorModal,
   CrucibleModal,
   SniperSchoolModal,
-  FullRangeTourTestModal,
+  HoleAllDistancesModal,
+  LieMixScorecardModal,
+  TapToToggleModal,
+  SpiralHoleOutModal,
+  EliminatorModal,
+  GateCompletionModal,
 };

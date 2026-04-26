@@ -24,7 +24,12 @@ import {
   AnchorModal,
   CrucibleModal,
   SniperSchoolModal,
-  FullRangeTourTestModal,
+  HoleAllDistancesModal,
+  LieMixScorecardModal,
+  TapToToggleModal,
+  SpiralHoleOutModal,
+  EliminatorModal,
+  GateCompletionModal,
 } from './scorecards';
 
 // ─── DRILL CATEGORIES ────────────────────────────────────────────────────────
@@ -907,7 +912,12 @@ export default function App() {
   const [showAnchorScorecard, setShowAnchorScorecard] = useState(false);
   const [showCrucibleScorecard, setShowCrucibleScorecard] = useState(false);
   const [showSniperSchoolScorecard, setShowSniperSchoolScorecard] = useState(false);
-  const [showFullRangeTourTestScorecard, setShowFullRangeTourTestScorecard] = useState(false);
+  const [showHoleAllDistancesScorecard, setShowHoleAllDistancesScorecard] = useState(false);
+  const [showLieMixScorecard, setShowLieMixScorecard] = useState(false);
+  const [showTapToToggleScorecard, setShowTapToToggleScorecard] = useState(false);
+  const [showSpiralHoleOutScorecard, setShowSpiralHoleOutScorecard] = useState(false);
+  const [showEliminatorScorecard, setShowEliminatorScorecard] = useState(false);
+  const [showGateCompletionScorecard, setShowGateCompletionScorecard] = useState(false);
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
@@ -979,7 +989,7 @@ export default function App() {
   const isSwedish = +form.drillId === 93;
   const isPar72 = +form.drillId === 2;
   const isPelz = +form.drillId === 9;
-  const isProximity = [1, 8, 10, 21, 25, 27, 28].includes(+form.drillId);
+  const isProximity = [1, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 37, 76, 77, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 97].includes(+form.drillId);
   const isNegative = [22, 23].includes(+form.drillId);
   const isJuniorPutting = +form.drillId === 78;
   const isJuniorShortGame = +form.drillId === 79;
@@ -999,7 +1009,12 @@ export default function App() {
   const isAnchor = +form.drillId === 63;
   const isCrucible = [64, 65, 66].includes(+form.drillId);
   const isSniperSchool = +form.drillId === 67;
-  const isFullRangeTourTest = +form.drillId === 55;
+  const isHoleAllDistances = [53, 54, 55, 56, 57, 58, 59].includes(+form.drillId);
+  const isLieMix = [80, 81, 82].includes(+form.drillId);
+  const isTapToToggle = [60, 61, 62, 98].includes(+form.drillId);
+  const isSpiralHoleOut = +form.drillId === 44;
+  const isEliminator = [46, 47, 48].includes(+form.drillId);
+  const isGateCompletion = [50, 51, 52].includes(+form.drillId);
   const CRUCIBLE_CONFIGS = {
     64: { drillId: 64, title: "Crucible — The Gridlock (4–6ft)",  icon: "🔒", startDist: 4, finishDist: 6, cap: 50 },
     65: { drillId: 65, title: "Crucible — No Fly Zone (5–7ft)",   icon: "🚫", startDist: 5, finishDist: 7, cap: 70 },
@@ -1224,10 +1239,45 @@ export default function App() {
           onCancel={() => setShowSniperSchoolScorecard(false)}
         />
       )}
-      {showFullRangeTourTestScorecard && (
-        <FullRangeTourTestModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowFullRangeTourTestScorecard(false); }}
-          onCancel={() => setShowFullRangeTourTestScorecard(false)}
+      {showHoleAllDistancesScorecard && isHoleAllDistances && (
+        <HoleAllDistancesModal
+          drillId={+form.drillId}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowHoleAllDistancesScorecard(false); }}
+          onCancel={() => setShowHoleAllDistancesScorecard(false)}
+        />
+      )}
+      {showLieMixScorecard && isLieMix && (
+        <LieMixScorecardModal
+          drillId={+form.drillId}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowLieMixScorecard(false); }}
+          onCancel={() => setShowLieMixScorecard(false)}
+        />
+      )}
+      {showTapToToggleScorecard && isTapToToggle && (
+        <TapToToggleModal
+          drillId={+form.drillId}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowTapToToggleScorecard(false); }}
+          onCancel={() => setShowTapToToggleScorecard(false)}
+        />
+      )}
+      {showSpiralHoleOutScorecard && (
+        <SpiralHoleOutModal
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSpiralHoleOutScorecard(false); }}
+          onCancel={() => setShowSpiralHoleOutScorecard(false)}
+        />
+      )}
+      {showEliminatorScorecard && isEliminator && (
+        <EliminatorModal
+          drillId={+form.drillId}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowEliminatorScorecard(false); }}
+          onCancel={() => setShowEliminatorScorecard(false)}
+        />
+      )}
+      {showGateCompletionScorecard && isGateCompletion && (
+        <GateCompletionModal
+          drillId={+form.drillId}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowGateCompletionScorecard(false); }}
+          onCancel={() => setShowGateCompletionScorecard(false)}
         />
       )}
       {/* Header */}
@@ -1331,7 +1381,7 @@ export default function App() {
                   <div>
                     <DrillHistoryPanel drillId={+form.drillId || null} sessions={sessions} />
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && !isBroadieChase && !isPointsRace && !isBroadieTest && !isLukeDonald && !isGauntlet && !is250Challenge && !isSuddenDeathCarousel && !isDrawbackGauntlet && !isJaggedPeaks && !isAscent && !isAnchor && !isCrucible && !isSniperSchool && !isFullRangeTourTest && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
+                      Score {form.drillId && !isSwedish && !isPar72 && !isPelz && !isProximity && !isNegative && !isJuniorPutting && !isJuniorShortGame && !isSundayStandard && !isSwedishQuickFire && !isPelzSnapshot && !isBroadieChase && !isPointsRace && !isBroadieTest && !isLukeDonald && !isGauntlet && !is250Challenge && !isSuddenDeathCarousel && !isDrawbackGauntlet && !isJaggedPeaks && !isAscent && !isAnchor && !isCrucible && !isSniperSchool && !isHoleAllDistances && !isLieMix && !isTapToToggle && !isSpiralHoleOut && !isEliminator && !isGateCompletion && DRILLS.find(d=>d.id===+form.drillId)?.unit ? `(${DRILLS.find(d=>d.id===+form.drillId).unit})` : ""}
                     </label>
                     {isSwedish ? (
                       <div>
@@ -1775,16 +1825,86 @@ export default function App() {
                           </div>
                         )}
                       </div>
-                    ) : isFullRangeTourTest ? (
+                    ) : isHoleAllDistances ? (
                       <div>
-                        <button type="button" onClick={() => setShowFullRangeTourTestScorecard(true)}
+                        <button type="button" onClick={() => setShowHoleAllDistancesScorecard(true)}
                           className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
                           🎯 Open Scorecard
                         </button>
                         {form.score !== "" && (
                           <div className="mt-2 text-sm text-green-700 font-semibold">
                             ✅ Score recorded: {form.score} putts
-                            <button type="button" onClick={() => setShowFullRangeTourTestScorecard(true)}
+                            <button type="button" onClick={() => setShowHoleAllDistancesScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isLieMix ? (
+                      <div>
+                        <button type="button" onClick={() => setShowLieMixScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          ⛱️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button type="button" onClick={() => setShowLieMixScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isTapToToggle ? (
+                      <div>
+                        <button type="button" onClick={() => setShowTapToToggleScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🎯 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} holed
+                            <button type="button" onClick={() => setShowTapToToggleScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isSpiralHoleOut ? (
+                      <div>
+                        <button type="button" onClick={() => setShowSpiralHoleOutScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🌀 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} / 18
+                            <button type="button" onClick={() => setShowSpiralHoleOutScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isEliminator ? (
+                      <div>
+                        <button type="button" onClick={() => setShowEliminatorScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🎯 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} putts
+                            <button type="button" onClick={() => setShowEliminatorScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isGateCompletion ? (
+                      <div>
+                        <button type="button" onClick={() => setShowGateCompletionScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🚪 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} putts
+                            <button type="button" onClick={() => setShowGateCompletionScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
                           </div>
                         )}
