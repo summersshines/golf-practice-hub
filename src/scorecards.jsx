@@ -684,7 +684,7 @@ const LIE_MIX_OPTIONS = [
   { value: 0, label: "0 pts — 12ft+" },
 ];
 
-function LieMixScorecardModal({ drillId, onSave, onCancel }) {
+function LieMixScorecardModal({ drillId, drill, onSave, onCancel }) {
   const config = LIE_MIX_CONFIGS[drillId];
   const [values, setValues] = useState(config.lies.map(() => 0));
 
@@ -738,7 +738,8 @@ function LieMixScorecardModal({ drillId, onSave, onCancel }) {
             </div>
             <div className="text-right text-xs opacity-70">
               <p className="font-bold text-sm">{zone.label}</p>
-              <p>Perfect: {maxScore} pts</p>
+              {drill && <p>Perfect: {drill.perfect} pts</p>}
+              <p>Worst: 0 pts</p>
             </div>
           </div>
         </div>
@@ -755,7 +756,7 @@ function LieMixScorecardModal({ drillId, onSave, onCancel }) {
   );
 }
 
-function TapToToggleModal({ drillId, onSave, onCancel }) {
+function TapToToggleModal({ drillId, drill, onSave, onCancel }) {
   const config = TAP_TO_TOGGLE_CONFIGS[drillId];
   const [values, setValues] = useState(Array(config.total).fill(null));
 
@@ -811,7 +812,8 @@ function TapToToggleModal({ drillId, onSave, onCancel }) {
               <p className="text-4xl font-extrabold leading-none">{grandTotal} / {config.total}</p>
             </div>
             <div className="text-right text-xs opacity-70">
-              <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
+              <p className="font-bold text-sm">{allFilled ? zone.label : '—'}</p>
+              {drill && <p>Perfect: {drill.perfect} · Worst: {drill.worst}</p>}
             </div>
           </div>
         </div>
@@ -832,7 +834,7 @@ function TapToToggleModal({ drillId, onSave, onCancel }) {
   );
 }
 
-function SpiralHoleOutModal({ onSave, onCancel }) {
+function SpiralHoleOutModal({ drill, onSave, onCancel }) {
   const config = SPIRAL_HOLE_OUT_CONFIG;
   // values[hole][distIdx]: null = untapped, 1 = holed, 0 = missed
   const [values, setValues] = useState(
@@ -912,6 +914,7 @@ function SpiralHoleOutModal({ onSave, onCancel }) {
             <div className="text-right text-xs opacity-70">
               <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
               <p>Green 12+ · Yellow 7–11 · Red &lt;7</p>
+              {drill && <p>Perfect: {drill.perfect} · Worst: {drill.worst}</p>}
             </div>
           </div>
         </div>
@@ -2108,7 +2111,7 @@ function PelzSnapshotScorecardModal({ onSave, onCancel }) {
   );
 }
 
-function BroadieChaseModal({ drillId, onSave, onCancel }) {
+function BroadieChaseModal({ drillId, drill, onSave, onCancel }) {
   const configs = {
     70: { dist: "5ft",  target: 15, cap: 16 },
     71: { dist: "10ft", target: 10, cap: 26 },
@@ -2229,7 +2232,7 @@ function BroadieChaseModal({ drillId, onSave, onCancel }) {
   );
 }
 
-function PointsRaceScorecardModal({ onSave, onCancel }) {
+function PointsRaceScorecardModal({ drill, onSave, onCancel }) {
   const TARGET = 15;
   const CAP = 40;
   const DISTANCES = ["4m", "5m", "6m"];
@@ -2346,7 +2349,7 @@ function PointsRaceScorecardModal({ onSave, onCancel }) {
   );
 }
 
-function BroadieTestModal({ drillId, onSave, onCancel }) {
+function BroadieTestModal({ drillId, drill, onSave, onCancel }) {
   const configs = {
     73: { dist: "5ft",  putts: 10 },
     74: { dist: "10ft", putts: 10 },
@@ -2406,6 +2409,7 @@ function BroadieTestModal({ drillId, onSave, onCancel }) {
             </div>
             <div className="text-right text-xs opacity-70">
               <p className="font-bold text-sm">{zone.label}</p>
+              {drill && <p>Perfect: {drill.perfect} pts · Worst: {drill.worst} pts</p>}
             </div>
           </div>
         </div>
@@ -2794,7 +2798,7 @@ function SuddenDeathCarouselModal({ onSave, onCancel }) {
   );
 }
 
-function DrawbackGauntletModal({ drillId, onSave, onCancel }) {
+function DrawbackGauntletModal({ drillId, drill, onSave, onCancel }) {
   const configs = {
     36: { title: "Drawback Gauntlet 5–15ft",  perfect: 9,  worst: 27, greenMax: 13, yellowMax: 20, label: "Goal: 13 putts or less" },
     68: { title: "Drawback Gauntlet 15–30ft", perfect: 16, worst: 36, greenMax: 22, yellowMax: 29, label: "Goal: 18 putts or less" },
@@ -2854,6 +2858,7 @@ function DrawbackGauntletModal({ drillId, onSave, onCancel }) {
                 ? <p>Green ≤13 · Yellow 14–20 · Red 21+</p>
                 : <p>Green ≤22 · Yellow 23–29 · Red 30+</p>
               }
+              {drill && <p className="text-xs opacity-70 mt-0.5">Perfect: {drill.perfect} putts · Worst: {drill.worst} putts</p>}
             </div>
           </div>
         </div>
@@ -3557,7 +3562,7 @@ function SniperSchoolModal({ onSave, onCancel }) {
   );
 }
 
-function HoleAllDistancesModal({ drillId, onSave, onCancel }) {
+function HoleAllDistancesModal({ drillId, drill, onSave, onCancel }) {
   const config = HOLE_ALL_DISTANCES_CONFIGS[drillId];
   const DISTANCES = config.distances;
   const [puttCounts, setPuttCounts] = useState(Array(DISTANCES.length).fill(0));
