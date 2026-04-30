@@ -190,16 +190,18 @@ function today() { return new Date().toISOString().split("T")[0]; }
 
 // ─── SUPABASE ─────────────────────────────────────────────────────────────────
 const DB = {
-  async getSessions(player) {
-    const { data, error } = await supabase.from('sessions').select('*').eq('player', player).order('date', { ascending: false });
+  async getSessions() {
+    const { data, error } = await supabase.from('sessions').select('*').order('date', { ascending: false });
     if (error) { console.error(error); return []; }
     return data;
   },
   async addSession(session) {
+    const { data: { user } } = await supabase.auth.getUser();
     const { error } = await supabase.from('sessions').insert([{
       id: session.id, player: session.player, drill_id: session.drillId,
       drill_name: session.drillName, score: session.score, unit: session.unit,
       dir: session.dir, index_score: session.index, notes: session.notes, date: session.date,
+      user_id: user.id,
     }]);
     if (error) console.error(error);
   },
@@ -871,11 +873,125 @@ function DashboardPanel({ sessions, player, onGoToLog }) {
   );
 }
 
+// ─── LOGIN SCREEN ─────────────────────────────────────────────────────────────
+function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [mode, setMode] = useState("password"); // "password" | "magic"
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+
+  async function handlePasswordSignIn(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    if (err) setError(err.message);
+    setLoading(false);
+  }
+
+  async function handleMagicLink(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: window.location.origin },
+    });
+    if (err) setError(err.message);
+    else setSent(true);
+    setLoading(false);
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-3">⛳</div>
+          <h1 className="text-2xl font-bold text-green-800">Anthony Summers</h1>
+          <p className="text-gray-500 text-sm mt-1">AS Performance Centre</p>
+        </div>
+
+        {sent ? (
+          <div className="text-center py-4">
+            <div className="text-4xl mb-3">📧</div>
+            <p className="font-semibold text-gray-800 mb-2">Check your email</p>
+            <p className="text-sm text-gray-500 mb-4">
+              We sent a sign-in link to <strong>{email}</strong>
+            </p>
+            <button
+              onClick={() => setSent(false)}
+              className="text-sm text-green-600 underline hover:text-green-800"
+            >
+              Try again
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={mode === "password" ? handlePasswordSignIn : handleMagicLink} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+              />
+            </div>
+
+            {mode === "password" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+                />
+              </div>
+            )}
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+            >
+              {loading ? "Please wait…" : mode === "password" ? "Sign In" : "Send Magic Link"}
+            </button>
+
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => { setMode(mode === "password" ? "magic" : "password"); setError(""); }}
+                className="text-sm text-green-600 underline hover:text-green-800"
+              >
+                {mode === "password" ? "Send me a magic link instead" : "Sign in with password instead"}
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [tab, setTab] = useState("dashboard");
-  const [player, setPlayer] = useState(() => localStorage.getItem('player') || null);
-  const [playerInput, setPlayerInput] = useState("");
+  const [authUser, setAuthUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const player = profile?.display_name ?? null;
   const [sessions, setSessions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
   const [allLbEntries, setAllLbEntries] = useState([]);
@@ -919,12 +1035,41 @@ export default function App() {
   const [showEliminatorScorecard, setShowEliminatorScorecard] = useState(false);
   const [showGateCompletionScorecard, setShowGateCompletionScorecard] = useState(false);
 
+  useEffect(() => {
+    let active = true;
+
+    // getSession() deadlocks when TOKEN_REFRESHED is in progress — both compete for
+    // the same internal Supabase session lock. onAuthStateChange already delivers the
+    // session on every event (INITIAL_SESSION, TOKEN_REFRESHED, SIGNED_IN, SIGNED_OUT),
+    // so we use it as the sole source of truth and clear authLoading synchronously there.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+
+      if (session?.user) {
+        setAuthUser(session.user);
+        // Profile fetch is non-blocking — a slow or failing query won't freeze the app.
+        supabase.from('profiles').select('*').eq('id', session.user.id).single()
+          .then(({ data: p }) => { if (active) setProfile(p ?? null); });
+      } else {
+        setAuthUser(null);
+        setProfile(null);
+      }
+
+      setAuthLoading(false);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
 
   async function loadAll() {
     setLoading(true);
-    const rows = await DB.getSessions(player);
+    const rows = await DB.getSessions();
     setSessions(rows.map(r => ({
       id:r.id, player:r.player, drillId:r.drill_id, drillName:r.drill_name,
       score:r.score, unit:r.unit, dir:r.dir, index:r.index_score, notes:r.notes, date:r.date,
@@ -939,6 +1084,12 @@ export default function App() {
     setPiRanking(ranking);
     const all = await DB.getAllLeaderboardEntries();
     setAllLbEntries(all);
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    setAuthUser(null);
+    setProfile(null);
   }
 
   async function saveSession() {
@@ -963,25 +1114,25 @@ export default function App() {
     setSessions(sessions.filter(x => x.id !== s.id));
   }
 
-  // ── Login screen ─────────────────────────────────────────────────────────────
-  if (!player) return (
+  // ── Auth guards ───────────────────────────────────────────────────────────────
+  if (authLoading) return (
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center">
+      <div className="text-center text-white">
+        <div className="text-5xl mb-4">⛳</div>
+        <p className="text-green-200 text-sm">Loading…</p>
+      </div>
+    </div>
+  );
+
+  if (!authUser) return <LoginScreen />;
+
+  if (!profile) return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
         <div className="text-5xl mb-4">⛳</div>
-        <h1 className="text-2xl font-bold text-green-800 mb-1">Anthony Summers</h1>
-        <h2 className="text-lg text-gray-600 mb-6">AS Performance Centre</h2>
-        <p className="text-sm text-gray-500 mb-4">Enter your name to get started</p>
-        <input
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-center text-lg mb-4 focus:outline-none focus:border-green-500"
-          placeholder="Your name..."
-          value={playerInput}
-          onChange={e => setPlayerInput(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && playerInput.trim() && setPlayer(playerInput.trim())}
-        />
-        <button
-          onClick={() => { if (playerInput.trim()) { localStorage.setItem('player', playerInput.trim()); setPlayer(playerInput.trim()); }}}
-          className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-lg"
-        >Enter Hub →</button>
+        <p className="font-semibold text-gray-800 mb-2">Account setup in progress</p>
+        <p className="text-sm text-gray-500 mb-4">Your profile is being configured. Contact Anthony if this persists.</p>
+        <button onClick={handleSignOut} className="text-sm text-green-600 underline">Sign out</button>
       </div>
     </div>
   );
@@ -1295,8 +1446,8 @@ export default function App() {
             <h1 className="text-xl font-bold">⛳ AS Performance Centre</h1>
             <p className="text-green-300 text-sm">Welcome, <strong>{player}</strong></p>
           </div>
-          <button onClick={() => { localStorage.removeItem('player'); setPlayer(null); }} className="text-green-300 text-sm hover:text-white underline">
-            Switch Player
+          <button onClick={handleSignOut} className="text-green-300 text-sm hover:text-white underline">
+            Sign Out
           </button>
         </div>
       </div>
