@@ -980,6 +980,9 @@ function LoginScreen() {
             </div>
           </form>
         )}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          New here? Contact your coach to get set up.
+        </p>
       </div>
     </div>
   );
