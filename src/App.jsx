@@ -873,6 +873,104 @@ function DashboardPanel({ sessions, player, onGoToLog }) {
   );
 }
 
+// ─── COMPLETE PROFILE SCREEN ──────────────────────────────────────────────────
+function CompleteProfileScreen({ user, onComplete }) {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit() {
+    if (!name.trim()) return setError("Please enter your name.");
+    if (password.length < 6) return setError("Password must be at least 6 characters.");
+    if (password !== confirm) return setError("Passwords don't match.");
+
+    setLoading(true);
+    setError("");
+
+    const { error: profileErr } = await supabase
+      .from('profiles')
+      .update({ display_name: name.trim(), profile_completed: true })
+      .eq('id', user.id);
+
+    if (profileErr) {
+      setError("Could not save your name. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    const { error: passErr } = await supabase.auth.updateUser({ password });
+
+    if (passErr) {
+      setError("Could not set password. Please try again.");
+      setLoading(false);
+      return;
+    }
+
+    onComplete(name.trim());
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-3">⛳</div>
+          <h1 className="text-2xl font-bold text-green-800">Welcome aboard!</h1>
+          <p className="text-gray-500 text-sm mt-1">Set up your profile to get started.</p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Your name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Your full name"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Choose a password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="At least 6 characters"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm password</label>
+            <input
+              type="password"
+              value={confirm}
+              onChange={e => setConfirm(e.target.value)}
+              placeholder="Same password again"
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+            />
+          </div>
+
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+              {error}
+            </p>
+          )}
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+          >
+            {loading ? "Saving..." : "Let's go ⛳"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── LOGIN SCREEN ─────────────────────────────────────────────────────────────
 function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -881,6 +979,7 @@ function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   async function handlePasswordSignIn(e) {
     e.preventDefault();
@@ -904,6 +1003,18 @@ function LoginScreen() {
     setLoading(false);
   }
 
+  async function handleForgotPassword() {
+    if (!email) { setError("Enter your email address first."); return; }
+    setLoading(true);
+    setError("");
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    if (err) setError(err.message);
+    else setForgotSent(true);
+    setLoading(false);
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
@@ -913,7 +1024,21 @@ function LoginScreen() {
           <p className="text-gray-500 text-sm mt-1">AS Performance Centre</p>
         </div>
 
-        {sent ? (
+        {forgotSent ? (
+          <div className="text-center py-4">
+            <div className="text-4xl mb-3">📧</div>
+            <p className="font-semibold text-gray-800 mb-2">Check your email</p>
+            <p className="text-sm text-gray-500 mb-4">
+              We sent a password reset link to <strong>{email}</strong>
+            </p>
+            <button
+              onClick={() => { setForgotSent(false); setError(""); }}
+              className="text-sm text-green-600 underline hover:text-green-800"
+            >
+              Back to sign in
+            </button>
+          </div>
+        ) : sent ? (
           <div className="text-center py-4">
             <div className="text-4xl mb-3">📧</div>
             <p className="font-semibold text-gray-800 mb-2">Check your email</p>
@@ -952,6 +1077,16 @@ function LoginScreen() {
                   placeholder="••••••••"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
                 />
+                <div className="text-right mt-1">
+                  <button
+                    type="button"
+                    onClick={handleForgotPassword}
+                    disabled={loading}
+                    className="text-xs text-gray-400 hover:text-green-600 underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
               </div>
             )}
 
@@ -988,12 +1123,257 @@ function LoginScreen() {
   );
 }
 
+// ─── SQUAD PANEL ─────────────────────────────────────────────────────────────
+function SquadPanel({ authUser, profile }) {
+  const isAdmin = profile?.role === 'admin';
+  const [squads, setSquads] = useState([]);
+  const [activeSquadId, setActiveSquadId] = useState(null);
+  const [members, setMembers] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
+  const [inviteStatus, setInviteStatus] = useState(null);
+  const [inviteError, setInviteError] = useState('');
+
+  useEffect(() => { loadSquads(); }, []);
+
+  async function loadSquads() {
+    setLoading(true);
+    let q = supabase.from('squads').select('*');
+    if (!isAdmin) q = q.eq('coach_id', authUser.id);
+    const { data, error } = await q.order('name');
+    if (error) { console.error(error); setLoading(false); return; }
+    const list = data ?? [];
+    setSquads(list);
+    if (list.length) {
+      setActiveSquadId(list[0].id);
+      await loadMembers(list[0].id);
+    }
+    setLoading(false);
+  }
+
+  async function loadMembers(squadId) {
+    const { data: memberRows, error: e1 } = await supabase
+      .from('squad_members').select('user_id').eq('squad_id', squadId);
+    if (e1) { console.error(e1); return; }
+    if (!memberRows?.length) { setMembers(prev => ({ ...prev, [squadId]: [] })); return; }
+    const ids = memberRows.map(r => r.user_id);
+    const { data: profileRows, error: e2 } = await supabase
+      .from('profiles').select('id, display_name, role').in('id', ids);
+    if (e2) { console.error(e2); return; }
+    setMembers(prev => ({ ...prev, [squadId]: profileRows ?? [] }));
+  }
+
+  async function handleSquadChange(squadId) {
+    setActiveSquadId(squadId);
+    setInviteStatus(null);
+    setInviteEmail('');
+    if (!members[squadId]) await loadMembers(squadId);
+  }
+
+  async function handleInvite(e) {
+    e.preventDefault();
+    if (!inviteEmail || !activeSquadId) return;
+    setInviting(true);
+    setInviteStatus(null);
+    setInviteError('');
+    const { error } = await supabase.functions.invoke('invite-player', {
+      body: { email: inviteEmail, squad_id: activeSquadId, redirect_to: window.location.origin },
+    });
+    if (error) {
+      setInviteError(error.message ?? 'Invite failed — edge function may not be deployed yet.');
+      setInviteStatus('error');
+    } else {
+      setInviteStatus('sent');
+      setInviteEmail('');
+      await loadMembers(activeSquadId);
+    }
+    setInviting(false);
+  }
+
+  if (loading) return <p className="text-center text-gray-400 py-12">Loading squad…</p>;
+
+  if (!squads.length) return (
+    <div className="text-center py-16">
+      <div className="text-5xl mb-4">👥</div>
+      <p className="text-gray-500 font-medium">No squad found</p>
+      <p className="text-gray-400 text-sm mt-1">Contact Anthony to get your squad configured.</p>
+    </div>
+  );
+
+  const currentSquad = squads.find(s => s.id === activeSquadId);
+  const currentMembers = members[activeSquadId] ?? [];
+
+  return (
+    <div className="space-y-5">
+      {isAdmin && squads.length > 1 && (
+        <div className="flex gap-2 flex-wrap">
+          {squads.map(s => (
+            <button key={s.id} onClick={() => handleSquadChange(s.id)}
+              className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                activeSquadId === s.id
+                  ? 'bg-green-600 text-white border-green-600'
+                  : 'bg-white text-gray-600 border-gray-300 hover:border-green-400'
+              }`}>
+              {s.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+        <h2 className="text-xl font-bold text-green-800 mb-0.5">{currentSquad?.name}</h2>
+        <p className="text-green-600 text-sm">{currentMembers.length} {currentMembers.length === 1 ? 'player' : 'players'}</p>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-5">
+        <h3 className="font-semibold text-gray-700 mb-3">Invite a Player</h3>
+        <form onSubmit={handleInvite} className="flex gap-3 flex-wrap">
+          <input
+            type="email"
+            required
+            value={inviteEmail}
+            onChange={e => { setInviteEmail(e.target.value); setInviteStatus(null); }}
+            placeholder="player@example.com"
+            className="flex-1 min-w-0 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-green-500"
+          />
+          <button
+            type="submit"
+            disabled={inviting || !inviteEmail}
+            className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-green-700 disabled:opacity-50 shrink-0"
+          >
+            {inviting ? 'Sending…' : 'Send Invite'}
+          </button>
+        </form>
+        {inviteStatus === 'sent' && (
+          <p className="mt-3 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            ✅ Invite sent — player will receive a sign-up link by email.
+          </p>
+        )}
+        {inviteStatus === 'error' && (
+          <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            {inviteError}
+          </p>
+        )}
+        <p className="text-xs text-gray-400 mt-2">
+          Player receives a magic link to set their name and password, and is automatically added to {currentSquad?.name}.
+        </p>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-5">
+        <h3 className="font-semibold text-gray-700 mb-3">Squad Members</h3>
+        {currentMembers.length === 0 ? (
+          <p className="text-sm text-gray-400 italic">No players yet — use the invite form above to add your first player.</p>
+        ) : (
+          <div className="space-y-2">
+            {currentMembers.map(p => {
+              const roleLabel = p.role === 'admin' ? 'Admin' : p.role === 'coach' ? 'Coach' : 'Player';
+              const roleColor = p.role === 'admin'
+                ? 'bg-purple-100 text-purple-700'
+                : p.role === 'coach'
+                ? 'bg-blue-100 text-blue-700'
+                : 'bg-green-100 text-green-700';
+              return (
+                <div key={p.id} className="flex items-center gap-4 bg-gray-50 rounded-lg px-4 py-3">
+                  <div className="w-9 h-9 rounded-full bg-green-200 flex items-center justify-center text-green-800 font-bold text-sm shrink-0">
+                    {(p.display_name ?? '?')[0].toUpperCase()}
+                  </div>
+                  <span className="flex-1 font-medium text-gray-800">{p.display_name ?? 'Unknown'}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${roleColor}`}>
+                    {roleLabel}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PASSWORD RESET SCREEN ────────────────────────────────────────────────────
+function PasswordResetScreen({ onDone }) {
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (password !== confirm) { setError("Passwords don't match."); return; }
+    if (password.length < 6) { setError("Password must be at least 6 characters."); return; }
+    setLoading(true);
+    setError("");
+    const { error: err } = await supabase.auth.updateUser({ password });
+    if (err) { setError(err.message); setLoading(false); return; }
+    setDone(true);
+    setTimeout(onDone, 2000);
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div className="text-center mb-6">
+          <div className="text-5xl mb-3">🔐</div>
+          <h1 className="text-2xl font-bold text-green-800">Set New Password</h1>
+          <p className="text-gray-500 text-sm mt-1">AS Performance Centre</p>
+        </div>
+        {done ? (
+          <div className="text-center py-4">
+            <div className="text-4xl mb-3">✅</div>
+            <p className="font-semibold text-gray-800">Password updated!</p>
+            <p className="text-sm text-gray-500 mt-2">Taking you to the app…</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+              <input
+                type="password"
+                required
+                value={confirm}
+                onChange={e => setConfirm(e.target.value)}
+                placeholder="••••••••"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:border-green-500"
+              />
+            </div>
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50"
+            >
+              {loading ? "Updating…" : "Set New Password"}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [tab, setTab] = useState("dashboard");
   const [authUser, setAuthUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [needsPasswordReset, setNeedsPasswordReset] = useState(false);
   const player = profile?.display_name ?? null;
   const [sessions, setSessions] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -1045,8 +1425,17 @@ export default function App() {
     // the same internal Supabase session lock. onAuthStateChange already delivers the
     // session on every event (INITIAL_SESSION, TOKEN_REFRESHED, SIGNED_IN, SIGNED_OUT),
     // so we use it as the sole source of truth and clear authLoading synchronously there.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
+
+      if (event === 'PASSWORD_RECOVERY') {
+        setAuthUser(session.user);
+        setNeedsPasswordReset(true);
+        supabase.from('profiles').select('*').eq('id', session.user.id).single()
+          .then(({ data: p }) => { if (active) setProfile(p ?? null); });
+        setAuthLoading(false);
+        return;
+      }
 
       if (session?.user) {
         setAuthUser(session.user);
@@ -1129,6 +1518,19 @@ export default function App() {
 
   if (!authUser) return <LoginScreen />;
 
+  if (needsPasswordReset) return (
+    <PasswordResetScreen onDone={() => setNeedsPasswordReset(false)} />
+  );
+
+  const needsProfileCompletion = profile && !profile.profile_completed;
+
+  if (needsProfileCompletion) return (
+    <CompleteProfileScreen
+      user={authUser}
+      onComplete={name => setProfile(p => ({ ...p, display_name: name }))}
+    />
+  );
+
   if (!profile) return (
     <div className="min-h-screen bg-gradient-to-br from-green-800 to-green-600 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
@@ -1139,6 +1541,8 @@ export default function App() {
       </div>
     </div>
   );
+
+  const isCoachOrAdmin = profile?.role === 'coach' || profile?.role === 'admin';
 
   const isSwedish = +form.drillId === 93;
   const isPar72 = +form.drillId === 2;
@@ -1464,6 +1868,7 @@ export default function App() {
             ["stats","📊 My Stats"],
             ["leaderboard","🏆 Leaderboard"],
             ["guide","📖 Drill Guide"],
+            ...(isCoachOrAdmin ? [["squad","👥 Squad"]] : []),
           ].map(([k,l]) => (
             <button key={k} onClick={() => setTab(k)}
               className={`px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${tab===k?"border-green-600 text-green-700":"border-transparent text-gray-500 hover:text-gray-700"}`}>
@@ -2392,6 +2797,11 @@ export default function App() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ── SQUAD ───────────────────────────────────────────────────────────── */}
+        {tab === "squad" && isCoachOrAdmin && (
+          <SquadPanel authUser={authUser} profile={profile} />
         )}
       </div>
     </div>
