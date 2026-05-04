@@ -1124,16 +1124,18 @@ function LoginScreen() {
 }
 
 // ─── SQUAD PANEL ─────────────────────────────────────────────────────────────
-function SquadPanel({ authUser, profile }) {
+function SquadPanel({ authUser, profile, allLbEntries }) {
   const isAdmin = profile?.role === 'admin';
   const [squads, setSquads] = useState([]);
   const [activeSquadId, setActiveSquadId] = useState(null);
   const [members, setMembers] = useState({});
   const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteSquadId, setInviteSquadId] = useState('');
   const [inviting, setInviting] = useState(false);
   const [inviteStatus, setInviteStatus] = useState(null);
   const [inviteError, setInviteError] = useState('');
+  const [expandedSquadPlayer, setExpandedSquadPlayer] = useState(null);
 
   useEffect(() => { loadSquads(); }, []);
 
@@ -1173,20 +1175,20 @@ function SquadPanel({ authUser, profile }) {
 
   async function handleInvite(e) {
     e.preventDefault();
-    if (!inviteEmail || !activeSquadId) return;
+    if (!inviteEmail) return;
     setInviting(true);
     setInviteStatus(null);
     setInviteError('');
-    const { error } = await supabase.functions.invoke('invite-player', {
-      body: { email: inviteEmail, squad_id: activeSquadId, redirect_to: window.location.origin },
-    });
+    const body = { email: inviteEmail, redirect_to: window.location.origin };
+    if (inviteSquadId) body.squad_id = inviteSquadId;
+    const { error } = await supabase.functions.invoke('invite-player', { body });
     if (error) {
       setInviteError(error.message ?? 'Invite failed — edge function may not be deployed yet.');
       setInviteStatus('error');
     } else {
       setInviteStatus('sent');
       setInviteEmail('');
-      await loadMembers(activeSquadId);
+      if (inviteSquadId) await loadMembers(inviteSquadId);
     }
     setInviting(false);
   }
@@ -1203,6 +1205,23 @@ function SquadPanel({ authUser, profile }) {
 
   const currentSquad = squads.find(s => s.id === activeSquadId);
   const currentMembers = members[activeSquadId] ?? [];
+
+  const memberNames = new Set(currentMembers.map(p => p.display_name).filter(Boolean));
+  const now = new Date();
+  const cutoff30 = new Date(now); cutoff30.setDate(now.getDate() - 60);
+  const cutoff14 = new Date(now); cutoff14.setDate(now.getDate() - 14);
+  const cutoff30Str = cutoff30.toISOString().split('T')[0];
+  const cutoff14Str = cutoff14.toISOString().split('T')[0];
+  const squadEntries30 = allLbEntries.filter(e => memberNames.has(e.player) && e.date >= cutoff30Str);
+  const SQUAD_CATS = ['Putting', 'Chipping', 'Pitching', 'Bunker', 'Mixed'];
+  const catStats = SQUAD_CATS.map(cat => {
+    const catEntries = squadEntries30.filter(e => DRILL_CATEGORY[e.drill_id] === cat);
+    const withIdx = catEntries.filter(e => e.index_score !== null);
+    const avg = withIdx.length ? Math.round(withIdx.reduce((a, b) => a + b.index_score, 0) / withIdx.length) : null;
+    const noRecentActivity = catEntries.length > 0 && !catEntries.some(e => e.date >= cutoff14Str);
+    return { cat, avg, count: catEntries.length, noRecentActivity };
+  });
+  const focusCat = catStats.filter(c => c.avg !== null).reduce((a, b) => (a === null || b.avg < a.avg) ? b : a, null);
 
   return (
     <div className="space-y-5">
@@ -1226,28 +1245,85 @@ function SquadPanel({ authUser, profile }) {
         <p className="text-green-600 text-sm">{currentMembers.length} {currentMembers.length === 1 ? 'player' : 'players'}</p>
       </div>
 
+      {currentMembers.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm p-5">
+          <div className="mb-4">
+            <h3 className="font-semibold text-gray-700">Squad Overview</h3>
+            <p className="text-xs text-gray-400">Last 60 days</p>
+          </div>
+          {allLbEntries.length === 0 ? (
+            <p className="text-sm text-gray-400 italic">No session data yet.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
+                {catStats.map(({ cat, avg, count, noRecentActivity }) => {
+                  const piColor = avg === null ? 'text-gray-400' : avg >= 80 ? 'text-green-600' : avg >= 50 ? 'text-yellow-500' : 'text-red-500';
+                  return (
+                    <div key={cat} className="bg-gray-50 rounded-xl p-3 flex flex-col gap-1">
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded w-fit ${CAT_COLOR[cat]}`}>{cat}</span>
+                      <div className={`text-2xl font-bold leading-none mt-1 ${piColor}`}>{avg ?? '—'}</div>
+                      <div className="text-xs text-gray-400">Squad avg</div>
+                      <div className="text-xs text-gray-500">{count} session{count !== 1 ? 's' : ''}</div>
+                      {noRecentActivity && (
+                        <div className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+                          <span>⏰</span><span>No recent activity</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              {focusCat && (
+                <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 flex items-center gap-3">
+                  <span className="text-lg">🎯</span>
+                  <div>
+                    <p className="text-sm font-bold text-orange-800">Focus Area: {focusCat.cat}</p>
+                    <p className="text-xs text-orange-600">Squad avg {focusCat.avg} — lowest performing category in the last 60 days</p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-sm p-5">
         <h3 className="font-semibold text-gray-700 mb-3">Invite a Player</h3>
-        <form onSubmit={handleInvite} className="flex gap-3 flex-wrap">
-          <input
-            type="email"
-            required
-            value={inviteEmail}
-            onChange={e => { setInviteEmail(e.target.value); setInviteStatus(null); }}
-            placeholder="player@example.com"
-            className="flex-1 min-w-0 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-green-500"
-          />
-          <button
-            type="submit"
-            disabled={inviting || !inviteEmail}
-            className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-green-700 disabled:opacity-50 shrink-0"
-          >
-            {inviting ? 'Sending…' : 'Send Invite'}
-          </button>
+        <form onSubmit={handleInvite} className="space-y-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1">Squad (optional)</label>
+            <select
+              value={inviteSquadId}
+              onChange={e => { setInviteSquadId(e.target.value); setInviteStatus(null); }}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
+            >
+              <option value="">No squad / Individual player</option>
+              {squads.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          </div>
+          <div className="flex gap-3 flex-wrap">
+            <input
+              type="email"
+              required
+              value={inviteEmail}
+              onChange={e => { setInviteEmail(e.target.value); setInviteStatus(null); }}
+              placeholder="player@example.com"
+              className="flex-1 min-w-0 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-green-500"
+            />
+            <button
+              type="submit"
+              disabled={inviting || !inviteEmail}
+              className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium text-sm hover:bg-green-700 disabled:opacity-50 shrink-0"
+            >
+              {inviting ? 'Sending…' : 'Send Invite'}
+            </button>
+          </div>
         </form>
         {inviteStatus === 'sent' && (
           <p className="mt-3 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-            ✅ Invite sent — player will receive a sign-up link by email.
+            {inviteSquadId
+              ? `✅ Invite sent — player will be added to ${squads.find(s => s.id === inviteSquadId)?.name}.`
+              : '✅ Invite sent — player will receive a sign-up link by email as an individual.'}
           </p>
         )}
         {inviteStatus === 'error' && (
@@ -1256,7 +1332,9 @@ function SquadPanel({ authUser, profile }) {
           </p>
         )}
         <p className="text-xs text-gray-400 mt-2">
-          Player receives a magic link to set their name and password, and is automatically added to {currentSquad?.name}.
+          {inviteSquadId
+            ? `Player receives a magic link to set their name and password, and is automatically added to ${squads.find(s => s.id === inviteSquadId)?.name}.`
+            : 'Player receives a magic link to set their name and password.'}
         </p>
       </div>
 
@@ -1266,22 +1344,47 @@ function SquadPanel({ authUser, profile }) {
           <p className="text-sm text-gray-400 italic">No players yet — use the invite form above to add your first player.</p>
         ) : (
           <div className="space-y-2">
-            {currentMembers.map(p => {
+            {[...currentMembers].sort((a, b) => {
+              const avgFor = name => {
+                const entries = allLbEntries.filter(e => e.player === name && e.index_score !== null);
+                return entries.length ? entries.reduce((s, e) => s + e.index_score, 0) / entries.length : -1;
+              };
+              return avgFor(b.display_name) - avgFor(a.display_name);
+            }).map(p => {
               const roleLabel = p.role === 'admin' ? 'Admin' : p.role === 'coach' ? 'Coach' : 'Player';
               const roleColor = p.role === 'admin'
                 ? 'bg-purple-100 text-purple-700'
                 : p.role === 'coach'
                 ? 'bg-blue-100 text-blue-700'
                 : 'bg-green-100 text-green-700';
+              const isExpanded = expandedSquadPlayer === p.display_name;
+              const piEntries = allLbEntries.filter(e => e.player === p.display_name && e.index_score !== null);
+              const playerPiAvg = piEntries.length ? Math.round(piEntries.reduce((s, e) => s + e.index_score, 0) / piEntries.length) : null;
+              const piR = ratingColor(playerPiAvg);
               return (
-                <div key={p.id} className="flex items-center gap-4 bg-gray-50 rounded-lg px-4 py-3">
-                  <div className="w-9 h-9 rounded-full bg-green-200 flex items-center justify-center text-green-800 font-bold text-sm shrink-0">
-                    {(p.display_name ?? '?')[0].toUpperCase()}
+                <div key={p.id} className="bg-gray-50 rounded-lg overflow-hidden">
+                  <div
+                    onClick={() => setExpandedSquadPlayer(isExpanded ? null : p.display_name)}
+                    className="flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-green-50 transition-colors"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-green-200 flex items-center justify-center text-green-800 font-bold text-sm shrink-0">
+                      {(p.display_name ?? '?')[0].toUpperCase()}
+                    </div>
+                    <span className="flex-1 font-medium text-gray-800">{p.display_name ?? 'Unknown'}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${playerPiAvg !== null ? `${piR.bg} ${piR.text}` : 'bg-gray-100 text-gray-400'}`}>
+                      {playerPiAvg ?? '—'}
+                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${roleColor}`}>
+                      {roleLabel}
+                    </span>
+                    <span className="text-gray-300 text-xs shrink-0">{isExpanded ? '▲' : '▼'}</span>
                   </div>
-                  <span className="flex-1 font-medium text-gray-800">{p.display_name ?? 'Unknown'}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${roleColor}`}>
-                    {roleLabel}
-                  </span>
+                  {isExpanded && (
+                    <PlayerDrillBreakdown
+                      playerName={p.display_name}
+                      allEntries={allLbEntries}
+                    />
+                  )}
                 </div>
               );
             })}
@@ -1458,11 +1561,16 @@ export default function App() {
 
   useEffect(() => { if (player) loadAll(); }, [player]);
   useEffect(() => { if (player && tab === "leaderboard") loadLeaderboard(); }, [lbDrill, tab]);
+  useEffect(() => {
+    if (player && tab === "squad" && allLbEntries.length === 0) {
+      DB.getAllLeaderboardEntries().then(all => setAllLbEntries(all));
+    }
+  }, [tab, player]);
 
   async function loadAll() {
     setLoading(true);
     const rows = await DB.getSessions();
-    setSessions(rows.map(r => ({
+    setSessions(rows.filter(r => r.user_id === authUser.id).map(r => ({
       id:r.id, player:r.player, drillId:r.drill_id, drillName:r.drill_name,
       score:r.score, unit:r.unit, dir:r.dir, index:r.index_score, notes:r.notes, date:r.date,
     })));
@@ -2801,7 +2909,7 @@ export default function App() {
 
         {/* ── SQUAD ───────────────────────────────────────────────────────────── */}
         {tab === "squad" && isCoachOrAdmin && (
-          <SquadPanel authUser={authUser} profile={profile} />
+          <SquadPanel authUser={authUser} profile={profile} allLbEntries={allLbEntries} />
         )}
       </div>
     </div>
