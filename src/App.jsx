@@ -30,11 +30,13 @@ import {
   SpiralHoleOutModal,
   EliminatorModal,
   GateCompletionModal,
+  NineHoleChippingModal,
+  BankDrillModal,
 } from './scorecards';
 
 // ─── DRILL CATEGORIES ────────────────────────────────────────────────────────
 const DRILL_CATEGORY = {
-  1:"Mixed",    2:"Mixed",    3:"Mixed",    4:"Chipping", 5:"Chipping",
+  1:"Mixed",    2:"Mixed",    3:"Chipping", 4:"Chipping", 5:"Chipping",
   6:"Chipping", 7:"Chipping", 8:"Pitching", 9:"Mixed",    10:"Mixed",
   11:"Pitching",12:"Mixed",   13:"Mixed",   14:"Mixed",   15:"Chipping",
   16:"Bunker",  17:"Chipping",18:"Chipping",19:"Bunker",  20:"Chipping",
@@ -54,6 +56,7 @@ const DRILL_CATEGORY = {
   86:"Pitching",87:"Pitching",88:"Pitching",89:"Pitching",90:"Pitching",
   91:"Pitching",92:"Pitching",93:"Mixed",   94:"Mixed",   95:"Mixed",
   96:"Pitching",97:"Pitching",98:"Putting",99:"Putting",100:"Putting",
+  101:"Chipping",102:"Chipping",103:"Chipping",104:"Chipping",
 };
 const CATEGORIES = ["All", "Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
 const CAT_COLOR = {
@@ -65,8 +68,8 @@ const CAT_COLOR = {
 const DRILLS = [
   { id:1,  name:"Global Combine",                          type:"score",      unit:"ft",   dir:"lower",  perfect:48,  worst:180, notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Hit 3 chip & run shots from 15-19m, 20-25m and 30-35m. 3 bunker shots from 10-14m, 20-25m and 30-35m. 3 pitch shots from 20-25m, 30-35m and 40-45m. 3 lob shots from 10-12m, 15-17m and 20-22m. Scorecard included. Best recorded score: Tommy Fleetwood 37ft." },
   { id:2,  name:"Par 72 Scoring Challenge",                type:"score",      unit:"",     dir:"lower",  perfect:68,  worst:88,  notes:"Proximity in feet to hole for each shot is recorded, the lower the better. Scorecard included." },
-  { id:3,  name:"Level Up Challenge - Par 21",             type:"level",      unit:"lvl",  dir:"higher", perfect:10,  worst:1,   notes:"To successfully move up a level you need to get 6/9 up and down. Level 1 is all shots from inside 25m. Level 2 adds 1 shot from 25-50m and as you progress up each level you add one more shot in the 25-50m zone. Just getting through Level 1 is a good achievement and should be considered a pass." },
-  { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Count of hole outs. Work around the green hitting different shots, trying not to hit the same shot multiple times. 20 min max to complete this challenge." },
+  { id:3,  name:"9 Hole Chipping Challenge",                type:"score",      unit:"",     dir:"higher", perfect:24,  worst:0,   notes:"Hit 9 different chip shots around the chipping green. 1. 12m chip & run. 2. 20m Pitch. 3. 8m Lob. 4. 20m chip & run. 5. 15m Pitch. 6. 20m Lob. 7. 25m Chip & run. 8. 25m Pitch. 9. 15m Lob. Scoring: Holed = 4pts, 0-3ft = 3pts, 3-6ft = 2pts, 6-12ft = 1pt, 12ft+ = 0pts." },
+  { id:4,  name:"Hole Out Blitz",                          type:"count",      unit:"",     dir:"higher", perfect:10,  worst:0,   notes:"Set your timer to 20 min and count how many hole outs you can have in that time. Work around the green hitting different shots, trying not to hit the same shot multiple times." },
   { id:5,  name:"First to 6 Shootout",                     type:"points",     unit:"holes",dir:"lower",  perfect:2,   worst:10,  notes:"First to 6 points wins. Scoring: holed = 3pts, 0-3ft = 2pts, 3-6ft = 1pt. Count number of holes needed to be played to win and/or reach 6 points." },
   { id:6,  name:"Basket Gauntlet - 3ft Zone",              type:"completion", unit:"shots",dir:"lower",  perfect:10,  worst:30,  notes:"Total number of shots to get 10 balls inside the target range (either 3ft or 6ft circles)." },
   { id:7,  name:"Hole Out Gauntlet",                       type:"completion", unit:"shots",dir:"lower",  perfect:10,  worst:50,  notes:"Total number of shots to get 10 balls inside the basket." },
@@ -99,14 +102,14 @@ const DRILLS = [
   { id:34, name:"250ft Challenge",                         type:"score",      unit:"ft",   dir:"higher", perfect:150, worst:0,   notes:"Total feet holed. 100 is average, 130 is excellent, 250 is near impossible. Set up putts from 5, 10, 15, 20ft at 5 different holes changing slope and break on each one. Scorecard included." },
   { id:35, name:"Sudden Death Carousel (4-10ft)",           type:"level",      unit:"putts",dir:"higher", perfect:32,  worst:0,   notes:"Start with 8 tees around the hole at 4ft. Hole the putt and move the tee back to 5ft. Miss and remove the tee. Keep working around the hole until all tees are removed. Record your score as the total number of putts holed. Scorecard included." },
   { id:36, name:"Drawback Gauntlet 5-15ft",                type:"score",      unit:"putts",dir:"lower",  perfect:9,   worst:27,  notes:"Play 9 holes on the putting green with each first putt starting from between 5 and 15ft. Change slope and break on each putt. If your first putt misses draw the ball back 1 putter length and continue until holed. No tap ins! Goal is 13 putts or less. Scorecard included." },
-  { id:37, name:"Long Distance Proximity Test",            type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:50,  notes:"Closer is better. Hit putts from 30, 40, 50, 60 and 70ft. Total up distance from the hole after each putt for your score. Scorecard included." },
+  { id:37, name:"Long Distance Proximity Test",            type:"distance",   unit:"ft",   dir:"lower",  perfect:10,  worst:60,  notes:"Closer is better. Hit putts from 30, 40, 50, 60 and 70ft. Total up distance from the hole after each putt for your score. Scorecard included." },
   { id:38, name:"The Closer (12 Putt Completion)",         type:"completion", unit:"",     dir:"lower",  perfect:1,   worst:10,  notes:"Putts to play: (1) 4x3ft around the hole. (2) 20ft uphill into 2ft circle. (3) 20ft downhill into 2ft circle. (4) 3x5ft from around the hole. (5) 2-putt from 40ft. (6) Hole an 8ft putt to finish. If you miss at any step, start again. Record the number of attempts it took to complete." },
   { id:39, name:"3 Putt Eliminator Challenge",             type:"completion", unit:"",     dir:"lower",  perfect:0,   worst:3,   notes:"Play 9 holes on the putting green with each first putt from 30ft+. Count up the number of 3-putts. 0 = no 3-putts, 1 = one 3-putt, 2 = two 3-putts." },
-  { id:40, name:"Race to 25ft Challenge",                  type:"distance",   unit:"putts",dir:"lower",  perfect:2,   worst:12,  notes:"Race to hole 25ft. You can choose your start distance — your opponent chooses any distance they like. If you leave a putt short, your total footage resets to 0 but keep counting putts. Count total putts taken to hole 25ft of putts." },
+  { id:40, name:"Race to 25ft Challenge",                  type:"distance",   unit:"putts",dir:"lower",  perfect:3,   worst:18,  notes:"Race to hole 25ft. You can choose your start distance — your opponent chooses any distance they like. If you leave a putt short, your total footage resets to 0 but keep counting putts. Count total putts taken to hole 25ft of putts." },
   { id:41, name:"Project 1 Putt Circuit (Level 1)",        type:"score",      unit:"",     dir:"lower",  perfect:16,  worst:40,  notes:"Set up putts from 2, 3, 4, 5, 6, 7, 8 and 9ft on a breaking R-L and same on a L-R putt. Count how many putts it takes to hole all 16 putts. 24 is the pass mark — anything at or below is above average." },
   { id:42, name:"Sunday Showcase - 48 Putt PK",           type:"score",      unit:"",     dir:"higher", perfect:42,  worst:12,  notes:"3 sections: (1) Gate drill putting through a start gate from 6-10ft. (2) Breaking putts to a ghost hole from 6, 9, 12, 15ft finishing in a speed zone 1-2ft behind the hole — uphill/downhill R-L and L-R. (3) Hole out putts from 4, 5, 6, 7ft from all 4 breaks and slopes. Total up the number of successful putts. 36 is an excellent score. Scorecard included." },
-  { id:43, name:"13 Tee Gauntlet",                         type:"score",      unit:"",     dir:"higher", perfect:13,  worst:0,   notes:"Set up putts at N, E, S, W from 5-7ft (12 in total). The 13th tee is placed randomly at 7ft. You need to hole 10/12 to reach the 13th tee. The game is complete when you hole the putt from the 13th tee." },
-  { id:44, name:"Spiral Hole Out Test (5-15ft)",           type:"score",      unit:"/18",  dir:"higher", perfect:14,  worst:0,   notes:"Set up putts from 5, 7, 9, 11, 13 and 15ft around the hole in a spiral. Do this at 3 different holes. Score is how many you hole out of 18. Scorecard included." },
+  { id:43, name:"13 Tee Gauntlet",                         type:"score",      unit:"",     dir:"higher", perfect:13,  worst:0,   notes:"Set up putts at N, E, S, W from 5-7ft (12 in total). The 13th tee is placed randomly at 7ft. You need to hole 10/12 to reach the 13th tee. Record your score for the /12 if you are below 10. If you have 10/12 or more you get the bonus 13th tee putt to improve your score." },
+  { id:44, name:"Spiral Hole Out Test (5-15ft)",           type:"score",      unit:"/18",  dir:"higher", perfect:13,  worst:0,   notes:"Set up putts from 5, 7, 9, 11, 13 and 15ft around the hole in a spiral. Do this at 3 different holes. Score is how many you hole out of 18. Scorecard included." },
   { id:45, name:"Jagged Peaks",                            type:"count",      unit:"putts",dir:"lower",  perfect:12,  worst:60,  notes:"Work through the following distances in order: 3, 7, 4, 8, 5, 9, 6, 10ft. Hole the putt and advance to the next distance. Miss and go back one step — 3ft is the floor. Complete the drill by holing the 10ft putt. 60 putts maximum. Record your score as the total number of putts taken. Scorecard included." },
   { id:46, name:"Momentum Keeper 12ft Eliminator",         type:"count",      unit:"putts",dir:"lower",  perfect:12,  worst:36,  notes:"Hole the putt to eliminate that position. Keep going around the hole until all 8 putts are eliminated. 36 putts maximum to finish. Scorecard included." },
   { id:47, name:"The Surgeon 4ft Eliminator",              type:"count",      unit:"putts",dir:"lower",  perfect:8,   worst:14,  notes:"Hole the putt to eliminate that position. Keep going around the hole until all 8 putts are eliminated. 14 putts maximum to finish. Scorecard included." },
@@ -121,13 +124,13 @@ const DRILLS = [
   { id:56, name:"Make Zone Test 3-7ft",                    type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:10,  notes:"Hit putts from 3, 4, 5, 6 and 7ft changing line and break on each putt. Count how many putts to hole all 5. Scorecard included." },
   { id:57, name:"Make Zone Test 6-10ft",                   type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:15,  notes:"Hit putts from 6, 7, 8, 9 and 10ft in a spiral or random pattern changing slope and break. Count how many putts to hole all 5. Scorecard included." },
   { id:58, name:"Make Zone Test 8-12ft",                   type:"score",      unit:"putts",dir:"lower",  perfect:5,   worst:20,  notes:"Hit putts from 8, 9, 10, 11 and 12ft changing slope and break. Count how many putts to hole all 5. Scorecard included." },
-  { id:59, name:"Make Zone Test 3-8ft",                    type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:10,  notes:"Hit putts from 3, 4, 5, 6, 7 and 8ft changing break and slope. Count how many putts to hole all 6. Scorecard included." },
+  { id:59, name:"Make Zone Test 3-8ft",                    type:"score",      unit:"putts",dir:"lower",  perfect:6,   worst:12,  notes:"Hit putts from 3, 4, 5, 6, 7 and 8ft changing break and slope. Count how many putts to hole all 6. Scorecard included." },
   { id:60, name:"Peter Hanson Test (4-5ft)",               type:"score",      unit:"/8",   dir:"higher", perfect:8,   worst:0,   notes:"Set up 4x4ft putts (N, E, S, W) and 4x5ft putts in between (NE, NW, SE, SW). Score is how many putts you make out of 8. Scorecard included." },
   { id:61, name:"4-5-6 Circuit 6 Putts",                   type:"score",      unit:"/6",   dir:"higher", perfect:6,   worst:0,   notes:"Hit putts from around the hole at 4, 5, 6, 4, 5 and 6ft. Record your total score for each holed putt out of 6. Scorecard included." },
   { id:62, name:"4-5-6 Circuit 9 Putts",                   type:"score",      unit:"/9",   dir:"higher", perfect:9,   worst:0,   notes:"Hit putts from 4, 5, 6, 4, 5, 6, 4, 5 and 6ft around the hole. Record your total score for holed putts out of 9. Scorecard included." },
   { id:63, name:"Crucible 'The Anchor' 3-5ft",             type:"completion", unit:"putts",dir:"lower",  perfect:10,  worst:40,  notes:"Set up 5 tees around the hole at 3ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 5ft. Scorecard included." },
-  { id:64, name:"Crucible 'The Gridlock' 4-6ft",           type:"completion", unit:"putts",dir:"lower",  perfect:10,  worst:50,  notes:"Set up 5 tees around the hole at 4ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 6ft. Scorecard included." },
-  { id:65, name:"Crucible 'No Fly Zone' 5-7ft",            type:"completion", unit:"putts",dir:"lower",  perfect:10,  worst:70,  notes:"Set up 5 tees around the hole at 5ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 7ft. Scorecard included." },
+  { id:64, name:"Crucible 'The Gridlock' 4-6ft",           type:"completion", unit:"putts",dir:"lower",  perfect:10,  worst:60,  notes:"Set up 5 tees around the hole at 4ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 6ft. Scorecard included." },
+  { id:65, name:"Crucible 'No Fly Zone' 5-7ft",            type:"completion", unit:"putts",dir:"lower",  perfect:10,  worst:80,  notes:"Set up 5 tees around the hole at 5ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 7ft. Scorecard included." },
   { id:66, name:"Crucible 'The Trenches' 6-8ft",           type:"completion", unit:"putts",dir:"lower",  perfect:20,  worst:100, notes:"Set up 5 tees around the hole at 6ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 8ft. Scorecard included." },
   { id:67, name:"Crucible 'Sniper School' 7-10ft",         type:"completion", unit:"putts",dir:"lower",  perfect:30,  worst:130, notes:"Set up 5 tees around the hole at 7ft. Hole the putt and move the tee back 1ft. Miss and move the tee 1ft closer. Keep going until all tees are at 10ft. Scorecard included." },
   { id:68, name:"Drawback Gauntlet 15-30ft",               type:"score",      unit:"putts",dir:"lower",  perfect:16,  worst:36,  notes:"Play 9 holes on the putting green with each first putt from 15-30ft. Change slope and break on each putt. If your first putt misses draw the ball back 1 putter length and continue until holed. No tap ins! Goal is 18 putts or less. Scorecard included." },
@@ -163,6 +166,10 @@ const DRILLS = [
   { id:98,  name:"Team Ripper Challenge (4,6,8ft)",        type:"score",      unit:"/10",  dir:"higher", perfect:10,  worst:0,   notes:"Set up 4x4ft, 4x6ft and 2x8ft putts around the hole in a spiral or random pattern. Count how many putts you make out of 10. Higher is better. Scorecard included." },
   { id:99,  name:"The Ascent",                            type:"distance",   unit:"ft",   dir:"higher", perfect:15,  worst:0,   notes:"Find a straight putt 3ft from the hole. Hole the putt and move back 1ft on each successful putt. Stay on the same line keeping the putt straight. Record your score as the distance of your last successful putt — not the one you missed. Scorecard included." },
   { id:100, name:"The Retreat",                           type:"distance",   unit:"ft",   dir:"higher", perfect:60,  worst:0,   notes:"Start 3ft from the hole. With each successful 1 or 2 putt move back 3ft. Change slope, line and break on each putt and continue until you have a 3 putt. Record your score as the distance where you had your last successful putt — not where you 3 putted from." },
+  { id:101, name:"50ft Bank",                             type:"count",      unit:"shots",dir:"higher", perfect:15,  worst:1,   notes:"Start with 50ft in the bank. Hit chip shots from around the green (10-20m from the hole) mixing up easy, medium and difficult shots. After each shot subtract your proximity in feet from the bank. Count every shot including the one that empties the bank. Record your score as the total number of shots taken." },
+  { id:102, name:"100ft Bank",                            type:"count",      unit:"shots",dir:"higher", perfect:30,  worst:5,   notes:"Start with 100ft in the bank. Hit chip shots from around the green (10-20m from the hole) mixing up easy, medium and difficult shots. After each shot subtract your proximity in feet from the bank. Count every shot including the one that empties the bank. Record your score as the total number of shots taken." },
+  { id:103, name:"Landing Circle 3",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:25,  notes:"Set out a target circle (3ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
+  { id:104, name:"Landing Circle 6",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:15,  notes:"Set out a target circle (6ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
 ];
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -1520,6 +1527,8 @@ export default function App() {
   const [showSpiralHoleOutScorecard, setShowSpiralHoleOutScorecard] = useState(false);
   const [showEliminatorScorecard, setShowEliminatorScorecard] = useState(false);
   const [showGateCompletionScorecard, setShowGateCompletionScorecard] = useState(false);
+  const [showBankDrillScorecard, setShowBankDrillScorecard] = useState(false);
+  const [showNineHoleChippingScorecard, setShowNineHoleChippingScorecard] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -1680,7 +1689,9 @@ export default function App() {
   const isTapToToggle = [60, 61, 62, 98].includes(+form.drillId);
   const isSpiralHoleOut = +form.drillId === 44;
   const isEliminator = [46, 47, 48].includes(+form.drillId);
-  const isGateCompletion = [50, 51, 52].includes(+form.drillId);
+  const isGateCompletion = [50, 51, 52, 103, 104].includes(+form.drillId);
+  const isBankDrill = [101, 102].includes(+form.drillId);
+  const isNineHoleChipping = +form.drillId === 3;
   const CRUCIBLE_CONFIGS = {
     64: { drillId: 64, title: "Crucible — The Gridlock (4–6ft)",  icon: "🔒", startDist: 4, finishDist: 6, cap: 50 },
     65: { drillId: 65, title: "Crucible — No Fly Zone (5–7ft)",   icon: "🚫", startDist: 5, finishDist: 7, cap: 70 },
@@ -1952,6 +1963,26 @@ export default function App() {
           drillId={+form.drillId}
           onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowGateCompletionScorecard(false); }}
           onCancel={() => setShowGateCompletionScorecard(false)}
+        />
+      )}
+      {showNineHoleChippingScorecard && (
+        <NineHoleChippingModal
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowNineHoleChippingScorecard(false);
+          }}
+          onCancel={() => setShowNineHoleChippingScorecard(false)}
+        />
+      )}
+      {showBankDrillScorecard && isBankDrill && (
+        <BankDrillModal
+          drillId={+form.drillId}
+          drill={DRILLS.find(d => d.id === +form.drillId)}
+          onSave={total => {
+            setForm(f => ({ ...f, score: String(total) }));
+            setShowBankDrillScorecard(false);
+          }}
+          onCancel={() => setShowBankDrillScorecard(false)}
         />
       )}
       {/* Header */}
@@ -2580,6 +2611,34 @@ export default function App() {
                           <div className="mt-2 text-sm text-green-700 font-semibold">
                             ✅ Score recorded: {form.score} putts
                             <button type="button" onClick={() => setShowGateCompletionScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isNineHoleChipping ? (
+                      <div>
+                        <button type="button" onClick={() => setShowNineHoleChippingScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🏌️ Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} pts
+                            <button type="button" onClick={() => setShowNineHoleChippingScorecard(true)}
+                              className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
+                          </div>
+                        )}
+                      </div>
+                    ) : isBankDrill ? (
+                      <div>
+                        <button type="button" onClick={() => setShowBankDrillScorecard(true)}
+                          className="w-full bg-green-700 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-800 text-sm">
+                          🏦 Open Scorecard
+                        </button>
+                        {form.score !== "" && (
+                          <div className="mt-2 text-sm text-green-700 font-semibold">
+                            ✅ Score recorded: {form.score} shots
+                            <button type="button" onClick={() => setShowBankDrillScorecard(true)}
                               className="ml-2 text-xs underline text-gray-500 hover:text-gray-700">Edit</button>
                           </div>
                         )}

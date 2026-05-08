@@ -629,9 +629,11 @@ const ELIMINATOR_CONFIGS = {
 };
 
 const GATE_COMPLETION_CONFIGS = {
-  50: { title: "Iron Gates",        icon: "🚪", target: 10, cap: 20, label: "Flat"  },
-  51: { title: "Iron Gates (R–L)", icon: "🚪", target: 10, cap: 24, label: "Right to Left" },
-  52: { title: "Iron Gates (L–R)", icon: "🚪", target: 10, cap: 24, label: "Left to Right" },
+  50:  { title: "Iron Gates",        icon: "🚪", target: 10, cap: 20, label: "Flat" },
+  51:  { title: "Iron Gates (R–L)", icon: "🚪", target: 10, cap: 24, label: "Right to Left" },
+  52:  { title: "Iron Gates (L–R)", icon: "🚪", target: 10, cap: 24, label: "Left to Right" },
+  103: { title: "Landing Circle 3", icon: "🎯", target: 5,  cap: 25, label: "3ft diameter circle", shotLabel: "shots", goalLabel: "landed in circle", successLabel: "Landed in circle", promptText: "did it land inside the circle?", successBtn: "Landed in circle" },
+  104: { title: "Landing Circle 6", icon: "🎯", target: 5,  cap: 15, label: "6ft diameter circle", shotLabel: "shots", goalLabel: "landed in circle", successLabel: "Landed in circle", promptText: "did it land inside the circle?", successBtn: "Landed in circle" },
 };
 
 // ─── SCORECARD MODAL COMPONENTS ──────────────────────────────────────────────
@@ -1085,24 +1087,24 @@ function GateCompletionModal({ drillId, onSave, onCancel }) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
         <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
           <h2 className="text-lg font-bold">{config.icon} {config.title}</h2>
-          <p className="text-green-300 text-sm mt-0.5">{config.label} — get {config.target} putts through the gate</p>
+          <p className="text-green-300 text-sm mt-0.5">{config.label} — get {config.target} {config.shotLabel ?? "putts"} {config.goalLabel ?? "through the gate"}</p>
         </div>
         <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex justify-between">
-          <span>Count all putts taken · Lower is better · Cap: {config.cap}</span>
-          <span className="font-bold">Through gate: {successful} / {config.target}</span>
+          <span>Count all {config.shotLabel ?? "putts"} taken · Lower is better · Cap: {config.cap}</span>
+          <span className="font-bold">{config.successLabel ?? "Through gate"}: {successful} / {config.target}</span>
         </div>
 
         <div className="px-4 py-6">
           {!finished ? (
             <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-              <p className="text-sm font-semibold text-green-800 mb-3">Putt {total + 1} — did it go through the gate and hole out?</p>
+              <p className="text-sm font-semibold text-green-800 mb-3">{config.shotLabel === "shots" ? "Shot" : "Putt"} {total + 1} — {config.promptText ?? "did it go through the gate and hole out?"}</p>
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => recordPutt(true)}
                   className="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold text-sm hover:bg-green-700"
                 >
-                  ✅ Through gate + holed
+                  ✅ {config.successBtn ?? "Through gate + holed"}
                 </button>
                 <button
                   type="button"
@@ -1117,14 +1119,14 @@ function GateCompletionModal({ drillId, onSave, onCancel }) {
             <div className={`rounded-xl border px-4 py-4 text-center ${capReached ? "bg-red-50 border-red-200 text-red-700" : zone.color}`}>
               <p className="text-lg font-bold mb-1">{capReached ? "Cap reached" : "Target reached! 🎉"}</p>
               <p className="text-4xl font-extrabold">{total}</p>
-              <p className="text-sm mt-1">total putts · {successful} successful</p>
+              <p className="text-sm mt-1">total {config.shotLabel ?? "putts"} · {successful} {config.shotLabel === "shots" ? "landed" : "successful"}</p>
             </div>
           )}
         </div>
 
         <div className="px-4 pb-4 flex gap-3">
           <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
-            <p className="text-xs text-gray-500">Total putts</p>
+            <p className="text-xs text-gray-500">Total {config.shotLabel ?? "putts"}</p>
             <p className="text-2xl font-extrabold text-gray-700">{total}</p>
           </div>
           <div className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-center">
@@ -1143,7 +1145,7 @@ function GateCompletionModal({ drillId, onSave, onCancel }) {
               onClick={() => onSave(total)}
               className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
             >
-              Save Score ({total} putts)
+              Save Score ({total} {config.shotLabel ?? "putts"})
             </button>
           )}
           <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
@@ -3705,6 +3707,236 @@ function HoleAllDistancesModal({ drillId, drill, onSave, onCancel }) {
   );
 }
 
+const NINE_HOLE_CHIPPING_SHOTS = [
+  { hole: 1, desc: "12m chip & run" },
+  { hole: 2, desc: "20m Pitch" },
+  { hole: 3, desc: "8m Lob" },
+  { hole: 4, desc: "20m chip & run" },
+  { hole: 5, desc: "15m Pitch" },
+  { hole: 6, desc: "20m Lob" },
+  { hole: 7, desc: "25m Chip & run" },
+  { hole: 8, desc: "25m Pitch" },
+  { hole: 9, desc: "15m Lob" },
+];
+
+const NINE_HOLE_CHIPPING_OPTIONS = [
+  { value: 4, label: "4" },
+  { value: 3, label: "3" },
+  { value: 2, label: "2" },
+  { value: 1, label: "1" },
+  { value: 0, label: "0" },
+];
+
+function NineHoleChippingModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(NINE_HOLE_CHIPPING_SHOTS.map(() => null));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? val : v));
+  }
+
+  const allFilled = values.every(v => v !== null);
+  const grandTotal = values.reduce((a, b) => a + (b ?? 0), 0);
+  const zone = grandTotal >= 20 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal >= 12 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏌️ 9 Hole Chipping Challenge</h2>
+          <p className="text-green-300 text-sm mt-0.5">Select your result for each hole — higher is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-green-800">
+          <span>Holed = 4pts</span>
+          <span>0–3ft = 3pts</span>
+          <span>3–6ft = 2pts</span>
+          <span>6–12ft = 1pt</span>
+          <span>12ft+ = 0pts</span>
+        </div>
+        <div className="px-4 py-4 space-y-2">
+          {NINE_HOLE_CHIPPING_SHOTS.map((h, i) => (
+            <div key={i} className={`rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-xs font-bold text-green-700 w-6 shrink-0">{h.hole}</span>
+                <span className="text-sm text-gray-700 flex-1">{h.desc}</span>
+                {values[i] !== null && (
+                  <span className="text-xs font-bold text-green-700">{values[i]} pts</span>
+                )}
+              </div>
+              <div className="flex gap-1.5 pl-8">
+                {NINE_HOLE_CHIPPING_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setValue(i, opt.value)}
+                    className={`flex-1 py-1.5 rounded text-xs font-bold border transition-colors ${
+                      values[i] === opt.value
+                        ? "bg-green-600 text-white border-green-600"
+                        : "bg-white text-gray-600 border-gray-300 hover:border-green-400 hover:text-green-700"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${allFilled ? zone.color : "text-gray-500 bg-gray-50 border-gray-200"}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Score</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">out of 36 possible pts</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
+              <p>Green 20+ · Yellow 12–19 · Red &lt;12</p>
+              <p>Perfect: 24 · Worst: 0</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} pts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BankDrillModal({ drillId, drill, onSave, onCancel }) {
+  const startBank = drillId === 101 ? 50 : 100;
+  const [bank, setBank] = useState(startBank);
+  const [shotCount, setShotCount] = useState(0);
+  const [proximity, setProximity] = useState("");
+  const [log, setLog] = useState([]);
+  const [finished, setFinished] = useState(false);
+  const [error, setError] = useState("");
+
+  function addShot() {
+    const prox = parseFloat(proximity);
+    if (isNaN(prox) || prox < 0) {
+      setError("Proximity must be 0 or greater.");
+      return;
+    }
+    setError("");
+    const newBank = bank - prox;
+    const newShotCount = shotCount + 1;
+    setLog(prev => [...prev, { shot: newShotCount, proximity: prox, bankAfter: newBank }]);
+    setBank(newBank);
+    setShotCount(newShotCount);
+    setProximity("");
+    if (newBank <= 0) setFinished(true);
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === "Enter" && !finished) addShot();
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏦 {drill?.name ?? "Bank Drill"}</h2>
+          <p className="text-green-300 text-sm mt-0.5">Start with {startBank}ft — subtract proximity after each shot</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Higher shot count is better · Hole out (0ft) counts as a shot but doesn't reduce the bank
+        </div>
+
+        <div className="px-4 py-4">
+          <div className="flex gap-3 mb-4">
+            <div className="flex-1 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-center">
+              <p className="text-xs text-green-700 font-semibold uppercase tracking-wide">Bank remaining</p>
+              <p className={`text-4xl font-extrabold leading-none mt-1 ${bank <= 0 ? "text-red-600" : "text-green-700"}`}>
+                {bank.toFixed(bank % 1 === 0 ? 0 : 1)}ft
+              </p>
+            </div>
+            <div className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-center">
+              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Shots taken</p>
+              <p className="text-4xl font-extrabold leading-none mt-1 text-gray-700">{shotCount}</p>
+            </div>
+          </div>
+
+          {!finished ? (
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-3">
+              <p className="text-sm font-semibold text-gray-700 mb-2">Shot {shotCount + 1} — enter proximity (ft)</p>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value={proximity}
+                  onChange={e => { setProximity(e.target.value); setError(""); }}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g. 6.5"
+                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
+                />
+                <button
+                  type="button"
+                  onClick={addShot}
+                  className="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-green-700"
+                >
+                  Add Shot
+                </button>
+              </div>
+              {error && <p className="text-xs text-red-600 mt-1.5">{error}</p>}
+            </div>
+          ) : (
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-3 text-center">
+              <p className="text-sm font-bold text-green-800 mb-1">Bank emptied! 🎉</p>
+              <p className="text-xs text-green-700">Final score: <strong>{shotCount} shots</strong></p>
+            </div>
+          )}
+
+          {log.length > 0 && (
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-600 flex justify-between">
+                <span>Shot</span>
+                <span>Proximity</span>
+                <span>Bank after</span>
+              </div>
+              <div className="max-h-40 overflow-y-auto divide-y divide-gray-100">
+                {[...log].reverse().map((entry, i) => (
+                  <div key={i} className="flex justify-between px-3 py-1.5 text-xs text-gray-700">
+                    <span className="font-medium text-green-700">#{entry.shot}</span>
+                    <span>{entry.proximity === 0 ? "Holed! 0ft" : `${entry.proximity}ft`}</span>
+                    <span className={entry.bankAfter <= 0 ? "text-red-600 font-bold" : ""}>{entry.bankAfter.toFixed(entry.bankAfter % 1 === 0 ? 0 : 1)}ft</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-3 px-5 pb-5">
+          {finished && (
+            <button
+              onClick={() => onSave(shotCount)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm"
+            >
+              Save Score ({shotCount} shots)
+            </button>
+          )}
+          <button onClick={onCancel} className={`bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium ${finished ? "" : "flex-1"}`}>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export {
   SwedishScorecardModal,
   Par72ScorecardModal,
@@ -3735,4 +3967,6 @@ export {
   SpiralHoleOutModal,
   EliminatorModal,
   GateCompletionModal,
+  NineHoleChippingModal,
+  BankDrillModal,
 };
