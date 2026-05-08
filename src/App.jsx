@@ -34,6 +34,7 @@ import {
   BankDrillModal,
 } from './scorecards';
 import { DRILLS, DRILL_CATEGORY, CATEGORIES, CAT_COLOR } from './drillData';
+import { CategoryLeaderboard } from './leaderboard.jsx';
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function calcIndex(drill, score) {
@@ -2782,6 +2783,15 @@ export default function App() {
                 </div>
               );
             })()}
+            <div className="mb-6">
+              <h3 className="font-semibold text-gray-700 mb-1">Category Leaders</h3>
+              <p className="text-xs text-gray-400 mb-3">Rolling average PI — last 60 days, up to 10 attempts, max 5 of the same drill. Minimum 5 attempts to qualify.</p>
+              <CategoryLeaderboard
+                allLbEntries={allLbEntries}
+                currentPlayer={player}
+                drillCategoryMap={DRILL_CATEGORY}
+              />
+            </div>
             {piRanking.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">Overall Performance Index Ranking</h3>
