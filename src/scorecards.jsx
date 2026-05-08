@@ -574,7 +574,7 @@ const HOLE_ALL_DISTANCES_CONFIGS = {
   56: { title: "Make Zone Test 3–7ft",          icon: "🎯", distances: [3,4,5,6,7],                      perfect: 5,  worst: 10 },
   57: { title: "Make Zone Test 6–10ft",         icon: "🎯", distances: [6,7,8,9,10],                     perfect: 5,  worst: 15 },
   58: { title: "Make Zone Test 8–12ft",         icon: "🎯", distances: [8,9,10,11,12],                   perfect: 5,  worst: 20 },
-  59: { title: "Make Zone Test 3–8ft",          icon: "🎯", distances: [3,4,5,6,7,8],                    perfect: 6,  worst: 10 },
+  59: { title: "Make Zone Test 3–8ft",          icon: "🎯", distances: [3,4,5,6,7,8],                    perfect: 6,  worst: 12 },
 };
 
 const TAP_TO_TOGGLE_CONFIGS = {
