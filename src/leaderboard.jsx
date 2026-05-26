@@ -72,56 +72,73 @@ export function CategoryLeaderboard({ allLbEntries, currentPlayer, drillCategory
             <span className="w-20 shrink-0">Trend</span>
           </div>
 
-          {results.map((entry, i) => {
-            const isCurrentPlayer = entry.player === currentPlayer;
-            const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : null;
-            const rc = ratingColor(entry.avgPI);
+          {(() => {
+            const currentPlayerIdx = results.findIndex(e => e.player === currentPlayer);
+            const showExtra = currentPlayerIdx >= 5;
+            const top = results.length <= 5 ? results : results.slice(0, 5);
+
+            const renderRow = (entry, i) => {
+              const isCurrentPlayer = entry.player === currentPlayer;
+              const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : null;
+              const rc = ratingColor(entry.avgPI);
+              return (
+                <div
+                  key={entry.player}
+                  className={`border-b border-gray-100 last:border-0 ${
+                    isCurrentPlayer ? "bg-green-50" : i % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  }`}
+                >
+                  {/* Player row */}
+                  <div className="flex items-center gap-3 px-4 py-3 text-sm">
+                    <span className="w-8 font-bold text-gray-500 shrink-0">
+                      {medal ?? `${i + 1}`}
+                    </span>
+                    <span className={`flex-1 font-medium min-w-0 ${isCurrentPlayer ? "text-green-700" : "text-gray-800"}`}>
+                      {entry.player}{isCurrentPlayer ? " (you)" : ""}
+                      <span className="block text-xs font-normal text-gray-400">{entry.attempts} attempts</span>
+                    </span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-semibold shrink-0 ${rc.bg} ${rc.text}`}>
+                      {entry.avgPI}
+                    </span>
+                    <SparkLine trend={entry.trend} />
+                  </div>
+
+                  {/* Last 3 drill results */}
+                  {entry.last3.length > 0 && (
+                    <div className="px-4 pb-3 flex flex-col gap-1">
+                      {entry.last3.map((d, j) => {
+                        const dr = ratingColor(d.indexScore);
+                        return (
+                          <div key={j} className="flex items-center gap-2 text-xs text-gray-600 bg-gray-100 rounded px-2 py-1">
+                            <span className="flex-1 truncate font-medium text-gray-700">{d.drillName}</span>
+                            <span className="shrink-0 font-semibold">{d.score}{d.unit ? ` ${d.unit}` : ""}</span>
+                            <span className={`shrink-0 px-1.5 py-0.5 rounded-full font-semibold ${dr.bg} ${dr.text}`}>
+                              {d.indexScore}
+                            </span>
+                            <span className="shrink-0 text-gray-400 w-14 text-right">
+                              {new Date(d.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            };
 
             return (
-              <div
-                key={entry.player}
-                className={`border-b border-gray-100 last:border-0 ${
-                  isCurrentPlayer ? "bg-green-50" : i % 2 === 0 ? "bg-white" : "bg-gray-50"
-                }`}
-              >
-                {/* Player row */}
-                <div className="flex items-center gap-3 px-4 py-3 text-sm">
-                  <span className="w-8 font-bold text-gray-500 shrink-0">
-                    {medal ?? `${i + 1}`}
-                  </span>
-                  <span className={`flex-1 font-medium min-w-0 ${isCurrentPlayer ? "text-green-700" : "text-gray-800"}`}>
-                    {entry.player}{isCurrentPlayer ? " (you)" : ""}
-                    <span className="block text-xs font-normal text-gray-400">{entry.attempts} attempts</span>
-                  </span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-semibold shrink-0 ${rc.bg} ${rc.text}`}>
-                    {entry.avgPI}
-                  </span>
-                  <SparkLine trend={entry.trend} />
-                </div>
-
-                {/* Last 3 drill results */}
-                {entry.last3.length > 0 && (
-                  <div className="px-4 pb-3 flex flex-col gap-1">
-                    {entry.last3.map((d, j) => {
-                      const dr = ratingColor(d.indexScore);
-                      return (
-                        <div key={j} className="flex items-center gap-2 text-xs text-gray-600 bg-gray-100 rounded px-2 py-1">
-                          <span className="flex-1 truncate font-medium text-gray-700">{d.drillName}</span>
-                          <span className="shrink-0 font-semibold">{d.score}{d.unit ? ` ${d.unit}` : ""}</span>
-                          <span className={`shrink-0 px-1.5 py-0.5 rounded-full font-semibold ${dr.bg} ${dr.text}`}>
-                            {d.indexScore}
-                          </span>
-                          <span className="shrink-0 text-gray-400 w-14 text-right">
-                            {new Date(d.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+              <>
+                {top.map((entry, i) => renderRow(entry, i))}
+                {showExtra && (
+                  <>
+                    <div className="py-1 text-center text-sm text-gray-400 border-b border-gray-100">· · ·</div>
+                    {renderRow(results[currentPlayerIdx], currentPlayerIdx)}
+                  </>
                 )}
-              </div>
+              </>
             );
-          })}
+          })()}
         </div>
       )}
     </div>
