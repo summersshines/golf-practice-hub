@@ -21,7 +21,7 @@ export const DRILL_CATEGORY = {
   86:"Pitching",87:"Pitching",88:"Pitching",89:"Pitching",90:"Pitching",
   91:"Pitching",92:"Pitching",93:"Mixed",   94:"Mixed",   95:"Mixed",
   96:"Pitching",97:"Pitching",98:"Putting",99:"Putting",100:"Putting",
-  101:"Chipping",102:"Chipping",103:"Chipping",104:"Chipping",
+  101:"Chipping",102:"Chipping",103:"Chipping",104:"Chipping",105:"Pitching",
 };
 export const CATEGORIES = ["All", "Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
 export const CAT_COLOR = {
@@ -135,4 +135,5 @@ export const DRILLS = [
   { id:102, name:"100ft Bank",                            type:"count",      unit:"shots",dir:"higher", perfect:27,  worst:2,   notes:"Start with 100ft in the bank. Hit chip shots from around the green (10-20m from the hole) mixing up easy, medium and difficult shots. After each shot subtract your proximity in feet from the bank. Count every shot including the one that empties the bank. Record your score as the total number of shots taken." },
   { id:103, name:"Landing Circle 3",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:25,  notes:"Set out a target circle (3ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
   { id:104, name:"Landing Circle 6",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:15,  notes:"Set out a target circle (6ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
+  { id:105, name:"DL Wedge Proximity Combine 40-90m",    type:"distance",   unit:"ft",   dir:"lower",  perfect:39,  worst:215, notes:"Hit one shot from 40, 50, 60, 70, 80, 90m. Total up your distance from the hole for each shot. Lower is better." },
 ];

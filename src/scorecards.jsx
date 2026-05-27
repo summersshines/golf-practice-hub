@@ -406,6 +406,14 @@ const PROXIMITY_SCORECARDS = {
       { label: "Wedge Shots", stations: ["30m", "60m", "90m"] },
     ],
   },
+  105: {
+    title: "DL Wedge Proximity Combine 40-90m",
+    icon: "🏌️",
+    unit: "ft",
+    groups: [
+      { label: "Wedge Shots", stations: ["40m", "50m", "60m", "70m", "80m", "90m"] },
+    ],
+  },
 };
 
 const NEGATIVE_SCORECARDS = {

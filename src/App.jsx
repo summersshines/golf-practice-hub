@@ -1528,7 +1528,7 @@ export default function App() {
   const isSwedish = +form.drillId === 93;
   const isPar72 = +form.drillId === 2;
   const isPelz = +form.drillId === 9;
-  const isProximity = [1, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 37, 76, 77, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 97].includes(+form.drillId);
+  const isProximity = [1, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 37, 76, 77, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 96, 97, 105].includes(+form.drillId);
   const isNegative = [22, 23].includes(+form.drillId);
   const isJuniorPutting = +form.drillId === 78;
   const isJuniorShortGame = +form.drillId === 79;
