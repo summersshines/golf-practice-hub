@@ -1168,7 +1168,7 @@ function SquadPanel({ authUser, profile, allLbEntries }) {
               onChange={e => { setInviteSquadId(e.target.value); setInviteStatus(null); }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
             >
-              <option value="">No squad / Individual player</option>
+              {isAdmin && <option value="">No squad / Individual player</option>}
               {squads.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </div>
