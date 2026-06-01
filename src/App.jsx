@@ -436,36 +436,42 @@ function DrillHistoryPanel({ drillId, sessions }) {
   return (
     <div className="mt-2 mb-1 border border-gray-200 rounded-lg overflow-hidden">
       {/* Compact strip — always visible */}
-      <div className="flex items-center gap-3 px-3 py-2 bg-gray-50">
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-gray-500 mb-0.5">Last attempt</p>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-green-700">{last.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
-            <span className="text-xs text-gray-400">{new Date(last.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
-            {last.index !== null && (
-              <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${lastR.bg} ${lastR.text}`}>{Math.round(last.index)}</span>
+      <div className="px-3 py-2 bg-gray-50">
+        {/* Row 1: Last attempt + History button */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-gray-500 mb-0.5">Last attempt</p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-green-700">{last.score}{drill.unit ? ` ${drill.unit}` : ""}</span>
+              <span className="text-xs text-gray-400">{new Date(last.date).toLocaleDateString("en-AU", { day: "numeric", month: "short" })}</span>
+              {last.index !== null && (
+                <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${lastR.bg} ${lastR.text}`}>{Math.round(last.index)}</span>
+              )}
+            </div>
+          </div>
+          {history.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setExpanded(e => !e)}
+              className="shrink-0 text-xs text-green-700 underline hover:text-green-800"
+            >
+              {expanded ? "Hide" : "History"}
+            </button>
+          )}
+        </div>
+        {/* Row 2: Trend + Sparkline */}
+        {trendSummary && (
+          <div className="flex items-center gap-3 mt-2 pt-2 border-t border-gray-100">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-500 mb-0.5">Trend</p>
+              <p className={`text-xs font-semibold ${trendColor}`}>{trendSummary.label}</p>
+            </div>
+            {sparkPoints && (
+              <svg width="60" height="20" viewBox="0 0 60 20" className="shrink-0">
+                <polyline points={sparkPoints} fill="none" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             )}
           </div>
-        </div>
-        {trendSummary && (
-          <div className="shrink-0 text-right">
-            <p className="text-xs text-gray-500 mb-0.5">Trend</p>
-            <p className={`text-xs font-semibold ${trendColor}`}>{trendSummary.label}</p>
-          </div>
-        )}
-        {sparkPoints && (
-          <svg width="60" height="20" viewBox="0 0 60 20" className="shrink-0">
-            <polyline points={sparkPoints} fill="none" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )}
-        {history.length > 1 && (
-          <button
-            type="button"
-            onClick={() => setExpanded(e => !e)}
-            className="shrink-0 text-xs text-green-700 underline hover:text-green-800"
-          >
-            {expanded ? "Hide" : "Show history"}
-          </button>
         )}
       </div>
 
@@ -1393,6 +1399,10 @@ export default function App() {
   const [showGateCompletionScorecard, setShowGateCompletionScorecard] = useState(false);
   const [showBankDrillScorecard, setShowBankDrillScorecard] = useState(false);
   const [showNineHoleChippingScorecard, setShowNineHoleChippingScorecard] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [noteInput, setNoteInput] = useState("");
+  const [saveStatus, setSaveStatus] = useState("idle");
+  const [failedSession, setFailedSession] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -1481,10 +1491,57 @@ export default function App() {
     setForm({ drillId:"", drillCategory:"", score:"", notes:"", date:today() });
   }
 
+  async function autoSaveSession(score) {
+    if (!form.drillId) return;
+    const drill = DRILLS.find(d => d.id === +form.drillId);
+    const idx = calcIndex(drill, score);
+    const session = {
+      id:Date.now(), player, drillId:+form.drillId, drillName:drill.name,
+      score:parseFloat(score), unit:drill.unit, dir:drill.dir,
+      index:idx !== null ? Math.round(idx) : null,
+      notes:form.notes, date:form.date,
+    };
+    setSaveStatus("saving");
+    const { data: { user } } = await supabase.auth.getUser();
+    const { error } = await supabase.from('sessions').insert([{
+      id: session.id, player: session.player, drill_id: session.drillId,
+      drill_name: session.drillName, score: session.score, unit: session.unit,
+      dir: session.dir, index_score: session.index, notes: session.notes, date: session.date,
+      user_id: user.id,
+    }]);
+    if (error) {
+      console.error(error);
+      setSaveStatus("error");
+      setFailedSession(session);
+      return;
+    }
+    setSessions(prev => [session, ...prev]);
+    setSaveStatus("idle");
+    setShowAdd(false);
+    setForm({ drillId:"", drillCategory:"", score:"", notes:"", date:today() });
+  }
+
+  async function retrySession() {
+    if (!failedSession) return;
+    setSaveStatus("saving");
+    await DB.addSession(failedSession);
+    setSessions(prev => [failedSession, ...prev]);
+    setSaveStatus("idle");
+    setFailedSession(null);
+  }
+
   async function deleteSession(s) {
     if (!window.confirm(`Delete "${s.drillName}" on ${new Date(s.date).toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" })}? This cannot be undone.`)) return;
     await DB.deleteSession(s.id);
     setSessions(sessions.filter(x => x.id !== s.id));
+  }
+
+  async function saveNote(id) {
+    const { error } = await supabase.from('sessions').update({ notes: noteInput }).eq('id', id);
+    if (error) { console.error(error); return; }
+    setSessions(sessions.map(s => s.id === id ? { ...s, notes: noteInput } : s));
+    setEditingNoteId(null);
+    setNoteInput("");
   }
 
   // ── Auth guards ───────────────────────────────────────────────────────────────
@@ -1556,6 +1613,7 @@ export default function App() {
   const isGateCompletion = [50, 51, 52, 103, 104].includes(+form.drillId);
   const isBankDrill = [101, 102].includes(+form.drillId);
   const isNineHoleChipping = +form.drillId === 3;
+  const isScorecardDrill = isSwedish || isPar72 || isPelz || isProximity || isNegative || isJuniorPutting || isJuniorShortGame || isSundayStandard || isSwedishQuickFire || isPelzSnapshot || isBroadieChase || isPointsRace || isBroadieTest || isLukeDonald || isGauntlet || is250Challenge || isSuddenDeathCarousel || isDrawbackGauntlet || isJaggedPeaks || isAscent || isAnchor || isCrucible || isSniperSchool || isHoleAllDistances || isLieMix || isTapToToggle || isSpiralHoleOut || isEliminator || isGateCompletion || isBankDrill || isNineHoleChipping;
   const CRUCIBLE_CONFIGS = {
     64: { drillId: 64, title: "Crucible — The Gridlock (4–6ft)",  icon: "🔒", startDist: 4, finishDist: 6, cap: 60 },
     65: { drillId: 65, title: "Crucible — No Fly Zone (5–7ft)",   icon: "🚫", startDist: 5, finishDist: 7, cap: 80 },
@@ -1592,6 +1650,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowSwedishScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowSwedishScorecard(false)}
         />
@@ -1601,6 +1660,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowPar72Scorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowPar72Scorecard(false)}
         />
@@ -1610,6 +1670,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowPelzScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowPelzScorecard(false)}
         />
@@ -1621,6 +1682,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowProximityScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowProximityScorecard(false)}
         />
@@ -1631,6 +1693,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowNegativeScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowNegativeScorecard(false)}
         />
@@ -1640,6 +1703,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowJuniorPuttingScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowJuniorPuttingScorecard(false)}
         />
@@ -1649,6 +1713,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowJuniorShortGameScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowJuniorShortGameScorecard(false)}
         />
@@ -1658,6 +1723,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowSundayStandardScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowSundayStandardScorecard(false)}
         />
@@ -1667,6 +1733,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowSwedishQuickFireScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowSwedishQuickFireScorecard(false)}
         />
@@ -1676,6 +1743,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowPelzSnapshotScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowPelzSnapshotScorecard(false)}
         />
@@ -1687,6 +1755,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowBroadieChaseScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowBroadieChaseScorecard(false)}
         />
@@ -1697,6 +1766,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowPointsRaceScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowPointsRaceScorecard(false)}
         />
@@ -1708,6 +1778,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowBroadieTestScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowBroadieTestScorecard(false)}
         />
@@ -1717,6 +1788,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowLukeDonaldScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowLukeDonaldScorecard(false)}
         />
@@ -1726,6 +1798,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowGauntletScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowGauntletScorecard(false)}
         />
@@ -1735,13 +1808,14 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShow250ChallengeScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShow250ChallengeScorecard(false)}
         />
       )}
       {showSuddenDeathCarouselScorecard && (
         <SuddenDeathCarouselModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSuddenDeathCarouselScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSuddenDeathCarouselScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowSuddenDeathCarouselScorecard(false)}
         />
       )}
@@ -1749,38 +1823,38 @@ export default function App() {
         <DrawbackGauntletModal
           drillId={+form.drillId}
           drill={DRILLS.find(d => d.id === +form.drillId)}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowDrawbackGauntletScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowDrawbackGauntletScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowDrawbackGauntletScorecard(false)}
         />
       )}
       {showJaggedPeaksScorecard && (
         <JaggedPeaksModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowJaggedPeaksScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowJaggedPeaksScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowJaggedPeaksScorecard(false)}
         />
       )}
       {showAscentScorecard && (
         <AscentModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowAscentScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowAscentScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowAscentScorecard(false)}
         />
       )}
       {showAnchorScorecard && (
         <AnchorModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowAnchorScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowAnchorScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowAnchorScorecard(false)}
         />
       )}
       {showCrucibleScorecard && isCrucible && (
         <CrucibleModal
           config={CRUCIBLE_CONFIGS[+form.drillId]}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowCrucibleScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowCrucibleScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowCrucibleScorecard(false)}
         />
       )}
       {showSniperSchoolScorecard && (
         <SniperSchoolModal
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSniperSchoolScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSniperSchoolScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowSniperSchoolScorecard(false)}
         />
       )}
@@ -1788,7 +1862,7 @@ export default function App() {
         <HoleAllDistancesModal
           drillId={+form.drillId}
           drill={DRILLS.find(d => d.id === +form.drillId)}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowHoleAllDistancesScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowHoleAllDistancesScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowHoleAllDistancesScorecard(false)}
         />
       )}
@@ -1796,7 +1870,7 @@ export default function App() {
         <LieMixScorecardModal
           drillId={+form.drillId}
           drill={DRILLS.find(d => d.id === +form.drillId)}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowLieMixScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowLieMixScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowLieMixScorecard(false)}
         />
       )}
@@ -1804,28 +1878,28 @@ export default function App() {
         <TapToToggleModal
           drillId={+form.drillId}
           drill={DRILLS.find(d => d.id === +form.drillId)}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowTapToToggleScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowTapToToggleScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowTapToToggleScorecard(false)}
         />
       )}
       {showSpiralHoleOutScorecard && (
         <SpiralHoleOutModal
           drill={DRILLS.find(d => d.id === +form.drillId)}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSpiralHoleOutScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowSpiralHoleOutScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowSpiralHoleOutScorecard(false)}
         />
       )}
       {showEliminatorScorecard && isEliminator && (
         <EliminatorModal
           drillId={+form.drillId}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowEliminatorScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowEliminatorScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowEliminatorScorecard(false)}
         />
       )}
       {showGateCompletionScorecard && isGateCompletion && (
         <GateCompletionModal
           drillId={+form.drillId}
-          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowGateCompletionScorecard(false); }}
+          onSave={total => { setForm(f => ({ ...f, score: String(total) })); setShowGateCompletionScorecard(false); autoSaveSession(total); }}
           onCancel={() => setShowGateCompletionScorecard(false)}
         />
       )}
@@ -1834,6 +1908,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowNineHoleChippingScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowNineHoleChippingScorecard(false)}
         />
@@ -1845,6 +1920,7 @@ export default function App() {
           onSave={total => {
             setForm(f => ({ ...f, score: String(total) }));
             setShowBankDrillScorecard(false);
+            autoSaveSession(total);
           }}
           onCancel={() => setShowBankDrillScorecard(false)}
         />
@@ -1896,6 +1972,26 @@ export default function App() {
         {/* ── SESSION LOG ─────────────────────────────────────────────────────── */}
         {!loading && tab === "log" && (
           <div>
+            {saveStatus === "saving" && (
+              <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4 text-sm text-green-700">
+                <svg className="animate-spin h-4 w-4 text-green-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Saving session…
+              </div>
+            )}
+            {saveStatus === "error" && (
+              <div className="flex items-center justify-between gap-3 bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4 text-sm text-red-700">
+                <span>⚠️ Session didn't save — tap to retry</span>
+                <button
+                  onClick={retrySession}
+                  className="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-medium hover:bg-red-700 shrink-0"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
             {stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                 {[["Total Sessions",stats.total],["This Month",stats.thisMonth],["Avg Index",stats.avgIdx??"—"],["Best Index",stats.best??"—"]].map(([l,v]) => (
@@ -2542,7 +2638,9 @@ export default function App() {
                   );
                 })()}
                 <div className="flex gap-3 mt-4">
-                  <button onClick={saveSession} className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium">Save</button>
+                  {!isScorecardDrill && (
+                    <button onClick={saveSession} className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 font-medium">Save</button>
+                  )}
                   <button onClick={() => setShowAdd(false)} className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300">Cancel</button>
                 </div>
               </div>
@@ -2570,6 +2668,27 @@ export default function App() {
                           <span className="font-bold text-green-700 text-base">{s.score}{s.unit ? ` ${s.unit}` : ""}</span>
                           {s.notes && <span className="italic text-gray-400">"{s.notes}"</span>}
                         </div>
+                        {!s.notes && editingNoteId !== s.id && (
+                          <button
+                            onClick={() => { setEditingNoteId(s.id); setNoteInput(""); }}
+                            className="mt-1 text-xs text-green-600 underline"
+                          >+ Add a note</button>
+                        )}
+                        {editingNoteId === s.id && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <input
+                              autoFocus
+                              value={noteInput}
+                              onChange={e => setNoteInput(e.target.value)}
+                              placeholder="What went well? What needs work?"
+                              className="flex-1 border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-green-500"
+                            />
+                            <button
+                              onClick={() => saveNote(s.id)}
+                              className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-green-700"
+                            >Save</button>
+                          </div>
+                        )}
                       </div>
                       <button onClick={() => deleteSession(s)} className="text-red-400 hover:text-red-600 text-lg shrink-0">✕</button>
                     </div>
