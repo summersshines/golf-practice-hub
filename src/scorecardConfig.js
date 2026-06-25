@@ -16,6 +16,7 @@ import {
   GauntletScorecardModal,
   Challenge250ScorecardModal,
   SuddenDeathCarouselModal,
+  SuddenDeathCarouselMiniModal,
   DrawbackGauntletModal,
   JaggedPeaksModal,
   AscentModal,
@@ -30,6 +31,7 @@ import {
   GateCompletionModal,
   NineHoleChippingModal,
   BankDrillModal,
+  EnglandGolfPuttingModal,
 } from './scorecards';
 
 export const SCORECARD_MODALS = {
@@ -128,6 +130,8 @@ export const SCORECARD_MODALS = {
   103: { component: GateCompletionModal,           icon: "🚪",  label: "putts" },
   104: { component: GateCompletionModal,           icon: "🚪",  label: "putts" },
   105: { component: ProximityScorecardModal,       icon: "📏",  label: "ft" },
+  106: { component: SuddenDeathCarouselMiniModal,  icon: "🎯",  label: "holed" },
+  107: { component: EnglandGolfPuttingModal,       icon: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", label: "putts" },
 };
 
 export const SCORECARD_DRILL_IDS = new Set(

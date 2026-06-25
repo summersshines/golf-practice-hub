@@ -2808,6 +2808,119 @@ function SuddenDeathCarouselModal({ onSave, onCancel }) {
   );
 }
 
+function SuddenDeathCarouselMiniModal({ onSave, onCancel }) {
+  const ROWS = ["Str Up", "Str Dn", "R-L Up", "R-L Dn", "L-R Up", "L-R Dn"];
+  const COLS = [3, 4, 5, 6, 7, 8];
+  // state[row][col]: null = locked, "active" = playable, "holed" = ✅, "missed" = ❌
+  const initState = () => ROWS.map(() => COLS.map((_, ci) => ci === 0 ? "active" : null));
+  const [grid, setGrid] = useState(initState);
+
+  function tap(ri, ci) {
+    setGrid(prev => prev.map((row, r) => {
+      if (r !== ri) return row;
+      const cell = row[ci];
+      if (cell === "active") {
+        // Mark holed, unlock next
+        return row.map((v, c) => c === ci ? "holed" : c === ci + 1 ? "active" : v);
+      }
+      if (cell === "holed") {
+        // Mark missed, lock rest of row
+        return row.map((v, c) => c === ci ? "missed" : c > ci ? null : v);
+      }
+      if (cell === "missed") {
+        // Undo miss: reopen from this cell
+        return row.map((v, c) => c === ci ? "active" : c > ci ? null : v);
+      }
+      return row;
+    }));
+  }
+
+  const totalHoled = grid.reduce((a, row) => a + row.filter(v => v === "holed").length, 0);
+  const hasMiss = grid.some(row => row.includes("missed"));
+  const saveEnabled = hasMiss;
+
+  const zone = totalHoled >= 26 ? { label: "Excellent", color: "text-green-700 bg-green-50 border-green-200" }
+    : totalHoled >= 16 ? { label: "Good", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Needs Work", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🎯 AT Sudden Death Carousel (3-8ft)</h2>
+          <p className="text-green-300 text-sm mt-0.5">Tap to advance each row — score = total putts holed</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800 flex justify-between">
+          <span>✅ = Holed · ❌ = Missed (row ends) · Tap ❌ to undo</span>
+          <span className="font-bold">Holed: {totalHoled}</span>
+        </div>
+        <div className="px-4 py-4 overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr>
+                <th className="text-left pr-2 pb-1 text-gray-500 font-medium w-16"></th>
+                {COLS.map(c => (
+                  <th key={c} className="text-center pb-1 text-gray-500 font-medium w-10">{c}ft</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {ROWS.map((label, ri) => (
+                <tr key={ri}>
+                  <td className="pr-2 py-1 text-xs font-semibold text-green-700 whitespace-nowrap">{label}</td>
+                  {COLS.map((_, ci) => {
+                    const cell = grid[ri][ci];
+                    return (
+                      <td key={ci} className="py-1 text-center">
+                        <button
+                          type="button"
+                          onClick={() => (cell === "active" || cell === "holed" || cell === "missed") && tap(ri, ci)}
+                          className={`w-9 h-9 rounded-lg border-2 text-sm font-bold transition-colors ${
+                            cell === "holed" ? "bg-green-500 border-green-600 text-white" :
+                            cell === "missed" ? "bg-red-100 border-red-300 text-red-500" :
+                            cell === "active" ? "bg-white border-green-400 text-green-400 hover:bg-green-50" :
+                            "bg-gray-50 border-gray-200 text-gray-200 cursor-default"
+                          }`}
+                        >
+                          {cell === "holed" ? "✅" : cell === "missed" ? "❌" : cell === "active" ? "·" : ""}
+                        </button>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${zone.color}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Holed</p>
+              <p className="text-4xl font-extrabold leading-none">{totalHoled}</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{zone.label}</p>
+              <p>Green 26+ · Yellow 16–25 · Red &lt;16</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(totalHoled)}
+            disabled={!saveEnabled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({totalHoled} holed)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function DrawbackGauntletModal({ drillId, drill, onSave, onCancel }) {
   const configs = {
     36: { title: "Drawback Gauntlet 5–15ft",  perfect: 9,  worst: 27, greenMax: 13, yellowMax: 20, label: "Goal: 13 putts or less" },
@@ -3945,6 +4058,102 @@ function BankDrillModal({ drillId, drill, onSave, onCancel }) {
   );
 }
 
+const ENGLAND_GOLF_PUTTING_HOLES = [
+  { hole: 1,  dist: 3,  desc: "Straight" },
+  { hole: 2,  dist: 6,  desc: "R/L Uphill" },
+  { hole: 3,  dist: 9,  desc: "L/R Downhill" },
+  { hole: 4,  dist: 12, desc: "R/L Downhill" },
+  { hole: 5,  dist: 15, desc: "L/R" },
+  { hole: 6,  dist: 4,  desc: "Slight Break Downhill" },
+  { hole: 7,  dist: 8,  desc: "R/L" },
+  { hole: 8,  dist: 12, desc: "L/R" },
+  { hole: 9,  dist: 16, desc: "L/R Downhill" },
+  { hole: 10, dist: 20, desc: "L/R Uphill" },
+  { hole: 11, dist: 5,  desc: "Slight Break" },
+  { hole: 12, dist: 10, desc: "L/R" },
+  { hole: 13, dist: 15, desc: "R/L" },
+  { hole: 14, dist: 20, desc: "Straightish" },
+  { hole: 15, dist: 25, desc: "Double Break" },
+  { hole: 16, dist: 6,  desc: "R/L Downhill" },
+  { hole: 17, dist: 33, desc: "Slight Uphill" },
+  { hole: 18, dist: 45, desc: "Slight Downhill" },
+];
+
+function EnglandGolfPuttingModal({ onSave, onCancel }) {
+  const [values, setValues] = useState(ENGLAND_GOLF_PUTTING_HOLES.map(() => ""));
+
+  function setValue(idx, val) {
+    setValues(prev => prev.map((v, i) => i === idx ? val : v));
+  }
+
+  const allFilled = values.every(v => v !== "");
+  const grandTotal = values.reduce((sum, v) => sum + (parseInt(v, 10) || 0), 0);
+
+  const zone = grandTotal <= 30 ? { label: "Green Zone", color: "text-green-700 bg-green-50 border-green-200" }
+    : grandTotal <= 38 ? { label: "Yellow Zone", color: "text-yellow-700 bg-yellow-50 border-yellow-200" }
+    : { label: "Red Zone", color: "text-red-700 bg-red-50 border-red-200" };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center p-3 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg my-4">
+        <div className="bg-green-800 text-white rounded-t-2xl px-5 py-4">
+          <h2 className="text-lg font-bold">🏴󠁧󠁢󠁥󠁮󠁧󠁿 18 Hole England Golf Putting Test</h2>
+          <p className="text-green-300 text-sm mt-0.5">Enter putts taken to hole out at each distance — lower is better</p>
+        </div>
+        <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-medium text-green-800">
+          Danny Willett holds the course record of 25 putts
+        </div>
+        <div className="px-4 py-4 space-y-1.5">
+          {ENGLAND_GOLF_PUTTING_HOLES.map((h, i) => (
+            <div key={i} className={`flex items-center gap-3 rounded-lg px-3 py-2 ${i % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
+              <span className="text-xs font-bold text-green-700 w-6 shrink-0">{h.hole}</span>
+              <div className="flex-1">
+                <span className="text-sm text-gray-700">{h.dist}ft</span>
+                <span className="text-xs text-gray-400 ml-2">{h.desc}</span>
+              </div>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                value={values[i]}
+                onChange={e => setValue(i, e.target.value)}
+                placeholder="putts"
+                className="w-20 border border-gray-300 rounded px-2 py-1 text-sm text-right focus:outline-none focus:border-green-500"
+              />
+            </div>
+          ))}
+        </div>
+        <div className="px-5 pb-4">
+          <div className={`flex items-center justify-between rounded-xl border px-4 py-3 ${allFilled ? zone.color : "text-gray-500 bg-gray-50 border-gray-200"}`}>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide opacity-70">Total Putts</p>
+              <p className="text-4xl font-extrabold leading-none">{grandTotal}</p>
+              <p className="text-xs mt-0.5">lower is better</p>
+            </div>
+            <div className="text-right text-xs opacity-70">
+              <p className="font-bold text-sm">{allFilled ? zone.label : "—"}</p>
+              <p>Green 25–30 · Yellow 31–38 · Red 39+</p>
+              <p>Perfect: 25 (Danny Willett) · Worst: 45</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 px-5 pb-5">
+          <button
+            onClick={() => onSave(grandTotal)}
+            disabled={!allFilled}
+            className="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Save Score ({grandTotal} putts)
+          </button>
+          <button onClick={onCancel} className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 text-sm font-medium">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export {
   SwedishScorecardModal,
   Par72ScorecardModal,
@@ -3963,6 +4172,7 @@ export {
   GauntletScorecardModal,
   Challenge250ScorecardModal,
   SuddenDeathCarouselModal,
+  SuddenDeathCarouselMiniModal,
   DrawbackGauntletModal,
   JaggedPeaksModal,
   AscentModal,
@@ -3977,4 +4187,5 @@ export {
   GateCompletionModal,
   NineHoleChippingModal,
   BankDrillModal,
+  EnglandGolfPuttingModal,
 };

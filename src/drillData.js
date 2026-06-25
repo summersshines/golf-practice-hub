@@ -22,6 +22,8 @@ export const DRILL_CATEGORY = {
   91:"Pitching",92:"Pitching",93:"Mixed",   94:"Mixed",   95:"Mixed",
   96:"Pitching",97:"Pitching",98:"Putting",99:"Putting",100:"Putting",
   101:"Chipping",102:"Chipping",103:"Chipping",104:"Chipping",105:"Pitching",
+  106:"Putting",
+  107:"Putting",
 };
 export const CATEGORIES = ["All", "Putting", "Chipping", "Pitching", "Bunker", "Mixed"];
 export const CAT_COLOR = {
@@ -136,4 +138,6 @@ export const DRILLS = [
   { id:103, name:"Landing Circle 3",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:25,  notes:"Set out a target circle (3ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
   { id:104, name:"Landing Circle 6",                      type:"completion", unit:"shots",dir:"lower",  perfect:5,   worst:15,  notes:"Set out a target circle (6ft diameter). Count how many shots it takes to land 5 balls inside the circle. Lower is better." },
   { id:105, name:"DL Wedge Proximity Combine 40-90m",    type:"distance",   unit:"ft",   dir:"lower",  perfect:39,  worst:215, notes:"Hit one shot from 40, 50, 60, 70, 80, 90m. Total up your distance from the hole for each shot. Lower is better." },
+  { id:106, name:"AT Sudden Death Carousel 3-8ft",       type:"level",      unit:"putts",dir:"higher", perfect:25,  worst:0,   notes:"Start with 6 tees around the hole at 3ft, one for each line — straight, right-to-left and left-to-right, each uphill and downhill. Hole the putt and move the tee back 1ft. Miss and remove the tee. Keep working around the hole until all tees are removed. Record your score as the total number of putts holed. Scorecard included." },
+  { id:107, name:"18 Hole England Golf Putting Test",    type:"level",      unit:"putts",dir:"lower",  perfect:25,  worst:45,  notes:"Putt out each of the 18 holes in sequence. Enter the total number of putts taken to hole out at each distance and slope. Danny Willett holds the course record of 25 putts. Scorecard included." },
 ];
